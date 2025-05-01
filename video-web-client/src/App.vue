@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import AppIcon from './components/ui/AppIcon.vue'
+import AppButton from './components/ui/AppButton.vue'
 
 const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark']
 </script>
@@ -18,7 +19,7 @@ const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger'
       <AppButton :variant="variant">
         <AppIcon v-if="index % 2 === 0" name="home" />
         <span>Button {{ variant }}</span>
-        <AppIcon v-if="index % 2 === 1" name="home" />
+        <AppIcon v-if="index % 2 === 1" name="menu" />
       </AppButton>
     </div>
 
