@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import AppIcon from './components/ui/AppIcon.vue'
+import AppButton from './components/ui/AppButton.vue'
 
 const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark']
 </script>
@@ -13,8 +15,12 @@ const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger'
     <h5>Heading 5</h5>
     <h6>Heading 6</h6>
 
-    <div v-for="variant in variants" class="pb-2" :key="variant">
-      <button :class="['btn', `btn-${variant}`]">Button {{ variant }}</button>
+    <div v-for="(variant, index) in variants" class="pb-2" :key="variant">
+      <AppButton :variant="variant">
+        <AppIcon v-if="index % 2 === 0" name="home" />
+        <span>Button {{ variant }}</span>
+        <AppIcon v-if="index % 2 === 1" name="menu" />
+      </AppButton>
     </div>
 
     <div class="card">
