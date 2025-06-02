@@ -2,8 +2,20 @@
 import { RouterView } from 'vue-router'
 import AppIcon from './components/ui/AppIcon.vue'
 import AppButton from './components/ui/AppButton.vue'
+import AppInput from './components/ui/AppInput.vue'
 
-const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark']
+import type { ButtonVariant } from './components/ui/AppButton.vue'
+
+const variants: ButtonVariant[] = [
+  'primary',
+  'secondary',
+  'success',
+  'info',
+  'warning',
+  'danger',
+  'light',
+  'dark',
+]
 </script>
 
 <template>
@@ -41,6 +53,12 @@ const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger'
           aria-describedby="emailHelp"
         />
         <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+        <AppInput
+          id="exampleInputEmail1"
+          type="text"
+          label="Card number"
+          :feedback="{ enabled: true, error: 'Error' }"
+        />
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -50,6 +68,10 @@ const variants = ['primary', 'secondary', 'success', 'info', 'warning', 'danger'
           class="form-control"
           id="exampleInputPassword1"
         />
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Provide feedback</label>
+        <textarea name="test" id="test" class="form-control"></textarea>
       </div>
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" />
