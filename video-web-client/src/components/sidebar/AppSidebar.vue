@@ -1,18 +1,22 @@
 <script setup lang="ts">
 import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
+import { useUiStore } from '@/store/ui.store'
+
+const uiStore = useUiStore()
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
 
 import WatchMeLogo from '../../assets/watch-me-logo.svg'
-
-defineProps<{ expand: boolean }>()
-const emit = defineEmits(['update:expand'])
 </script>
 <template>
   <nav
     id="sidebar"
-    :class="[expand ? '' : 'closed', isMobile ? 'position-fixed' : 'position-sticky']"
+    :class="{
+      closed: uiStore.isSidebarOpen,
+      'position-fixed': isMobile,
+      'position-sticky': !isMobile,
+    }"
   >
     <div class="position-relative mb-5">
       <div id="sidebar-logo">
@@ -27,7 +31,11 @@ const emit = defineEmits(['update:expand'])
     </div>
   </nav>
   <div v-if="isMobile" id="sidebar-shadow"></div>
-  <div v-if="isMobile && expand" class="backdrop" @click="emit('update:expand', false)"></div>
+  <div
+    v-if="isMobile && uiStore.isSidebarOpen"
+    class="backdrop"
+    @click="uiStore.toggleSidebar()"
+  ></div>
 </template>
 
 <style lang="scss">
