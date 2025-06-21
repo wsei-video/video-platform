@@ -2,10 +2,19 @@
 import { useAttrs } from 'vue'
 
 export type InputVariant = 'light' | 'dark'
-export type InputFeedback = {
+export type InputFeedback = InputErrorFeedback | InputHintFeedback
+
+interface InputBaseFeedback {
   enabled: boolean
-  error?: string
-  hint?: string
+  message: string
+}
+
+export interface InputErrorFeedback extends InputBaseFeedback {
+  type: 'error'
+}
+
+export interface InputHintFeedback extends InputBaseFeedback {
+  type: 'hint'
 }
 
 defineOptions({ inheritAttrs: false })
@@ -29,18 +38,21 @@ const {
     :class="[
       'form-control',
       {
-        'is-invalid': feedback.enabled && !!feedback.error,
+        'is-invalid': feedback.enabled && feedback.type === 'error',
         'bg-body': variant === 'dark',
       },
     ]"
     v-bind="attrs"
     v-model="model"
   />
-  <div class="invalid-feedback">
-    {{ feedback.error }}
-  </div>
-  <div class="form-text">
-    {{ feedback.hint }}
+  <div
+    v-if="feedback.enabled"
+    :class="{
+      'invalid-feedback': feedback.type === 'error',
+      'form-text': feedback.type === 'hint',
+    }"
+  >
+    {{ feedback.message }}
   </div>
 </template>
 

@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import AppHeader from './components/header/AppHeader.vue'
-import AppIcon from './components/ui/AppIcon.vue'
-import AppButton from './components/ui/AppButton.vue'
-import AppInput from './components/ui/AppInput.vue'
+import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
 
-import type { ButtonVariant } from './components/ui/AppButton.vue'
-import AppSidebar from './components/sidebar/AppSidebar.vue'
-import SidebarLink from './components/sidebar/SidebarLink.vue'
+import { AppSidebar, SidebarLink } from '@/components/sidebar'
+import { AppHeader } from '@/components/header'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -70,7 +66,7 @@ const variants: ButtonVariant[] = [
               id="exampleInputEmail1"
               type="text"
               label="Card number"
-              :feedback="{ enabled: true, error: 'Error' }"
+              :feedback="{ enabled: true, type: 'error', message: 'broken ;(' }"
             />
           </div>
           <div class="mb-3">

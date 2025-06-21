@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppImage from '../ui/AppImage.vue'
+import { AppImage } from '@/components/ui'
 
 const {
   profileImage,
