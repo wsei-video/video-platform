@@ -4,6 +4,7 @@ import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/u
 
 import { AppSidebar, SidebarLink } from '@/components/sidebar'
 import { AppHeader } from '@/components/header'
+import { VideoCard } from '@/components/video'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -30,6 +31,22 @@ const variants: ButtonVariant[] = [
     <div id="app-content">
       <AppHeader />
       <div id="testing-page" class="mx-3 my-3">
+        <VideoCard
+          v-for="video in [1, 2, 3]"
+          :key="video"
+          :video-data="{
+            creator: {
+              profileImage: 'https://picsum.photos/200',
+              profileName: 'Tomek Smialek',
+            },
+            thumbnail: 'https://picsum.photos/300',
+            title:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            uploadDate: new Date('2025-06-21'),
+            views: 1400,
+            duration: 1520,
+          }"
+        />
         <h1>Heading 1</h1>
         <h2>Heading 2</h2>
         <h3>Heading 3</h3>
