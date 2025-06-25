@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
 
-import { AppSidebar, SidebarLink } from '@/components/sidebar'
+import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
 import { AppHeader } from '@/components/header'
+import { AppSidebar, SidebarLink } from '@/components/sidebar'
 import { VideoCard } from '@/components/video'
+import { VideoPlayerTest } from './components/player'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -30,6 +31,7 @@ const variants: ButtonVariant[] = [
     </AppSidebar>
     <div id="app-content">
       <AppHeader />
+      <VideoPlayerTest />
       <div id="testing-page" class="mx-3 my-3">
         <VideoCard
           v-for="video in [1, 2, 3]"
