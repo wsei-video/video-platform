@@ -13,9 +13,6 @@ export default {
     new Tooltip(el)
   },
   beforeUnmount(el: HTMLElement) {
-    const tooltip = Tooltip.getInstance(el)
-    if (tooltip) {
-      tooltip.dispose()
-    }
+    Tooltip.getInstance(el)?.dispose()
   },
 }

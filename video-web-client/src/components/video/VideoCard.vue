@@ -24,7 +24,7 @@ defineProps<{
       />
       <div class="video-params">
         <span>
-          {{ formatViews(videoData.views) }} &nbsp;
+          {{ formatViews(videoData.views) }} views &nbsp;
           {{ formatUploadTime(videoData.uploadDate) }}
         </span>
       </div>
