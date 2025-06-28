@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useVideoPlayerStore } from './video-player.store'
+import { useVideoPlayerStore } from '@/store'
 import VideoPlayerLoadingSpinner from './VideoPlayerLoadingSpinner.vue'
 
 const videoPlayerStore = useVideoPlayerStore()

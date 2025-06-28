@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import { useVideoPlayerStore } from './video-player.store'
+import { useVideoPlayerStore } from '@/store'
 import VideoPlayerBufferingIndicator from './VideoPlayerBufferingIndicator.vue'
 import VideoPlayerControlBar from './VideoPlayerControlBar.vue'
 import VideoPlayerHlsRenderer from './VideoPlayerHlsRenderer.vue'
@@ -29,7 +29,14 @@ watch(
 </script>
 
 <template>
-  <div ref="videoPlayerRef" class="video-player" @fullscreenchange="updateFullscreen">
+  <div
+    ref="videoPlayerRef"
+    class="video-player"
+    @fullscreenchange="updateFullscreen"
+    @pointerenter="videoPlayerStore.setPointerOverPlayer(true)"
+    @pointerleave="videoPlayerStore.setPointerOverPlayer(false)"
+    @pointermove="videoPlayerStore.handlePointerMove()"
+  >
     <template v-if="videoPlayerRef">
       <VideoPlayerHlsRenderer />
       <VideoPlayerBufferingIndicator />

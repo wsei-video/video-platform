@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { VideoPlayerUtils } from './video-player.utils'
+import { VideoPlayerUtils } from '../components/player/video-player.utils'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
   const source = ref<string | null>(null)
@@ -10,6 +10,8 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const isBuffering = ref(false)
   const isMuted = ref(false)
   const isFullscreen = ref(false)
+  const isPointerOverPlayer = ref(false)
+  const isPointerMotionless = ref(false)
   const volume = ref(1)
   const duration = ref(0)
   const bufferedDuration = ref(0)
@@ -31,6 +33,10 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const formattedCurrentTime = computed(() => VideoPlayerUtils.formatTime(currentTime.value))
 
   const formattedDuration = computed(() => VideoPlayerUtils.formatTime(duration.value))
+
+  const showControls = computed(
+    () => (isPointerOverPlayer.value && !isPointerMotionless.value) || !isPlaying.value,
+  )
 
   const setSource = (updatedSource: string | null) => (source.value = updatedSource)
 
@@ -75,6 +81,19 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
 
   const setPlaybackProgress = (progress: number) => setCurrentTime(progress * duration.value)
 
+  const setPointerOverPlayer = (value: boolean) => (isPointerOverPlayer.value = value)
+
+  let pointerMoveTimeout: number | undefined
+  const hideControlsWhenPointerIsMotionlessAfter = 1500
+  const handlePointerMove = () => {
+    clearTimeout(pointerMoveTimeout)
+    isPointerMotionless.value = false
+    pointerMoveTimeout = setTimeout(
+      () => (isPointerMotionless.value = true),
+      hideControlsWhenPointerIsMotionlessAfter,
+    )
+  }
+
   return {
     source,
     setSource,
@@ -108,5 +127,10 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     setLastSeekProgress,
     playbackProgress,
     setPlaybackProgress,
+    isPointerOverPlayer,
+    isPointerMotionless,
+    showControls,
+    setPointerOverPlayer,
+    handlePointerMove,
   }
 })

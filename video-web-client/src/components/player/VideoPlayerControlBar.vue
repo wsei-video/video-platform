@@ -1,58 +1,16 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-
-import { useVideoPlayerStore } from './video-player.store'
+import { useVideoPlayerStore } from '@/store'
 import VideoPlayerFullscreenControl from './VideoPlayerFullscreenControl.vue'
 import VideoPlayerPlayControl from './VideoPlayerPlayControl.vue'
 import VideoPlayerProgressBar from './VideoPlayerProgressBar.vue'
 import VideoPlayerSettingsControl from './VideoPlayerSettingsControl.vue'
 import VideoPlayerVolumeControl from './VideoPlayerVolumeControl.vue'
 
-const hideControlsWhenPointerMotionlessAfter = 1500
-
 const videoPlayerStore = useVideoPlayerStore()
-const isPointerOverPlayer = ref(false)
-const isPointerMotionless = ref(false)
-const pointerMoveTimeout = ref<number>()
-
-const showControls = computed(
-  () => (isPointerOverPlayer.value && !isPointerMotionless.value) || !videoPlayerStore.isPlaying,
-)
-
-const handleVideoPlayerPointerEnter = () => (isPointerOverPlayer.value = true)
-
-const handleVideoPlayerPointerLeave = () => (isPointerOverPlayer.value = false)
-
-const handleVideoPlayerPointerMove = () => {
-  clearTimeout(pointerMoveTimeout.value)
-  isPointerMotionless.value = false
-  pointerMoveTimeout.value = setTimeout(
-    () => (isPointerMotionless.value = true),
-    hideControlsWhenPointerMotionlessAfter,
-  )
-}
-
-onMounted(() => {
-  videoPlayerStore.videoPlayerRef?.addEventListener('pointerenter', handleVideoPlayerPointerEnter)
-  videoPlayerStore.videoPlayerRef?.addEventListener('pointerleave', handleVideoPlayerPointerLeave)
-  videoPlayerStore.videoPlayerRef?.addEventListener('pointermove', handleVideoPlayerPointerMove)
-})
-
-onBeforeUnmount(() => {
-  videoPlayerStore.videoPlayerRef?.removeEventListener(
-    'pointerenter',
-    handleVideoPlayerPointerEnter,
-  )
-  videoPlayerStore.videoPlayerRef?.removeEventListener(
-    'pointerleave',
-    handleVideoPlayerPointerLeave,
-  )
-  videoPlayerStore.videoPlayerRef?.removeEventListener('pointermove', handleVideoPlayerPointerMove)
-})
 </script>
 
 <template>
-  <div class="video-player-control-bar-wrapper" :class="{ shown: showControls }">
+  <div class="video-player-control-bar-wrapper" :class="{ shown: videoPlayerStore.showControls }">
     <VideoPlayerProgressBar
       progressColor="#ce7f00"
       :modelValue="videoPlayerStore.playbackProgress"

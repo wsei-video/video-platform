@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Hls from 'hls.js'
 
-import { useVideoPlayerStore } from './video-player.store'
+import { useVideoPlayerStore } from '@/store'
 import { VideoPlayerUtils } from './video-player.utils'
 
 const videoPlayerStore = useVideoPlayerStore()
@@ -29,37 +29,21 @@ const updateBufferedDuration = () => {
     videoPlayerStore.setBufferedDuration(VideoPlayerUtils.calculateBufferedDuration(videoRef.value))
 }
 
-const handleVideoLoadStart = () => videoPlayerStore.setPlaying(false)
-
-const handleVideoDurationChange = () => videoPlayerStore.setDuration(videoRef.value?.duration ?? 0)
-
 const handleVideoTimeUpdate = () => {
   videoPlayerStore.setCurrentTime(videoRef.value?.currentTime ?? 0)
   updateBufferedDuration()
 }
 
-const handleVideoWaiting = () => videoPlayerStore.setBuffering(true)
-
-const handleVideoPlaying = () => videoPlayerStore.setBuffering(false)
+const handleVideoDurationChange = () => {
+  videoPlayerStore.setDuration(videoRef.value?.duration ?? 0)
+}
 
 onMounted(() => {
   initializeVideoPlayer()
   updateVideoSource()
-
-  videoRef.value?.addEventListener('loadstart', handleVideoLoadStart)
-  videoRef.value?.addEventListener('durationchange', handleVideoDurationChange)
-  videoRef.value?.addEventListener('timeupdate', () => handleVideoTimeUpdate)
-  videoRef.value?.addEventListener('waiting', handleVideoWaiting)
-  videoRef.value?.addEventListener('playing', handleVideoPlaying)
 })
 
 onBeforeUnmount(() => {
-  videoRef.value?.removeEventListener('loadstart', handleVideoLoadStart)
-  videoRef.value?.removeEventListener('durationchange', handleVideoDurationChange)
-  videoRef.value?.removeEventListener('timeupdate', () => handleVideoTimeUpdate)
-  videoRef.value?.removeEventListener('waiting', handleVideoWaiting)
-  videoRef.value?.removeEventListener('playing', handleVideoPlaying)
-
   destroyVideoPlayer()
 })
 
@@ -99,7 +83,15 @@ watch(
 </script>
 
 <template>
-  <video ref="videoRef" class="video-player-hls-renderer"></video>
+  <video
+    ref="videoRef"
+    class="video-player-hls-renderer"
+    @loadstart="videoPlayerStore.setPlaying(false)"
+    @durationchange="handleVideoDurationChange"
+    @timeupdate="handleVideoTimeUpdate"
+    @waiting="videoPlayerStore.setBuffering(true)"
+    @playing="videoPlayerStore.setBuffering(false)"
+  ></video>
 </template>
 
 <style lang="scss" scoped>

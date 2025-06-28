@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
-import { useUiStore } from '@/store/ui.store'
+import { useUiStore } from '@/store'
 
 const uiStore = useUiStore()
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)

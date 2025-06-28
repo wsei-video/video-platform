@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { useVideoPlayerStore } from './video-player.store'
+import { useVideoPlayerStore } from '@/store'
 import VideoPlayerControlButton from './VideoPlayerControlButton.vue'
 import VideoPlayerProgressBar from './VideoPlayerProgressBar.vue'
 
