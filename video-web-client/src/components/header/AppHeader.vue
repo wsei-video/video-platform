@@ -2,9 +2,7 @@
 import { useUiStore } from '@/store/ui.store'
 import { useBreakpoints, breakpointsBootstrapV5 } from '@vueuse/core'
 
-import AppIcon from '../ui/AppIcon.vue'
-import AppInput from '../ui/AppInput.vue'
-import ProfileBadge from '../ui/ProfileBadge.vue'
+import { AppIcon, AppInput, ProfileBadge } from '@/components/ui'
 
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')

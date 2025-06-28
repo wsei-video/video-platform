@@ -13,7 +13,7 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
   <nav
     id="sidebar"
     :class="{
-      closed: uiStore.isSidebarOpen,
+      closed: !uiStore.isSidebarOpen,
       'position-fixed': isMobile,
       'position-sticky': !isMobile,
     }"

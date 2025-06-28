@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppImage from '../ui/AppImage.vue'
+import { AppImage } from '@/components/ui'
 
 const {
   profileImage,
@@ -14,7 +14,7 @@ const {
 <template>
   <div class="profile-badge">
     <AppImage :src="profileImage" class="badge-img" />
-    <span v-if="!avatarOnly" class="fw-semibold">{{ profileName }}</span>
+    <span v-if="!avatarOnly">{{ profileName }}</span>
   </div>
 </template>
 <style scoped lang="scss">
@@ -23,6 +23,10 @@ const {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+
+  span {
+    font-weight: 600;
+  }
 }
 .badge-img {
   aspect-ratio: 1;

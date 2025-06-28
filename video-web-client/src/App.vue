@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import AppHeader from './components/header/AppHeader.vue'
-import AppIcon from './components/ui/AppIcon.vue'
-import AppButton from './components/ui/AppButton.vue'
-import AppInput from './components/ui/AppInput.vue'
+import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
 
-import type { ButtonVariant } from './components/ui/AppButton.vue'
-import AppSidebar from './components/sidebar/AppSidebar.vue'
-import SidebarLink from './components/sidebar/SidebarLink.vue'
+import { AppSidebar, SidebarLink } from '@/components/sidebar'
+import { AppHeader } from '@/components/header'
+import { VideoCard } from '@/components/video'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -34,6 +31,22 @@ const variants: ButtonVariant[] = [
     <div id="app-content">
       <AppHeader />
       <div id="testing-page" class="mx-3 my-3">
+        <VideoCard
+          v-for="video in [1, 2, 3]"
+          :key="video"
+          :video-data="{
+            creator: {
+              profileImage: 'https://picsum.photos/200',
+              profileName: 'Tomek Smialek',
+            },
+            thumbnail: 'https://picsum.photos/300',
+            title:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+            uploadDate: new Date('2025-06-21'),
+            views: 1400,
+            duration: 1520,
+          }"
+        />
         <h1>Heading 1</h1>
         <h2>Heading 2</h2>
         <h3>Heading 3</h3>
@@ -70,7 +83,7 @@ const variants: ButtonVariant[] = [
               id="exampleInputEmail1"
               type="text"
               label="Card number"
-              :feedback="{ enabled: true, error: 'Error' }"
+              :feedback="{ enabled: true, type: 'error', message: 'broken ;(' }"
             />
           </div>
           <div class="mb-3">
