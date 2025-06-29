@@ -31,7 +31,7 @@ const selectedStream = ref(videoTestStreams[0])
 </script>
 
 <template>
-  <div class="p-3">
+  <div>
     <select class="form-select mb-3" v-model="selectedStream">
       <option v-for="stream in videoTestStreams" :key="stream.source" :value="stream">
         {{ stream.title }}

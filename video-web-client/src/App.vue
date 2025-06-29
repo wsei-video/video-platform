@@ -31,8 +31,10 @@ const variants: ButtonVariant[] = [
     </AppSidebar>
     <div id="app-content">
       <AppHeader />
-      <VideoPlayerTest />
       <div id="testing-page" class="mx-3 my-3">
+        <div class="mb-3">
+          <VideoPlayerTest />
+        </div>
         <VideoCard
           v-for="video in [1, 2, 3]"
           :key="video"

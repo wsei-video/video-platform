@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { type Seconds } from './index'
+import { VideoUtils } from '@/utils/video.utils'
 
 defineProps<{
   duration: Seconds
 }>()
 </script>
 <template>
-  <!-- TODO: add duration formating -->
-  <div class="video-duration">{{ duration }}</div>
+  <div class="video-duration">{{ VideoUtils.formatDuration(duration) }}</div>
 </template>
 
 <style scoped lang="scss">

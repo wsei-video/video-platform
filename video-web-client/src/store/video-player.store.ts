@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import { VideoPlayerUtils } from '../components/player/video-player.utils'
+import { VideoUtils } from '@/utils/video.utils'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
   const source = ref<string | null>(null)
@@ -30,9 +30,9 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
 
   const isAudiblyMuted = computed(() => audibleVolume.value === 0)
 
-  const formattedCurrentTime = computed(() => VideoPlayerUtils.formatTime(currentTime.value))
+  const formattedCurrentTime = computed(() => VideoUtils.formatDuration(currentTime.value))
 
-  const formattedDuration = computed(() => VideoPlayerUtils.formatTime(duration.value))
+  const formattedDuration = computed(() => VideoUtils.formatDuration(duration.value))
 
   const showControls = computed(
     () => (isPointerOverPlayer.value && !isPointerMotionless.value) || !isPlaying.value,
@@ -84,7 +84,9 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const setPointerOverPlayer = (value: boolean) => (isPointerOverPlayer.value = value)
 
   let pointerMoveTimeout: number | undefined
+
   const hideControlsWhenPointerIsMotionlessAfter = 1500
+
   const handlePointerMove = () => {
     clearTimeout(pointerMoveTimeout)
     isPointerMotionless.value = false

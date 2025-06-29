@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppIcon from '../ui/AppIcon.vue';
+import AppIcon from '../ui/AppIcon.vue'
 
 const { icon } = defineProps<{ icon: string }>()
 </script>

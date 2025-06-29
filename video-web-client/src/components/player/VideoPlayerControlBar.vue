@@ -15,7 +15,7 @@ const videoPlayerStore = useVideoPlayerStore()
       progressColor="#ce7f00"
       :modelValue="videoPlayerStore.playbackProgress"
       :secondaryProgress="videoPlayerStore.bufferedProgress"
-      @update:modelValue="(progress) => videoPlayerStore.setLastSeekProgress(progress)"
+      @update:modelValue="videoPlayerStore.setLastSeekProgress"
     />
 
     <div class="video-player-control-bar">
