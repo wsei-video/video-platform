@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { AppImage, ProfileBadge } from '@/components/ui'
-import { type VideoCard, formatUploadTime, formatViews } from './index'
+import { type VideoCard } from './index'
 import { VideoDuration } from '@/components/video'
+import { VideoUtils } from '@/utils/video.utils'
 
 defineProps<{
   videoData: VideoCard
@@ -24,8 +25,8 @@ defineProps<{
       />
       <div class="video-params">
         <span>
-          {{ formatViews(videoData.views) }} views &nbsp;
-          {{ formatUploadTime(videoData.uploadDate) }}
+          {{ VideoUtils.formatCountCompact(videoData.views) }} views &nbsp;
+          {{ VideoUtils.formatTimeSince(videoData.uploadDate) }}
         </span>
       </div>
     </div>

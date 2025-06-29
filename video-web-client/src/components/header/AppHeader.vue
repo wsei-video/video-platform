@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUiStore } from '@/store/ui.store'
+import { useUiStore } from '@/store'
 import { useBreakpoints, breakpointsBootstrapV5 } from '@vueuse/core'
 
 import { AppIcon, AppInput, ProfileBadge } from '@/components/ui'
