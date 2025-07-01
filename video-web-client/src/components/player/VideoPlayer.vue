@@ -6,6 +6,7 @@ import VideoPlayerBufferingIndicator from './VideoPlayerBufferingIndicator.vue'
 import VideoPlayerControlBar from './VideoPlayerControlBar.vue'
 import VideoPlayerHlsRenderer from './VideoPlayerHlsRenderer.vue'
 import VideoPlayerOverlayControls from './VideoPlayerOverlayControls.vue'
+import VideoPlayerSettingsMenu from './VideoPlayerSettingsMenu.vue'
 
 const { source } = defineProps<{ source: string }>()
 
@@ -42,6 +43,7 @@ watch(
       <VideoPlayerBufferingIndicator />
       <VideoPlayerOverlayControls />
       <VideoPlayerControlBar />
+      <VideoPlayerSettingsMenu />
     </template>
   </div>
 </template>

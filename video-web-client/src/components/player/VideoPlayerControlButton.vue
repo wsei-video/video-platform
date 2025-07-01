@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import AppIcon from '../ui/AppIcon.vue'
 
-const { icon } = defineProps<{ icon: string }>()
+const { icon, iconRotation = 0 } = defineProps<{ icon: string; iconRotation?: number }>()
 </script>
 
 <template>
   <button type="button" class="video-player-control-button">
-    <AppIcon :name="icon" />
+    <AppIcon
+      class="video-player-control-button-icon"
+      :name="icon"
+      :style="{ transform: `rotate(${iconRotation}deg)` }"
+    />
   </button>
 </template>
 
@@ -19,5 +23,9 @@ const { icon } = defineProps<{ icon: string }>()
   align-items: center;
   padding: 0.25rem;
   margin: 0.25rem;
+}
+
+.video-player-control-button-icon {
+  transition: transform 0.15s ease-out;
 }
 </style>

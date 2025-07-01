@@ -1,23 +1,29 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import Hls from 'hls.js'
 
+import { QualityLevel } from './quality'
 import { useVideoPlayerStore } from '@/store'
 import { VideoPlayerUtils } from './video-player.utils'
 
 const videoPlayerStore = useVideoPlayerStore()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
-const hlsInstance = ref<Hls | null>(null)
+const hlsInstance = shallowRef<Hls | null>(null)
 
 const initializeVideoPlayer = () => {
   if (!videoRef.value) throw new Error('Video element ref not set')
   hlsInstance.value = new Hls()
-  hlsInstance.value.attachMedia(videoRef.value)
   hlsInstance.value.on(Hls.Events.FRAG_BUFFERED, updateBufferedDuration)
+  hlsInstance.value.on(Hls.Events.MANIFEST_PARSED, updateQualityLevels)
+  hlsInstance.value.on(Hls.Events.LEVEL_SWITCHED, updateCurrentQualityLevel)
+  hlsInstance.value.attachMedia(videoRef.value)
 }
 
-const destroyVideoPlayer = () => hlsInstance.value?.destroy()
+const destroyVideoPlayer = () => {
+  hlsInstance.value?.destroy()
+  hlsInstance.value = null
+}
 
 const updateVideoSource = () =>
   videoPlayerStore.source
@@ -29,6 +35,16 @@ const updateBufferedDuration = () => {
     videoPlayerStore.setBufferedDuration(VideoPlayerUtils.calculateBufferedDuration(videoRef.value))
 }
 
+const updateQualityLevels = () => {
+  if (hlsInstance.value)
+    videoPlayerStore.setQualityLevels(QualityLevel.fromHlsLevels(hlsInstance.value.levels))
+}
+
+const updateCurrentQualityLevel = () => {
+  if (hlsInstance.value)
+    videoPlayerStore.setCurrentQualityLevelByHlsIndex(hlsInstance.value.currentLevel)
+}
+
 const handleVideoTimeUpdate = () => {
   videoPlayerStore.setCurrentTime(videoRef.value?.currentTime ?? 0)
   updateBufferedDuration()
@@ -36,6 +52,13 @@ const handleVideoTimeUpdate = () => {
 
 const handleVideoDurationChange = () => {
   videoPlayerStore.setDuration(videoRef.value?.duration ?? 0)
+}
+
+const handleVideoLoadStart = () => {
+  videoPlayerStore.setPlaying(false)
+
+  // Playback rate is not persisted between video source changes
+  if (videoRef.value) videoRef.value.playbackRate = videoPlayerStore.playbackSpeed
 }
 
 onMounted(() => {
@@ -80,13 +103,30 @@ watch(
     if (videoRef.value) videoRef.value.volume = audibleVolume
   },
 )
+
+watch(
+  () => videoPlayerStore.preferredQualityLevel,
+  (preferredQualityLevel) => {
+    if (!hlsInstance.value) return
+    const levelIndex = preferredQualityLevel?.hlsIndex ?? -1
+    hlsInstance.value.currentLevel = levelIndex
+    hlsInstance.value.nextLevel = levelIndex
+  },
+)
+
+watch(
+  () => videoPlayerStore.playbackSpeed,
+  (playbackSpeed) => {
+    if (videoRef.value) videoRef.value.playbackRate = playbackSpeed
+  },
+)
 </script>
 
 <template>
   <video
     ref="videoRef"
     class="video-player-hls-renderer"
-    @loadstart="videoPlayerStore.setPlaying(false)"
+    @loadstart="handleVideoLoadStart"
     @durationchange="handleVideoDurationChange"
     @timeupdate="handleVideoTimeUpdate"
     @waiting="videoPlayerStore.setBuffering(true)"
