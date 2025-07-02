@@ -6,10 +6,13 @@ import type { DirectiveBinding } from 'vue'
 export default {
   mounted(el: HTMLElement, binding: DirectiveBinding<boolean>) {
     el.style.transition = 'opacity 0.15s ease-out'
-    el.style.opacity = '0'
 
-    if (!binding.value) el.style.display = 'none'
-    else el.style.opacity = '1'
+    if (binding.value) {
+      el.style.opacity = '1'
+    } else {
+      el.style.opacity = '0'
+      el.style.display = 'none'
+    }
   },
 
   updated(el: HTMLElement, binding: DirectiveBinding<boolean>) {

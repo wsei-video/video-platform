@@ -48,7 +48,7 @@ watch(
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .video-player-settings-menu {
   position: absolute;
   overflow: hidden;
