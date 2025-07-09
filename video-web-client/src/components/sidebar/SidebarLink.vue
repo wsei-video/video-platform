@@ -6,7 +6,12 @@ defineProps<{ icon?: string; to: string }>()
 
 <template>
   <RouterLink :to="to" custom v-slot="{ navigate, href }" class="text-decoration-none text-white">
-    <a @click="navigate" :href="href" class="fw-bold sidebar-link">
+    <a
+      @click="navigate"
+      :href="href"
+      class="fw-bold sidebar-link"
+      :class="{ selected: $route.path.includes(to) }"
+    >
       <AppIcon v-if="icon" :name="icon" class="sidebar-link-icon" />
       <span class="sidebar-link-description"><slot /></span>
     </a>
@@ -29,7 +34,7 @@ defineProps<{ icon?: string; to: string }>()
   &:hover,
   &.selected {
     background-color: $accent;
-    color: white;
+    color: $white;
     cursor: pointer;
   }
 

@@ -1,8 +1,18 @@
-import { createRouter, createWebHistory } from 'vue-router'
+export { default as router } from './router'
+import 'vue-router'
+import type {} from '@/components/sidebar'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [],
-})
+declare module 'vue-router' {
+  interface RouteMeta {
+    sidebar?: {
+      profileInfo: boolean
+      links: SidebarMetaLinks[]
+    }
+  }
+}
 
-export default router
+export type SidebarMetaLinks = {
+  icon: string
+  to: string
+  label: string
+}
