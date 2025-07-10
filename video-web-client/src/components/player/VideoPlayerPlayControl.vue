@@ -7,6 +7,7 @@ const videoPlayerStore = useVideoPlayerStore()
 
 <template>
   <VideoPlayerControlButton
+    v-tooltip:top="videoPlayerStore.isPlaying ? 'Pause' : 'Play'"
     :icon="videoPlayerStore.isPlaying ? 'pause' : 'play_arrow'"
     @click="videoPlayerStore.togglePlaying()"
   />

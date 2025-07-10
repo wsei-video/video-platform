@@ -91,6 +91,7 @@ $progress-background-color: #ffffff30;
     height: $progress-bar-height;
     position: relative;
     z-index: 1;
+    pointer-events: none;
   }
 
   &::before {

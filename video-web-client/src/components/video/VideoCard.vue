@@ -16,7 +16,7 @@ defineProps<{
       <VideoDuration :duration="videoData.duration" />
     </div>
     <div class="title fw-semibold">
-      <span v-tooltip:top :title="videoData.title">{{ videoData.title }}</span>
+      <span v-tooltip:top="videoData.title">{{ videoData.title }}</span>
     </div>
     <div class="additional-info">
       <ProfileBadge

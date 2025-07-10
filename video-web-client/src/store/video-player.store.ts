@@ -1,22 +1,28 @@
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 
 import { VideoUtils } from '@/utils/video.utils'
+import type { QualityLevel } from '@/components/player/quality'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
   const source = ref<string | null>(null)
-  const videoPlayerRef = ref<HTMLElement | null>(null)
+  const videoPlayerRef = shallowRef<HTMLElement | null>(null)
   const isPlaying = ref(false)
   const isBuffering = ref(false)
   const isMuted = ref(false)
   const isFullscreen = ref(false)
   const isPointerOverPlayer = ref(false)
   const isPointerMotionless = ref(false)
+  const isSettingsMenuShown = ref(false)
   const volume = ref(1)
   const duration = ref(0)
   const bufferedDuration = ref(0)
   const currentTime = ref(0)
   const lastSeekTime = ref(0)
+  const playbackSpeed = ref(1)
+  const qualityLevels = shallowRef<QualityLevel[]>([])
+  const currentQualityLevel = shallowRef<QualityLevel | null>(null)
+  const preferredQualityLevel = shallowRef<QualityLevel | null>(null)
 
   const playbackProgress = computed(() =>
     duration.value === 0 ? 0 : currentTime.value / duration.value,
@@ -35,7 +41,10 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const formattedDuration = computed(() => VideoUtils.formatDuration(duration.value))
 
   const showControls = computed(
-    () => (isPointerOverPlayer.value && !isPointerMotionless.value) || !isPlaying.value,
+    () =>
+      (isPointerOverPlayer.value && !isPointerMotionless.value) ||
+      !isPlaying.value ||
+      isSettingsMenuShown.value,
   )
 
   const setSource = (updatedSource: string | null) => (source.value = updatedSource)
@@ -83,6 +92,12 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
 
   const setPointerOverPlayer = (value: boolean) => (isPointerOverPlayer.value = value)
 
+  const setSettingsMenuShown = (updatedSettingsMenuShown: boolean) =>
+    (isSettingsMenuShown.value = updatedSettingsMenuShown)
+
+  const setPlaybackSpeed = (updatedPlaybackSpeed: number) =>
+    (playbackSpeed.value = updatedPlaybackSpeed)
+
   let pointerMoveTimeout: number | undefined
 
   const hideControlsWhenPointerIsMotionlessAfter = 1500
@@ -95,6 +110,40 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
       hideControlsWhenPointerIsMotionlessAfter,
     )
   }
+
+  const setQualityLevels = (updatedQualityLevels: QualityLevel[]) => {
+    const sortedQualityLevels = updatedQualityLevels.filter(isLabeledQualityLevel)
+    sortedQualityLevels.sort((level1, level2) => level2.height - level1.height)
+    qualityLevels.value = sortedQualityLevels
+  }
+
+  const findQualityLevelByHlsIndex = (hlsIndex: number): QualityLevel | null => {
+    return qualityLevels.value.find((level) => level.hlsIndex === hlsIndex) ?? null
+  }
+
+  const setCurrentQualityLevel = (updatedCurrentQualityLevel: QualityLevel | null) =>
+    (currentQualityLevel.value = isLabeledQualityLevel(updatedCurrentQualityLevel)
+      ? updatedCurrentQualityLevel
+      : null)
+
+  const setCurrentQualityLevelByHlsIndex = (hlsIndex: number) => {
+    setCurrentQualityLevel(findQualityLevelByHlsIndex(hlsIndex))
+  }
+
+  const setPreferredQualityLevel = (updatedPreferredQualityLevel: QualityLevel | null) =>
+    (preferredQualityLevel.value = isLabeledQualityLevel(updatedPreferredQualityLevel)
+      ? updatedPreferredQualityLevel
+      : null)
+
+  const setPreferredQualityLevelByHlsIndex = (hlsIndex: number) => {
+    setPreferredQualityLevel(findQualityLevelByHlsIndex(hlsIndex))
+  }
+
+  /**
+   * Filter out unlabeled quality levels, this happens when the player is requested to play
+   * the video directly from a Simple Media Playlist instead of the Multivariant Playlist
+   */
+  const isLabeledQualityLevel = (level: QualityLevel | null) => level?.name
 
   return {
     source,
@@ -131,8 +180,21 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     setPlaybackProgress,
     isPointerOverPlayer,
     isPointerMotionless,
+    isSettingsMenuShown,
+    setSettingsMenuShown,
+    playbackSpeed,
+    setPlaybackSpeed,
     showControls,
     setPointerOverPlayer,
     handlePointerMove,
+    qualityLevels,
+    setQualityLevels,
+    currentQualityLevel,
+    findQualityLevelByHlsIndex,
+    setCurrentQualityLevel,
+    setCurrentQualityLevelByHlsIndex,
+    preferredQualityLevel,
+    setPreferredQualityLevel,
+    setPreferredQualityLevelByHlsIndex,
   }
 })

@@ -4,13 +4,15 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import { vTooltip } from '@/directives'
+import { vClickOutside, vShowable, vTooltip } from '@/directives'
 
 import 'bootstrap'
 import './styles/main.scss'
 
 const app = createApp(App)
 
+app.directive('click-outside', vClickOutside)
+app.directive('showable', vShowable)
 app.directive('tooltip', vTooltip)
 
 app.use(createPinia())

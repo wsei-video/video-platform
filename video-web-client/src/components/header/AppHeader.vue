@@ -31,6 +31,7 @@ header {
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  z-index: $zindex-header;
 
   background-color: $secondary;
   padding: 0.625rem 1.25rem;
