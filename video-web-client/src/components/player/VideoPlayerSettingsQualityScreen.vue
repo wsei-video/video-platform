@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { toRaw } from 'vue'
-
 import { useQualityOptions, type QualityOption } from './quality'
 import { useVideoPlayerStore } from '@/store'
 import VideoPlayerMenuItem from './VideoPlayerMenuItem.vue'
@@ -16,8 +14,9 @@ const setPreferredQualityLevelAndCloseMenu = (option: QualityOption) => {
 
 <template>
   <VideoPlayerMenuItem
-    v-for="option of qualityOptions"
-    :selected="toRaw(videoPlayerStore.preferredQualityLevel) === option.level"
+    v-for="(option, index) of qualityOptions"
+    :key="index"
+    :selected="videoPlayerStore.preferredQualityLevel === option.level"
     :label="option.name"
     @click="setPreferredQualityLevelAndCloseMenu(option)"
   />

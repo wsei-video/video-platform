@@ -48,7 +48,7 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
   padding: 0.5rem 1rem;
   min-width: 300px;
   max-width: 300px;
-  z-index: 1000;
+  z-index: $zindex-sidebar;
 
   display: flex;
   flex-direction: column;
@@ -85,7 +85,7 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 500;
+  z-index: $zindex-backdrop;
   background-color: rgba(0, 0, 0, 0.5);
 }
 </style>
