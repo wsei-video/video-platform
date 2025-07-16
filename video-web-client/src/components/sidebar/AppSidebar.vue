@@ -18,12 +18,16 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
       'position-sticky': !isMobile,
     }"
   >
-    <div class="position-relative mb-5">
+    <div class="position-relative">
       <div id="sidebar-logo">
         <img :src="WatchMeLogo" alt="WatchMe logo" id="watch-me" />
       </div>
     </div>
-    <div v-if="$slots.header" class="sidebar-header w-100">
+    <div
+      v-show="$slots.header"
+      class="sidebar-header w-100"
+      :class="{ 'header-visible': uiStore.isSidebarOpen }"
+    >
       <slot name="header" />
     </div>
     <div class="sidebar-body align-self-start w-100">
@@ -46,11 +50,12 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
   left: 0;
   height: 100vh;
   padding: 0.5rem 1rem;
-  min-width: 300px;
-  max-width: 300px;
+  min-width: $sidebar-width;
+  max-width: $sidebar-width;
   z-index: $zindex-sidebar;
 
   display: flex;
+  gap: 2rem;
   flex-direction: column;
   box-shadow: 3px 0px 10px black;
   background-color: $secondary;
@@ -71,6 +76,20 @@ import WatchMeLogo from '../../assets/watch-me-logo.svg'
     left: 0px;
     width: fit-content;
     margin: 0 auto;
+  }
+
+  .sidebar-header {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      opacity 0.3s ease-in-out,
+      max-height 0.3s ease-in-out;
+
+    &.header-visible {
+      opacity: 1;
+      max-height: $sidebar-header-height;
+    }
   }
 }
 
