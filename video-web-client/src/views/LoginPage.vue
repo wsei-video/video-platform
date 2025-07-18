@@ -2,13 +2,14 @@
 import WatchMeLogo from '@/assets/watch-me-logo.svg'
 import LoginWithGoogle from '@/assets/login-with-google-button.svg'
 </script>
+
 <template>
   <div class="login-container">
     <div class="login-content">
       <img :src="WatchMeLogo" width="250" alt="WatchMe logo" class="logo" />
       <div class="login-form-container card">
         <form id="login-form" action="">
-          <h2>Sign in</h2>
+          <h3 class="my-3">Sign in</h3>
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" class="form-control" />
@@ -17,13 +18,17 @@ import LoginWithGoogle from '@/assets/login-with-google-button.svg'
             <label for="password">Password</label>
             <input type="password" id="password" class="form-control" />
           </div>
-          <button type="submit" class="btn btn-primary">Sign In</button>
-          <div class="d-flex align-items-center">
-            <hr class="flex-grow-1" />
-            <span class="mx-2 text-muted">or</span>
-            <hr class="flex-grow-1" />
+          <div>
+            <button type="submit" class="btn btn-primary">Sign In</button>
           </div>
-          <img :src="LoginWithGoogle" alt="Login with Google" />
+          <div class="d-flex align-items-center">
+            <hr class="flex-grow-1 my-0" />
+            <span class="mx-2 text-muted lh-1">or</span>
+            <hr class="flex-grow-1 my-0" />
+          </div>
+          <div>
+            <img :src="LoginWithGoogle" alt="Login with Google" />
+          </div>
         </form>
       </div>
     </div>
@@ -48,10 +53,7 @@ import LoginWithGoogle from '@/assets/login-with-google-button.svg'
 .login-container::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: $zindex-login-cover;
 }
@@ -68,26 +70,21 @@ import LoginWithGoogle from '@/assets/login-with-google-button.svg'
   margin-top: 2rem;
   border: none;
   box-shadow: 3px 0px 10px black;
+}
 
-  #login-form {
-    text-align: center;
-    font-size: 14px;
+#login-form {
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 
-    .form-group {
-      text-align: left;
-    }
+  .form-group {
+    text-align: left;
+  }
 
-    label {
-      margin-bottom: 0.5rem;
-    }
-
-    > * {
-      margin-bottom: 1.5rem;
-    }
-
-    > *:last-child {
-      margin-bottom: 0;
-    }
+  label {
+    margin-bottom: 0.5rem;
   }
 }
 </style>
