@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
+import { VideoCard, VideoListItem, type VideoItem } from '@/components/video'
 import { VideoPlayerTest } from '@/components/player'
-
-import { VideoCard } from '@/components/video'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -15,28 +14,28 @@ const variants: ButtonVariant[] = [
   'light',
   'dark',
 ]
+
+const testVideo: VideoItem = {
+  creator: {
+    profileImage: 'https://picsum.photos/200',
+    profileName: 'Tomek Smialek',
+  },
+  thumbnail: 'https://picsum.photos/300',
+  title: 'Lorem ipsum dolor sit amet, conse ctetur adipiscing elit. ',
+  description:
+    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  uploadDate: new Date('2025-06-21'),
+  views: 1400,
+  duration: 1520,
+}
 </script>
 
 <template>
   <div class="mb-3">
     <VideoPlayerTest />
   </div>
-  <VideoCard
-    v-for="video in [1, 2, 3]"
-    :key="video"
-    :video-data="{
-      creator: {
-        profileImage: 'https://picsum.photos/200',
-        profileName: 'Tomek Smialek',
-      },
-      thumbnail: 'https://picsum.photos/300',
-      title:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      uploadDate: new Date('2025-06-21'),
-      views: 1400,
-      duration: 1520,
-    }"
-  />
+  <VideoListItem v-for="video in [1, 2, 3]" :key="video" :video-data="testVideo" />
+  <VideoCard v-for="video in [1, 2, 3]" :key="video" :video-data="testVideo" />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>
   <h3>Heading 3</h3>
