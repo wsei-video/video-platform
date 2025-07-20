@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { type VideoItem, VideoThumbnail } from './index'
+import { VideoThumbnail } from './index'
 import { ProfileBadge } from '@/components/ui'
 
+import type { Video } from '@/services/api'
 import { VideoUtils } from '@/utils/video.utils'
 
 defineProps<{
-  videoData: VideoItem
+  videoData: Video
 }>()
 </script>
 <template>
@@ -22,13 +23,13 @@ defineProps<{
       <div class="video-item--additional-info video-list-item--additional-info">
         <span
           >{{ VideoUtils.formatCountCompact(videoData.views) }} views &nbsp;
-          {{ VideoUtils.formatTimeSince(videoData.uploadDate) }}</span
+          {{ VideoUtils.formatTimeSince(videoData.uploadedDate) }}</span
         >
         <span class="video-item--description">{{ videoData.description }}</span>
         <ProfileBadge
           class="video-list-item-profile-badge"
-          :profile-image="videoData.creator.profileImage"
-          :profileName="videoData.creator.profileName"
+          :profile-image="videoData.creator.photoUrl"
+          :profileName="videoData.creator.nickname"
         />
       </div>
     </div>
