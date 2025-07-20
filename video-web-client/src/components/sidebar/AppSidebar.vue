@@ -7,7 +7,7 @@ const uiStore = useUiStore()
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
 
-import WatchMeLogo from '../../assets/watch-me-logo.svg'
+import WatchMeLogo from '@/assets/watch-me-logo.svg'
 </script>
 <template>
   <nav

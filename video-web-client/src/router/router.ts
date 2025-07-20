@@ -19,6 +19,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/login',
+      name: 'LoginPage',
+      component: () => import('@/views/LoginPage.vue'),
+    },
+    {
       path: '/',
       name: 'WatchPage',
       component: () => import('@/views/MainLayout.vue'),
