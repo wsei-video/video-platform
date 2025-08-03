@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
+
 import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
-import { VideoCard, VideoListItem, type VideoItem } from '@/components/video'
-import { VideoPlayerTest } from '@/components/player'
+import { VideoCard, VideoListItem } from '@/components/video'
+import { VideoPlayer } from '@/components/player'
+
+import { useVideosStore } from '@/store'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -15,27 +19,18 @@ const variants: ButtonVariant[] = [
   'dark',
 ]
 
-const testVideo: VideoItem = {
-  creator: {
-    profileImage: 'https://picsum.photos/200',
-    profileName: 'Tomek Smialek',
-  },
-  thumbnail: 'https://picsum.photos/300',
-  title: 'Lorem ipsum dolor sit amet, conse ctetur adipiscing elit. ',
-  description:
-    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-  uploadDate: new Date('2025-06-21'),
-  views: 1400,
-  duration: 1520,
-}
+const videosStore = useVideosStore()
+onMounted(async () => {
+  await videosStore.getTrendingVideos()
+})
 </script>
 
 <template>
-  <div class="mb-3">
-    <VideoPlayerTest />
+  <div v-if="videosStore.getVideos.length > 0" class="mb-3">
+    <VideoPlayer :source="videosStore.getVideos[0].hlsUrl" />
   </div>
-  <VideoListItem v-for="video in [1, 2, 3]" :key="video" :video-data="testVideo" />
-  <VideoCard v-for="video in [1, 2, 3]" :key="video" :video-data="testVideo" />
+  <VideoListItem v-for="video in videosStore.getVideos" :key="video.id" :video-data="video" />
+  <VideoCard v-for="video in videosStore.getVideos" :key="video.id" :video-data="video" />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>
   <h3>Heading 3</h3>

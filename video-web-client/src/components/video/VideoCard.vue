@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ProfileBadge } from '@/components/ui'
-import { type VideoItem } from './index'
 import { VideoUtils } from '@/utils/video.utils'
 import { VideoThumbnail } from '@/components/video'
+import type { Video } from '@/services/api/api.types'
 
 defineProps<{
-  videoData: VideoItem
+  videoData: Video
 }>()
 </script>
 
@@ -17,13 +17,13 @@ defineProps<{
     </div>
     <div class="video-item--additional-info video-card--additional-info">
       <ProfileBadge
-        :profile-image="videoData.creator.profileImage"
-        :profileName="videoData.creator.profileName"
+        :profileImage="videoData.creator.photoUrl"
+        :profileName="videoData.creator.nickname"
       />
       <div class="video-params">
         <span>
           {{ VideoUtils.formatCountCompact(videoData.views) }} views &nbsp;
-          {{ VideoUtils.formatTimeSince(videoData.uploadDate) }}
+          {{ VideoUtils.formatTimeSince(videoData.uploadedDate) }}
         </span>
       </div>
     </div>

@@ -16,9 +16,9 @@ export class VideoUtils {
    * Returns a human-readable string representing how many days have
    * passed since a given date.
    */
-  public static formatTimeSince(referenceDate: Date): string {
+  public static formatTimeSince(referenceDate: string): string {
     const now = new Date()
-    const differenceInMs = now.getTime() - referenceDate.getTime()
+    const differenceInMs = now.getTime() - Date.parse(referenceDate)
     const differenceInDays = Math.floor(differenceInMs / 84400000)
 
     switch (differenceInDays) {
