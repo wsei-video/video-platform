@@ -15,7 +15,7 @@ const { videoData, mode = 'auto' } = defineProps<{
 
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
-const getMode = computed(() => {
+const computedMode = computed(() => {
   if (mode === 'auto') {
     return isMobile.value ? 'tile' : 'list'
   }
@@ -23,7 +23,7 @@ const getMode = computed(() => {
 })
 </script>
 <template>
-  <div :class="['video-item', `video-item__${getMode}`]">
+  <div :class="['video-item', `video-item__${computedMode}`]">
     <VideoThumbnail
       class="video-item__thumbnail"
       :thumbnailSrc="videoData.thumbnail"
@@ -34,7 +34,7 @@ const getMode = computed(() => {
       >{{ VideoUtils.formatCountCompact(videoData.views) }} views &nbsp;
       {{ VideoUtils.formatTimeSince(videoData.uploadedDate) }}</span
     >
-    <span v-if="getMode === 'list'" class="video-item__description text-muted">{{
+    <span v-if="computedMode === 'list'" class="video-item__description text-muted">{{
       videoData.description
     }}</span>
     <ProfileBadge
@@ -134,6 +134,7 @@ const getMode = computed(() => {
     'description'
     'profile-badge';
 }
+
 .video-item__additional-info__tile {
   grid-template-areas: 'profile-badge additionals';
 }
