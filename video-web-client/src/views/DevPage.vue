@@ -3,7 +3,7 @@ import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 
 import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
-import { VideoCard, VideoListItem } from '@/components/video'
+import { VideoItem } from '@/components/video'
 import { VideoPlayer } from '@/components/player'
 
 import { useVideosStore } from '@/store'
@@ -29,8 +29,12 @@ onMounted(async () => {
   <div v-if="videosStore.getVideos.length > 0" class="mb-3">
     <VideoPlayer :source="videosStore.getVideos[0].hlsUrl" />
   </div>
-  <VideoListItem v-for="video in videosStore.getVideos" :key="video.id" :video-data="video" />
-  <VideoCard v-for="video in videosStore.getVideos" :key="video.id" :video-data="video" />
+  <VideoItem
+    v-for="video in videosStore.getVideos"
+    :key="video.id"
+    :video-data="video"
+    mode="auto"
+  />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>
   <h3>Heading 3</h3>

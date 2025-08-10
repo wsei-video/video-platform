@@ -24,7 +24,8 @@ export const MOCK_VIDEOS: Video[] = [
   {
     id: '1',
     title: 'Big Buck Bunny - adaptive qualities',
-    description: 'Big Buck Bunny - adaptive qualities - description',
+    description:
+      'Big Buck Bunny - adaptive qualities - description,Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description',
     hlsUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     thumbnail: 'https://picsum.photos/300',
     duration: 4000,
