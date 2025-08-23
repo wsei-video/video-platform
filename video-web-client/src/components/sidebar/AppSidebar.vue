@@ -14,8 +14,6 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
     id="sidebar"
     :class="{
       closed: !uiStore.isSidebarOpen,
-      'position-fixed': isMobile,
-      'position-sticky': !isMobile,
     }"
   >
     <div class="position-relative">
@@ -34,7 +32,7 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
       <slot name="body" />
     </div>
   </nav>
-  <div v-if="isMobile" id="sidebar-shadow"></div>
+  <div :class="{ closed: !uiStore.isSidebarOpen || isMobile }" id="sidebar-shadow"></div>
   <div
     v-if="isMobile && uiStore.isSidebarOpen"
     class="backdrop"
@@ -46,6 +44,7 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
 @import '../../styles/bootstrap/index.scss';
 
 #sidebar {
+  position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
@@ -94,8 +93,14 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
 }
 
 #sidebar-shadow {
-  min-width: 60px;
-  max-width: 60px;
+  transition: 0.35s ease-in-out;
+  min-width: $sidebar-width;
+  max-width: $sidebar-width;
+
+  &.closed {
+    max-width: 60px;
+    min-width: 60px;
+  }
 }
 
 .backdrop {

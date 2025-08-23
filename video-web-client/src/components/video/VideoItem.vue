@@ -23,7 +23,11 @@ const computedMode = computed(() => {
 })
 </script>
 <template>
-  <div :class="['video-item', `video-item__${computedMode}`]">
+  <RouterLink
+    :to="`/${videoData.id}`"
+    class="text-decoration-none text-white"
+    :class="['video-item', `video-item__${computedMode}`]"
+  >
     <VideoThumbnail
       class="video-item__thumbnail"
       :thumbnailSrc="videoData.thumbnail"
@@ -41,11 +45,12 @@ const computedMode = computed(() => {
       class="video-item__profile-badge"
       :profile-image="videoData.creator.photoUrl"
       :profileName="videoData.creator.nickname"
+      :image-props="{ width: '30px' }"
     />
-  </div>
+  </RouterLink>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import '../../styles/bootstrap/index.scss';
 
 .video-item {
@@ -80,8 +85,7 @@ const computedMode = computed(() => {
     'title title'
     'profile-badge additional-info';
   grid-template-columns: auto auto;
-  grid-template-rows: auto auto auto;
-  width: $video-item-thumbnail-width;
+  grid-auto-rows: min-content;
 
   .video-item__additional-info {
     justify-self: end;
@@ -90,11 +94,7 @@ const computedMode = computed(() => {
 
   .video-item__profile-badge {
     color: $text-muted;
-    font-size: $font-size-small;
-
-    .image-wrapper {
-      width: 30px;
-    }
+    font-size: $font-size-sm;
   }
 }
 
@@ -104,6 +104,7 @@ const computedMode = computed(() => {
 
 .video-item__title {
   grid-area: title;
+  font-weight: bold;
 }
 
 .video-item__profile-badge {
@@ -113,7 +114,7 @@ const computedMode = computed(() => {
 }
 
 .video-item__description {
-  font-size: $font-size-small;
+  font-size: $font-size-sm;
   display: -webkit-box;
   grid-area: description;
   -webkit-box-orient: vertical;
@@ -125,7 +126,7 @@ const computedMode = computed(() => {
 .video-item__additional-info {
   grid-area: additional-info;
   color: $text-muted;
-  font-size: $font-size-small;
+  font-size: $font-size-sm;
 }
 
 .video-item__additional-info__list {

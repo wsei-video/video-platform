@@ -1,10 +1,10 @@
 import axios, { type AxiosInstance } from 'axios'
 
 class ApiClient {
-  private isntance: AxiosInstance
+  private instance: AxiosInstance
 
   constructor() {
-    this.isntance = axios.create({
+    this.instance = axios.create({
       baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
       timeout: import.meta.env.VITE_API_TIMEOUT ?? 10000,
       headers: {
@@ -15,11 +15,11 @@ class ApiClient {
   }
 
   public get<T>(url: string) {
-    return this.isntance.get<T>(url)
+    return this.instance.get<T>(url)
   }
 
   public post<T>(url: string, data: unknown) {
-    return this.isntance.post<T>(url, data)
+    return this.instance.post<T>(url, data)
   }
 }
 

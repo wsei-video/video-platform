@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { SidebarMetaLinks } from './index'
 
-const WATCH_PAGE_META_TAGS: SidebarMetaLinks[] = [
+const VIDEO_PAGES_META_TAGS: SidebarMetaLinks[] = [
   { icon: 'mode_heat', to: '/trending', label: 'Trending' },
   { icon: 'trending_up', to: '/most-popular', label: 'Most popular' },
   { icon: 'schedule', to: '/recently-updated', label: 'Recently updated' },
@@ -25,11 +25,11 @@ const router = createRouter({
     },
     {
       path: '/',
-      name: 'WatchPage',
+      name: 'VideoPage',
       component: () => import('@/views/MainLayout.vue'),
       meta: {
         sidebar: {
-          links: WATCH_PAGE_META_TAGS,
+          links: VIDEO_PAGES_META_TAGS,
           profileInfo: false,
         },
       },
@@ -39,20 +39,24 @@ const router = createRouter({
           redirect: '/trending',
         },
         {
+          path: '/:videoId',
+          component: () => import('@/views/VideoPages/WatchPage/WatchPage.vue'),
+        },
+        {
           path: 'trending',
-          component: () => import('@/views/WatchPage/TrendingView.vue'),
+          component: () => import('@/views/VideoPages/TrendingView.vue'),
         },
         {
           path: 'most-popular',
-          component: () => import('@/views/WatchPage/MostPopularView.vue'),
+          component: () => import('@/views/VideoPages/MostPopularView.vue'),
         },
         {
           path: 'recently-updated',
-          component: () => import('@/views/WatchPage/RecentlyUpdatedView.vue'),
+          component: () => import('@/views/VideoPages/RecentlyUpdatedView.vue'),
         },
         {
           path: 'for-you',
-          component: () => import('@/views/WatchPage/ForYouView.vue'),
+          component: () => import('@/views/VideoPages/ForYouView.vue'),
         },
         {
           path: 'dev',

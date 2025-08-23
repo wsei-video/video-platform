@@ -23,7 +23,7 @@ export class VideoController {
     return video;
   }
 
-  @Get(':videoId/recomended')
+  @Get(':videoId/recommended')
   @ApiOkResponse({ type: [VideoResponseDto] })
   public getRecomendedVideos(@Param('videoId') videoId: string) {
     const videos = this.videoService.getRecomendedVideos(videoId);

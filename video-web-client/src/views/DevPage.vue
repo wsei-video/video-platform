@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 
-import { AppButton, AppInput, AppIcon, type ButtonVariant } from '@/components/ui'
+import {
+  AppButton,
+  AppInput,
+  AppIcon,
+  AnimatedPlaceholder,
+  type ButtonVariant,
+} from '@/components/ui'
 import { VideoItem } from '@/components/video'
 import { VideoPlayer } from '@/components/player'
 
-import { useVideosStore } from '@/store'
+import { VideoApi, type Video } from '@/services/api'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -19,22 +25,19 @@ const variants: ButtonVariant[] = [
   'dark',
 ]
 
-const videosStore = useVideosStore()
+const videos = ref<Video[]>([])
+
 onMounted(async () => {
-  await videosStore.getTrendingVideos()
+  const apiResponse = await VideoApi.fetchTrendingVideos()
+  if (apiResponse && apiResponse.data) videos.value = apiResponse.data
 })
 </script>
 
 <template>
-  <div v-if="videosStore.getVideos.length > 0" class="mb-3">
-    <VideoPlayer :source="videosStore.getVideos[0].hlsUrl" />
+  <div v-if="videos.length > 0" class="mb-3">
+    <VideoPlayer :source="videos[0].hlsUrl" />
   </div>
-  <VideoItem
-    v-for="video in videosStore.getVideos"
-    :key="video.id"
-    :video-data="video"
-    mode="auto"
-  />
+  <VideoItem v-for="video in videos" :key="video.id" :video-data="video" mode="auto" />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>
   <h3>Heading 3</h3>
@@ -71,6 +74,10 @@ onMounted(async () => {
         label="Card number"
         :feedback="{ enabled: true, type: 'error', message: 'broken ;(' }"
       />
+    </div>
+    <div class="mb-3">
+      <h3>Animated placeholder</h3>
+      <AnimatedPlaceholder width="300px" height="200px" border-radius="20px" />
     </div>
     <div class="mb-3">
       <label for="exampleInputPassword1" class="form-label">Password</label>

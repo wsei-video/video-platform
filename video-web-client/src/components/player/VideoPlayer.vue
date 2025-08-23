@@ -54,5 +54,6 @@ watch(
   border-radius: 8px;
   overflow: hidden;
   display: flex;
+  aspect-ratio: 16 / 9;
 }
 </style>
