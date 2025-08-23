@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useWatchPageContext } from '.'
 
-import { FeedbackComponent } from '@/components/feedbackComponent'
+import { FeedbackComponent } from '@/components/feedback'
 import { ProfileBadge, AppButton, AppIcon } from '@/components/ui'
 
 const { selectedVideo, updateReaction } = useWatchPageContext()
@@ -9,7 +9,11 @@ const { selectedVideo, updateReaction } = useWatchPageContext()
 <template>
   <div v-if="selectedVideo" class="video-info">
     <div class="video__reactions">
-      <FeedbackComponent :reactions="selectedVideo.reactions" @emoji-selected="updateReaction" />
+      <FeedbackComponent
+        :reactions="selectedVideo.reactions"
+        mode="picker"
+        @emoji-selected="updateReaction"
+      />
     </div>
     <h1 class="video-info__title">
       {{ selectedVideo.title }}

@@ -1,26 +1,25 @@
 <script setup lang="ts">
 import { useUiStore } from '@/store'
-import { useBreakpoints, breakpointsBootstrapV5 } from '@vueuse/core'
 
 import { AppIcon, AppInput, ProfileBadge } from '@/components/ui'
 
-const breakpoints = useBreakpoints(breakpointsBootstrapV5)
-const isMobile = breakpoints.smaller('md')
 const uiStore = useUiStore()
 </script>
 
 <template>
-  <header :class="{ mobile: isMobile }">
+  <header :class="{ mobile: uiStore.isMobile }">
     <AppIcon id="menu-button" name="menu" @click="uiStore.toggleSidebar()" />
     <div class="search-bar">
-      <AppInput v-if="!isMobile" variant="dark" placeholder="Search..." />
+      <AppInput v-if="!uiStore.isMobile" variant="dark" placeholder="Search..." />
       <AppIcon name="search" />
     </div>
-    <ProfileBadge
-      profile-image="https://picsum.photos/200"
-      profile-name="John Doe"
-      :avatar-only="isMobile"
-    />
+    <RouterLink class="header-link" :to="{ name: 'your-content', params: { userId: '123' } }">
+      <ProfileBadge
+        profile-image="https://picsum.photos/200"
+        profile-name="John Doe"
+        :avatar-only="uiStore.isMobile"
+      />
+    </RouterLink>
   </header>
 </template>
 <style lang="scss">

@@ -12,13 +12,12 @@ export type VideoPageProps = {
 }
 
 export function useVideoPages() {
-  // TODO: change to currently logged userId later
   const currentUserId = '123'
 
   const trending = {
     title: 'Trending',
     icon: 'mode_heat',
-    videoItemMode: 'list' as const,
+    videoItemMode: 'auto' as const,
     fetchFunction: () => VideoApi.fetchTrendingVideos(),
   }
 
@@ -39,7 +38,7 @@ export function useVideoPages() {
   const forYou = {
     title: 'For You',
     icon: 'account_circle',
-    videoItemMode: 'list' as const,
+    videoItemMode: 'auto' as const,
     fetchFunction: () => VideoApi.fetchForYouVideos(currentUserId),
   }
 

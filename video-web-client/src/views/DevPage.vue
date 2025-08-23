@@ -37,7 +37,13 @@ onMounted(async () => {
   <div v-if="videos.length > 0" class="mb-3">
     <VideoPlayer :source="videos[0].hlsUrl" />
   </div>
-  <VideoItem v-for="video in videos" :key="video.id" :video-data="video" mode="auto" />
+  <VideoItem
+    v-for="video in videos"
+    :key="video.id"
+    :video-data="video"
+    mode="auto"
+    :redirect-to="`/${video.id}`"
+  />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>
   <h3>Heading 3</h3>

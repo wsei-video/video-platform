@@ -23,7 +23,6 @@ defineProps<{ icon?: string; to: string }>()
 
 .sidebar-link {
   display: flex;
-  text-decoration: none;
   gap: 1rem;
   align-items: center;
   padding: 0.625rem;

@@ -1,0 +1,23 @@
+@mixin media-container-up($min-width, $container-name: null) {
+  @if $container-name {
+    @container #{$container-name} (width > #{$min-width}) {
+      @content;
+    }
+  } @else {
+    @container (width > #{$min-width}) {
+      @content;
+    }
+  }
+}
+
+@mixin media-container-down($max-width, $container-name: null) {
+  @if $container-name {
+    @container #{$container-name} (max-width: #{$max-width}) {
+      @content;
+    }
+  } @else {
+    @container (max-width: #{$max-width}) {
+      @content;
+    }
+  }
+}

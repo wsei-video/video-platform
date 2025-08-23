@@ -7,8 +7,9 @@ import { AppIcon } from '@/components/ui'
 import FeedbackEmoji from './FeedbackEmoji.vue'
 import EmojiPicker from './EmojiPicker.vue'
 
-const { reactions } = defineProps<{
+const { reactions, mode } = defineProps<{
   reactions: VideoReaction[]
+  mode: 'picker' | 'info'
 }>()
 
 const emit = defineEmits<{
@@ -22,6 +23,7 @@ const closeEmojiPicker = () => (isEmojiPickerOpened.value = false)
 const sortedReactions = computed(() => [...reactions].sort((x, y) => y.count - x.count))
 
 const handleEmojiClick = (emoji: string) => {
+  if (mode != 'picker') return
   emit('emoji-selected', emoji)
   closeEmojiPicker()
 }
@@ -35,7 +37,7 @@ const handleEmojiClick = (emoji: string) => {
     >
       {{ reaction.emoji }} {{ reaction.count }}
     </FeedbackEmoji>
-    <FeedbackEmoji>
+    <FeedbackEmoji v-if="mode === 'picker'">
       <AppIcon name="add_reaction" @click.stop="toggleEmojiPicker" />
       <EmojiPicker
         v-showable="isEmojiPickerOpened"
@@ -55,7 +57,7 @@ const handleEmojiClick = (emoji: string) => {
   align-items: center;
 
   background-color: $accent;
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   border-radius: $border-radius;
 }
 </style>

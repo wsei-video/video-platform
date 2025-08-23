@@ -2,6 +2,7 @@
   h#{$i} {
     // font-size: $font-size-base;
     font-family: 'Poppins', var(--bs-font-sans-serif);
+    font-weight: inherit;
     margin: 0;
   }
 }

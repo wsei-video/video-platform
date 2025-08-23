@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import { useVideoPages, type VideoPageTypes } from './useVideoPages'
 import type { Video } from '@/services/api'
@@ -7,18 +8,18 @@ import type { Video } from '@/services/api'
 import { AppIcon } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
 
-const { pageType } = defineProps<{
-  pageType: VideoPageTypes
-}>()
+const route = useRoute()
 
 const videos = ref<Video[]>()
 const props = computed(() => {
-  if (!(pageType in useVideoPages())) {
+  const pages = useVideoPages()
+  const name = route.name
+  if (!name || !(name in pages)) {
     // move user to error page
     throw new Error('There is no such page')
+  } else {
+    return pages[name as VideoPageTypes]
   }
-
-  return useVideoPages()[pageType]
 })
 
 onMounted(async () => {
@@ -33,7 +34,12 @@ onMounted(async () => {
       {{ props.title }}
     </h1>
     <section class="video-page__content">
-      <VideosGrid v-if="videos" :videos="videos" :video-item-mode="props.videoItemMode" />
+      <VideosGrid
+        v-if="videos"
+        :videos="videos"
+        :video-item-mode="props.videoItemMode"
+        redirect-to="watch-page"
+      />
     </section>
   </div>
 </template>

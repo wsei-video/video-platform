@@ -28,6 +28,11 @@ export class VideoCommentDto {
   content: string;
 }
 
+export enum VideoVisibility {
+  PUBLIC = 'public',
+  PRIVATE = 'private',
+}
+
 @ApiSchema({ name: 'Video' })
 export class VideoResponseDto {
   @ApiProperty()
@@ -52,4 +57,6 @@ export class VideoResponseDto {
   uploadedDate: Date;
   @ApiProperty()
   views: number;
+  @ApiProperty({ enum: VideoVisibility })
+  visibility: VideoVisibility;
 }

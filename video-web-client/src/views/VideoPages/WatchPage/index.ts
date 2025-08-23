@@ -1,8 +1,8 @@
 import { useRoute } from 'vue-router'
 import { computed, inject, provide, ref, watch } from 'vue'
 import type { InjectionKey } from 'vue'
+import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
-import { useUiStore } from '@/store'
 import { VideoApi, type Video } from '@/services/api'
 
 export { default as VideoInfo } from './VideoInfo.vue'
@@ -14,13 +14,15 @@ const WatchPageKey: InjectionKey<WatchPageContext> = Symbol()
 
 export function useWatchPage() {
   const route = useRoute()
-  const uiStore = useUiStore()
+  const breakpoints = useBreakpoints(breakpointsBootstrapV5)
+  const isMobile = breakpoints.smaller('md')
   const selectedVideo = ref<Video>()
   const recommendedVideos = ref<Video[]>()
   const mobileCommentsSection = ref(false)
   const isMobileCommentsSectionOpened = computed(
-    () => uiStore.isMobile.value && mobileCommentsSection.value,
+    () => isMobile.value && mobileCommentsSection.value,
   )
+  const watchPageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
 
   const updateReaction = (emoji: string) => {
     // TODO: replace by api call later
@@ -69,7 +71,8 @@ export function useWatchPage() {
   const context = {
     selectedVideo,
     recommendedVideos,
-    isMobile: uiStore.isMobile,
+    watchPageMode,
+    isMobile,
     isMobileCommentsSectionOpened,
 
     closeCommentsSection,
