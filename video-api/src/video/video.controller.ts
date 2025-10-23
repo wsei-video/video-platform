@@ -13,6 +13,24 @@ export class VideoController {
     return this.videoService.getTrendingVideos();
   }
 
+  @Get('most-popular')
+  @ApiOkResponse({ type: [VideoResponseDto] })
+  public getMostPopularVideos() {
+    return this.videoService.getMostPopularVideos();
+  }
+
+  @Get('recently-uploaded')
+  @ApiOkResponse({ type: [VideoResponseDto] })
+  public getRecentlyUploadedVideos() {
+    return this.videoService.getRecentlyUploadedVideos();
+  }
+
+  @Get('for-you/:userId')
+  @ApiOkResponse({ type: [VideoResponseDto] })
+  public getForYouVideos(@Param('userId') userId: string) {
+    return this.videoService.getForYouVideos(userId);
+  }
+
   @Get(':videoId')
   @ApiOkResponse({ type: VideoResponseDto })
   public getVideoById(@Param('videoId') videoId: string) {

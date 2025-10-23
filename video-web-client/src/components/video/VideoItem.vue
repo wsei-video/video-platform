@@ -8,9 +8,11 @@ import { ProfileBadge } from '@/components/ui'
 import { VideoUtils } from '@/utils/video.utils'
 import type { Video } from '@/services/api'
 
+export type VideoItemModes = 'auto' | 'tile' | 'list'
+
 const { videoData, mode = 'auto' } = defineProps<{
   videoData: Video
-  mode?: 'auto' | 'tile' | 'list'
+  mode?: VideoItemModes
 }>()
 
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
@@ -77,6 +79,7 @@ const computedMode = computed(() => {
     'thumbnail profile-badge';
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto auto 2fr;
+  max-width: 1200px;
 }
 
 .video-item__tile {
@@ -105,6 +108,12 @@ const computedMode = computed(() => {
 .video-item__title {
   grid-area: title;
   font-weight: bold;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .video-item__profile-badge {

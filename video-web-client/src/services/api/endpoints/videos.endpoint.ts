@@ -16,6 +16,18 @@ class VideoApi {
     return ApiClient.get<Video[]>(`${this.videoBaseUrl}/trending`)
   }
 
+  public async fetchMostPopularVideos() {
+    return ApiClient.get<Video[]>(`${this.videoBaseUrl}/most-popular`)
+  }
+
+  public async fetchRecentlyUploadedVideos() {
+    return ApiClient.get<Video[]>(`${this.videoBaseUrl}/recently-uploaded`)
+  }
+
+  public async fetchForYouVideos(userId: string) {
+    return ApiClient.get<Video[]>(`${this.videoBaseUrl}/for-you/${userId}`)
+  }
+
   public async getRecommendedVideosForCurrentVideo(videoId: string) {
     return ApiClient.get<Video[]>(`${this.videoBaseUrl}/${videoId}/recommended`)
   }

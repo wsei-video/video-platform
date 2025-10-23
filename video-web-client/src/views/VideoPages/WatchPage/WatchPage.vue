@@ -4,8 +4,9 @@ import { computed } from 'vue'
 import { useWatchPage } from '@/views/VideoPages/WatchPage'
 
 import { VideoPlayer } from '@/components/player'
-import { RecommendedVideos, VideoInfo, CommentsSection } from '@/views/VideoPages/WatchPage'
+import { VideoInfo, CommentsSection } from '@/views/VideoPages/WatchPage'
 import { AppIcon } from '@/components/ui'
+import { VideosGrid } from '@/components/video'
 import CommentItem from '@/components/video/CommentItem.vue'
 
 const {
@@ -54,8 +55,8 @@ const videoAspectRatio = 16 / 9;
     </main>
 
     <aside v-if="!isMobileCommentsSectionOpened" class="watch-page__sidebar">
-      <RecommendedVideos v-if="recommendedVideos" :videos="recommendedVideos" />
-      <RecommendedVideos v-if="recommendedVideos" :videos="recommendedVideos" />
+      <VideosGrid v-if="recommendedVideos" video-item-mode="tile" :videos="recommendedVideos" />
+      <VideosGrid v-if="recommendedVideos" video-item-mode="tile" :videos="recommendedVideos" />
     </aside>
   </div>
 </template>
@@ -87,7 +88,7 @@ const videoAspectRatio = 16 / 9;
   }
 
   &--desktop {
-    padding: 1.5rem;
+    padding: 1rem;
     grid-template-columns: 1fr clamp(200px, 30vw, 300px);
     grid-template-rows: auto 1fr;
 

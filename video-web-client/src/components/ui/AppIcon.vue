@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { name } = defineProps<{ name: string }>()
+export type IconName = string
+defineProps<{ name: IconName }>()
 </script>
 
 <template>
