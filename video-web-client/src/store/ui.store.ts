@@ -7,7 +7,7 @@ export const useUiStore = defineStore('ui', () => {
   const isSidebarOpen = readonly(_isSidebarOpen)
 
   const breakpoints = useBreakpoints(breakpointsBootstrapV5)
-  const isMobile = computed(() => breakpoints.smaller('md'))
+  const isMobile = computed(() => breakpoints.smaller('lg'))
 
   function toggleSidebar() {
     _isSidebarOpen.value = !_isSidebarOpen.value

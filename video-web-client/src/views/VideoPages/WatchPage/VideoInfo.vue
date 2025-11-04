@@ -41,6 +41,8 @@ const { selectedVideo, updateReaction } = useWatchPageContext()
 .video-info__channel {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .video-info__description {

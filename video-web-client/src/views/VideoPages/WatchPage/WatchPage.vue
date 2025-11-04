@@ -18,6 +18,7 @@ const {
 } = useWatchPage()
 
 const watchPageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
+const videoAspectRatio = 16 / 9;
 </script>
 <template>
   <div :class="['watch-page', `watch-page--${watchPageMode}`]">
@@ -65,6 +66,8 @@ const watchPageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
   display: grid;
   gap: 1rem;
   padding-bottom: 1rem;
+  width: fit-content;
+  margin: 0 auto;
 
   &--mobile {
     .watch-page__player__info {
@@ -98,6 +101,7 @@ const watchPageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
 .watch-page__main {
   display: grid;
   gap: 1rem;
+  max-width: calc((100vh - 190px) * v-bind(videoAspectRatio));
 }
 
 .watch-page__player {
