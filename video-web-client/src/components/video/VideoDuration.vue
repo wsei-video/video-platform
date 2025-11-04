@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { type Seconds } from './index'
 import { VideoUtils } from '@/utils/video.utils'
 
 defineProps<{
-  duration: Seconds
+  duration: number
 }>()
 </script>
 <template>

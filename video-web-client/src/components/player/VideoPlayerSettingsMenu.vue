@@ -8,7 +8,7 @@ import VideoPlayerSettingsPlaybackSpeedScreen from './VideoPlayerSettingsPlaybac
 import VideoPlayerSettingsQualityItem from './VideoPlayerSettingsQualityItem.vue'
 import VideoPlayerSettingsQualityScreen from './VideoPlayerSettingsQualityScreen.vue'
 
-type MenuScreen = { name: string; component: DefineComponent<{}, {}, any> }
+type MenuScreen = { name: string; component: DefineComponent<object, object, any> }
 
 const videoPlayerStore = useVideoPlayerStore()
 const currentScreen = shallowRef<MenuScreen | null>(null)

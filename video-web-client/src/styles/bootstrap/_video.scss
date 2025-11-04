@@ -1,3 +1,3 @@
 $video-item-border-radius: 15px;
 $video-item-aspect-ratio: 16 / 9;
-$video-item-thumbnail-width: clamp(250px, 100%, 300px);
+$video-item-thumbnail-width: minmax(100%, 350px);

@@ -1,23 +1,39 @@
-import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { VideoApi } from '@/services/api'
 
-import { type Video, VideoApi } from '@/services/api'
+// to be removed - call api client directly inside composable
 
 export const useVideosStore = defineStore('videos', () => {
-  const _videos = ref<Video[]>([])
-  const getVideos = computed(() => _videos.value)
-
-  async function getTrendingVideos() {
+  async function fetchTrendingVideos() {
     try {
-      const response = await VideoApi.getTrendingVideos()
-      _videos.value = response.data
+      const response = await VideoApi.fetchTrendingVideos()
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function fetchVideo(videoId: string) {
+    try {
+      const response = await VideoApi.fetchVideo(videoId)
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function fetchRecommendedVideos(videoId: string) {
+    try {
+      const response = await VideoApi.getRecommendedVideosForCurrentVideo(videoId)
+      return response.data
     } catch (error) {
       console.log(error)
     }
   }
 
   return {
-    getTrendingVideos,
-    getVideos,
+    fetchTrendingVideos,
+    fetchRecommendedVideos,
+    fetchVideo,
   }
 })

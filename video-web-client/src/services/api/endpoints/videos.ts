@@ -8,11 +8,11 @@ class VideoApi {
     this.videoBaseUrl = '/video'
   }
 
-  public async getVideo(videoId: string) {
+  public async fetchVideo(videoId: string) {
     return ApiClient.get<Video>(`${this.videoBaseUrl}/${videoId}`)
   }
 
-  public async getTrendingVideos() {
+  public async fetchTrendingVideos() {
     return ApiClient.get<Video[]>(`${this.videoBaseUrl}/trending`)
   }
 

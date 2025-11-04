@@ -16,6 +16,18 @@ export class VideoCreatorDto {
   photoUrl: string;
 }
 
+@ApiSchema({ name: 'VideoComment' })
+export class VideoCommentDto {
+  @ApiProperty()
+  id: string;
+  @ApiProperty()
+  creator: VideoCreatorDto;
+  @ApiProperty()
+  postDate: Date;
+  @ApiProperty()
+  content: string;
+}
+
 @ApiSchema({ name: 'Video' })
 export class VideoResponseDto {
   @ApiProperty()
@@ -30,6 +42,8 @@ export class VideoResponseDto {
   thumbnail: string;
   @ApiProperty({ type: [VideoReactionDto] })
   reactions: VideoReactionDto[];
+  @ApiProperty({ type: [VideoCommentDto] })
+  comments: VideoCommentDto[];
   @ApiProperty()
   duration: number;
   @ApiProperty()

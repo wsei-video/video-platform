@@ -16,6 +16,7 @@ export interface Creator {
 }
 
 export interface Video {
+  comments: VideoComment[];
   creator: Creator;
   description: string;
   duration: number;
@@ -27,6 +28,14 @@ export interface Video {
   /** @format date-time */
   uploadedDate: string;
   views: number;
+}
+
+export interface VideoComment {
+  content: string;
+  creator: Creator;
+  id: string;
+  /** @format date-time */
+  postDate: string;
 }
 
 export interface VideoReaction {

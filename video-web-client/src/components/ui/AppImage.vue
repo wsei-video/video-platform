@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted } from 'vue'
+import { ref, useTemplateRef, onMounted, type CSSProperties, computed } from 'vue'
 
 import AnimatedPlaceholder from './AnimatedPlaceholder.vue'
 
-defineProps<{
+export type AppImageProps = {
   src: string
   alt?: string
-}>()
+  width?: string
+  height?: string
+  borderRadius?: string
+  fit?: CSSProperties['objectFit']
+  aspectRatio?: CSSProperties['aspectRatio']
+}
+
+const {
+  src,
+  alt,
+  width = '100%',
+  height = '100%',
+  borderRadius,
+  aspectRatio,
+  fit = 'cover',
+} = defineProps<AppImageProps>()
 
 const loaded = ref(false)
 const imgRef = useTemplateRef('img-ref')
@@ -14,6 +29,14 @@ const imgRef = useTemplateRef('img-ref')
 function onLoad() {
   loaded.value = true
 }
+
+const imageStyle = computed<CSSProperties>(() => ({
+  width: width,
+  height: height,
+  borderRadius: borderRadius,
+  aspectRatio,
+  objectFit: fit,
+}))
 
 onMounted(() => {
   if (imgRef.value?.complete) {
@@ -23,14 +46,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="image-wrapper">
-    <AnimatedPlaceholder v-if="!loaded" />
+  <div class="image-wrapper" :style="imageStyle">
+    <AnimatedPlaceholder :width="width" :height="height" v-if="!loaded" />
 
     <img
       ref="img-ref"
       :src="src"
       :alt="alt"
       :class="{ 'image-loaded': loaded }"
+      :style="imageStyle"
       class="image-main"
       loading="lazy"
       @load="onLoad"
@@ -45,9 +69,6 @@ onMounted(() => {
 
 .image-main {
   display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
