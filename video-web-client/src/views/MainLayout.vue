@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import type { SidebarMetaLinks } from '@/router'
 
-import { AppSidebar, SidebarLink, SidebarProfileInfo } from '@/components/sidebar'
+import {
+  AppSidebar,
+  SidebarProfileInfo,
+  SidebarLinkItem,
+  type SidebarLink,
+} from '@/components/sidebar'
 import { AppHeader } from '@/components/header'
 
-const route = useRoute()
+defineProps<{
+  sidebarLinks: SidebarLink[]
+  profileInfo: boolean
+}>()
 
-const sidebarLinks = computed<SidebarMetaLinks[]>(() => {
-  return route.meta.sidebar?.links || []
-})
-const profileInfo = computed(() => {
-  return route.meta.sidebar?.profileInfo || false
-})
+const route = useRoute()
 
 const processLinkPath = (to: string): string => {
   return to.replace('/:userId', `/${route.params.userId}`)
@@ -26,14 +27,14 @@ const processLinkPath = (to: string): string => {
         <SidebarProfileInfo profile-image="https://picsum.photos/200" profile-name="John Doe" />
       </template>
       <template #body>
-        <SidebarLink
+        <SidebarLinkItem
           v-for="link in sidebarLinks"
           :key="link.to"
           :to="processLinkPath(link.to)"
           :icon="link.icon"
         >
           {{ link.label }}
-        </SidebarLink>
+        </SidebarLinkItem>
       </template>
     </AppSidebar>
     <div id="app-content" class="w-100">

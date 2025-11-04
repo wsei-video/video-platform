@@ -1,6 +1,6 @@
 @for $i from 1 through 6 {
   h#{$i} {
-    font-size: $font-size-base;
+    // font-size: $font-size-base;
     font-family: 'Poppins', var(--bs-font-sans-serif);
     margin: 0;
   }

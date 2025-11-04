@@ -31,7 +31,8 @@ export interface Creator {
 export const MOCK_VIDEOS: Video[] = [
   {
     id: '1',
-    title: 'Big Buck Bunny - adaptive qualities',
+    title:
+      "Big Buck Bunny - adaptive qualities, test for a super long video title that doesn't fit on the screen so what will i do with it???",
     description:
       'Big Buck Bunny - adaptive qualities - description,Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description, Big Buck Bunny - adaptive qualities - description',
     hlsUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',

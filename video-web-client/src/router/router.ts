@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { SidebarMetaLinks } from './index'
 
-const VIDEO_PAGES_META_TAGS: SidebarMetaLinks[] = [
+import type { SidebarLink } from '@/components/sidebar'
+
+const VIDEO_PAGES_META_TAGS: SidebarLink[] = [
   { icon: 'mode_heat', to: '/trending', label: 'Trending' },
   { icon: 'trending_up', to: '/most-popular', label: 'Most popular' },
-  { icon: 'schedule', to: '/recently-updated', label: 'Recently updated' },
+  { icon: 'schedule', to: '/recently-uploaded', label: 'Recently updated' },
   { icon: 'account_circle', to: '/for-you', label: 'For you' },
 ]
 
-const STUDIO_PAGE_META_TAGS: SidebarMetaLinks[] = [
+const STUDIO_PAGE_META_TAGS: SidebarLink[] = [
   { icon: 'mode_heat', to: '/:userId/your-content', label: 'Your content' },
   { icon: 'trending_up', to: '/:userId/statistics', label: 'Statistics' },
   { icon: 'schedule', to: '/:userId/community', label: 'Community' },
@@ -27,11 +28,9 @@ const router = createRouter({
       path: '/',
       name: 'VideoPage',
       component: () => import('@/views/MainLayout.vue'),
-      meta: {
-        sidebar: {
-          links: VIDEO_PAGES_META_TAGS,
-          profileInfo: false,
-        },
+      props: {
+        sidebarLinks: VIDEO_PAGES_META_TAGS,
+        profileInfo: false,
       },
       children: [
         {
@@ -44,19 +43,31 @@ const router = createRouter({
         },
         {
           path: 'trending',
-          component: () => import('@/views/VideoPages/TrendingView.vue'),
+          component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
+          props: {
+            pageType: 'trending',
+          },
         },
         {
           path: 'most-popular',
-          component: () => import('@/views/VideoPages/MostPopularView.vue'),
+          component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
+          props: {
+            pageType: 'most-popular',
+          },
         },
         {
-          path: 'recently-updated',
-          component: () => import('@/views/VideoPages/RecentlyUpdatedView.vue'),
+          path: 'recently-uploaded',
+          component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
+          props: {
+            pageType: 'recently-uploaded',
+          },
         },
         {
           path: 'for-you',
-          component: () => import('@/views/VideoPages/ForYouView.vue'),
+          component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
+          props: {
+            pageType: 'for-you',
+          },
         },
         {
           path: 'dev',
@@ -68,11 +79,9 @@ const router = createRouter({
       path: '/:userId',
       name: 'StudioPage',
       component: () => import('@/views/MainLayout.vue'),
-      meta: {
-        sidebar: {
-          links: STUDIO_PAGE_META_TAGS,
-          profileInfo: true,
-        },
+      props: {
+        links: STUDIO_PAGE_META_TAGS,
+        profileInfo: true,
       },
       children: [
         {
@@ -99,5 +108,7 @@ const router = createRouter({
     },
   ],
 })
+
+// TODO: use 'props:' to pass meta tags to studio page
 
 export default router

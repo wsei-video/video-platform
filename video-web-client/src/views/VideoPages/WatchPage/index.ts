@@ -6,7 +6,6 @@ import { useUiStore } from '@/store'
 import { VideoApi, type Video } from '@/services/api'
 
 export { default as VideoInfo } from './VideoInfo.vue'
-export { default as RecommendedVideos } from './RecommendedVideos.vue'
 export { default as CommentsSection } from './CommentsSection.vue'
 export { default as WatchPage } from './WatchPage.vue'
 

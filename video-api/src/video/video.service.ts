@@ -14,4 +14,21 @@ export class VideoService {
   public getTrendingVideos(): Video[] {
     return MOCK_VIDEOS;
   }
+
+  public getMostPopularVideos(): Video[] {
+    return MOCK_VIDEOS;
+  }
+
+  public getRecentlyUploadedVideos(): Video[] {
+    return MOCK_VIDEOS;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public getForYouVideos(userId: string): Video[] {
+    return MOCK_VIDEOS;
+  }
+
+  public getSearchedVideos(searchPhrase: string): Video[] {
+    return MOCK_VIDEOS.filter(v => v.title.includes(searchPhrase)) || [];
+  }
 }
