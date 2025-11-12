@@ -1,23 +1,32 @@
 <script setup lang="ts">
-import { useUiStore } from '@/store'
+import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
 import { AppIcon, AppInput, ProfileBadge } from '@/components/ui'
-
+import { useUiStore } from '@/store'
+import { useAuthStore } from '@/store/auth.store'
 const uiStore = useUiStore()
+const authStore = useAuthStore()
+
+const breakpoints = useBreakpoints(breakpointsBootstrapV5)
+const isMobile = breakpoints.smaller('md')
 </script>
 
 <template>
-  <header :class="{ mobile: uiStore.isMobile }">
+  <header :class="{ mobile: isMobile }">
     <AppIcon id="menu-button" name="menu" @click="uiStore.toggleSidebar()" />
     <div class="search-bar">
-      <AppInput v-if="!uiStore.isMobile" variant="dark" placeholder="Search..." />
+      <AppInput v-if="!isMobile" variant="dark" placeholder="Search..." />
       <AppIcon name="search" />
     </div>
-    <RouterLink class="header-link" :to="{ name: 'your-content', params: { userId: '123' } }">
+    <RouterLink
+      v-if="authStore.currentAuth"
+      class="header-link"
+      :to="{ name: 'your-content', params: { userId: authStore.currentAuth.account.id } }"
+    >
       <ProfileBadge
         profile-image="https://picsum.photos/200"
         profile-name="John Doe"
-        :avatar-only="uiStore.isMobile"
+        :avatar-only="isMobile"
       />
     </RouterLink>
   </header>
@@ -64,7 +73,6 @@ header {
 
   &:not(.mobile) .search-bar {
     position: relative;
-    width: 45%;
   }
 
   &:not(.mobile) .search-bar span {

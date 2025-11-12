@@ -12,6 +12,7 @@ export class VideoFeedService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: { channel: true },
     });
 
     const total = await this.database.video.count();
@@ -24,6 +25,7 @@ export class VideoFeedService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: { channel: true },
     });
 
     const total = await this.database.video.count();
@@ -36,6 +38,7 @@ export class VideoFeedService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: { channel: true },
     });
 
     const total = await this.database.video.count();
@@ -48,6 +51,7 @@ export class VideoFeedService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: { channel: true },
     });
 
     const total = await this.database.video.count();

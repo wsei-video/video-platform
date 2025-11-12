@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { shallowRef, watch, type DefineComponent } from 'vue'
+import { type DefineComponent, shallowRef, watch } from 'vue'
 
 import { useVideoPlayerStore } from '@/store'
+
 import VideoPlayerMenuItem from './VideoPlayerMenuItem.vue'
 import VideoPlayerSettingsPlaybackSpeedItem from './VideoPlayerSettingsPlaybackSpeedItem.vue'
 import VideoPlayerSettingsPlaybackSpeedScreen from './VideoPlayerSettingsPlaybackSpeedScreen.vue'
 import VideoPlayerSettingsQualityItem from './VideoPlayerSettingsQualityItem.vue'
 import VideoPlayerSettingsQualityScreen from './VideoPlayerSettingsQualityScreen.vue'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MenuScreen = { name: string; component: DefineComponent<object, object, any> }
 
 const videoPlayerStore = useVideoPlayerStore()

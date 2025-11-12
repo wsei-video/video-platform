@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { VideoUtils } from '@/utils/video.utils'
+import { VideoUtils } from '@/infrastructure/video-api/shared/utils/video.utils'
 
 defineProps<{
   duration: number

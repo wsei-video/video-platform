@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { VideoDuration } from '.'
 import { AppImage, type AppImageProps } from '@/components/ui'
+
+import { VideoDuration } from '.'
 
 defineProps<{
   duration: number

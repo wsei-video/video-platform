@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { VideoComment } from '@/services/api'
-import { VideoUtils } from '@/utils/video.utils'
+import type { VideoComment } from '@/infrastructure/video-api'
+import { VideoUtils } from '@/infrastructure/video-api/shared/utils/video.utils'
 
 import { ProfileBadge } from '@/components/ui'
 import { onMounted, ref } from 'vue'

@@ -1,8 +1,8 @@
-import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
+import { computed, ref, shallowRef } from 'vue'
 
-import { VideoUtils } from '@/utils/video.utils'
 import type { QualityLevel } from '@/components/player/quality'
+import { VideoUtils } from '@/infrastructure/video-api/shared/utils/video.utils'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
   const source = ref<string | null>(null)

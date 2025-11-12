@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import { type VideoReaction } from '@/services/api'
-
 import { AppIcon } from '@/components/ui'
-import FeedbackEmoji from './FeedbackEmoji.vue'
+import type { Reaction } from '@/domain'
+
 import EmojiPicker from './EmojiPicker.vue'
+import FeedbackEmoji from './FeedbackEmoji.vue'
 
 const { reactions, mode } = defineProps<{
-  reactions: VideoReaction[]
+  reactions: Reaction[]
   mode: 'picker' | 'info'
 }>()
 

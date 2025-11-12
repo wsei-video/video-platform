@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import { useVideoPlayerStore } from '@/store'
+
 import VideoPlayerControlButton from './VideoPlayerControlButton.vue'
 import VideoPlayerProgressBar from './VideoPlayerProgressBar.vue'
 

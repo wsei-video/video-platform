@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { useWatchPage } from '@/views/VideoPages/WatchPage'
-
 import { VideoPlayer } from '@/components/player'
-import { VideoInfo, CommentsSection } from '@/views/VideoPages/WatchPage'
 import { AppIcon } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
 import CommentItem from '@/components/video/CommentItem.vue'
+import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
+import { useWatchPage } from '@/views/VideoPages/WatchPage'
+import { CommentsSection, VideoInfo } from '@/views/VideoPages/WatchPage'
 
 const {
-  selectedVideo,
+  video,
+  videoIsPending,
+
   recommendedVideos,
   isMobile,
   watchPageMode,
@@ -23,10 +25,14 @@ const videoAspectRatio = 16 / 9
   <div :class="['watch-page', `watch-page--${watchPageMode}`]">
     <main class="watch-page__main">
       <section class="watch-page__player">
-        <VideoPlayer :source="selectedVideo?.hlsUrl || ''" class="watch-page__player__video" />
-        <VideoInfo v-if="selectedVideo" class="watch-page__player__info" />
+        <VideoPlayer
+          :source="video?.hlsUrl || ''"
+          class="watch-page__player__video"
+          :is-pending="videoIsPending"
+        />
+        <VideoInfo class="watch-page__player__info" />
       </section>
-      <section v-if="selectedVideo" class="watch-page__comments">
+      <section v-if="video && video.commentCount > 0" class="watch-page__comments">
         <h4 class="watch-page__comments__title">
           <AppIcon
             v-if="isMobileCommentsSectionOpened"
@@ -39,30 +45,23 @@ const videoAspectRatio = 16 / 9
         <CommentsSection
           v-if="!isMobile || isMobileCommentsSectionOpened"
           :mode="watchPageMode"
-          :comments="selectedVideo.comments"
+          :comments="[]"
           class="watch-page__comments__list"
         />
 
         <div v-else @click="openCommentsSection" class="watch-page__comments__trigger">
-          <CommentItem
-            :comment-data="selectedVideo.comments[0]"
-            class="watch-page__comments__preview"
-          />
+          <CommentItem :comment-data="video.comments[0]" class="watch-page__comments__preview" />
         </div>
       </section>
     </main>
 
-    <aside v-if="!isMobileCommentsSectionOpened" class="watch-page__sidebar">
+    <aside
+      v-if="!isMobileCommentsSectionOpened && recommendedVideos?.pages"
+      class="watch-page__sidebar"
+    >
       <VideosGrid
-        v-if="recommendedVideos"
         video-item-mode="tile"
-        :videos="recommendedVideos"
-        redirect-to="watch-page"
-      />
-      <VideosGrid
-        v-if="recommendedVideos"
-        video-item-mode="tile"
-        :videos="recommendedVideos"
+        :videos="flattenPagination(recommendedVideos)"
         redirect-to="watch-page"
       />
     </aside>
@@ -75,7 +74,7 @@ const videoAspectRatio = 16 / 9
   display: grid;
   gap: 1rem;
   padding-bottom: 1rem;
-  width: fit-content;
+  // width: fit-content;
   margin: 0 auto;
 
   &--mobile {

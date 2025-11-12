@@ -1,14 +1,13 @@
 <script setup lang="ts">
+import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 import { computed } from 'vue'
 import type { RouterLinkProps } from 'vue-router'
-import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
+
+import { FeedbackComponent } from '@/components/feedback'
+import { ProfileBadge } from '@/components/ui'
+import type { Video } from '@/domain/video'
 
 import { VideoThumbnail } from './index'
-import { ProfileBadge } from '@/components/ui'
-import { FeedbackComponent } from '@/components/feedback'
-
-import { VideoUtils } from '@/utils/video.utils'
-import type { Video } from '@/services/api'
 
 export type VideoItemModes = 'auto' | 'tile' | 'list' | 'list-reactions'
 export type RedirectTo = RouterLinkProps['to']
@@ -50,8 +49,7 @@ const computedMode = computed(() => {
       />
       <span class="video-item__title" v-tooltip:top="videoData.title">{{ videoData.title }}</span>
       <span class="video-item__additional-info"
-        >{{ VideoUtils.formatCountCompact(videoData.views) }} views &nbsp;
-        {{ VideoUtils.formatTimeSince(videoData.uploadedDate) }}</span
+        >{{ videoData.formattedViewsCompact }} views &nbsp; {{ videoData.timeSinceUpload }}</span
       >
       <span
         v-if="MODES_WITH_DESCRIPTION.includes(computedMode)"
@@ -61,15 +59,15 @@ const computedMode = computed(() => {
       <ProfileBadge
         class="video-item__profile-badge"
         v-if="MODES_WITH_PROFILE_BADGE.includes(computedMode)"
-        :profile-image="videoData.creator.photoUrl"
-        :profileName="videoData.creator.nickname"
+        :profile-image="''"
+        :profileName="videoData.channel.name"
         :image-props="{ width: '30px' }"
       />
       <FeedbackComponent
         class="video-item__reactions"
         v-if="computedMode === 'list-reactions'"
         mode="info"
-        :reactions="videoData.reactions"
+        :reactions="[]"
       />
     </RouterLink>
   </div>
@@ -128,6 +126,7 @@ const computedMode = computed(() => {
     'profile-badge additional-info';
   grid-template-columns: auto auto;
   grid-auto-rows: min-content;
+  max-width: 400px;
 
   .video-item__additional-info {
     justify-self: end;

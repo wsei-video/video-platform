@@ -14,7 +14,7 @@ const {
   disabled = false,
   outline = false,
 } = defineProps<{
-  variant?: string
+  variant?: ButtonVariant
   disabled?: boolean
   outline?: boolean
 }>()

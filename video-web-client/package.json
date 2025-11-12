@@ -13,16 +13,18 @@
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "swagger": "swagger-typescript-api generate --no-client --extract-request-body --extract-request-params --generate-union-enums --sort-types --path http://localhost:3000/swagger.json --name src/services/api/api.types.ts"
+    "swagger": "swagger-typescript-api generate --no-client --extract-request-body --type-suffix Dto --extract-request-params --generate-union-enums --sort-types --path http://localhost:3000/swagger.json --name src/infrastructure/video-api/shared/video-api.dtos.ts"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@tanstack/vue-query": "^5.92.0",
     "@vueuse/core": "^13.3.0",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.5",
     "hls.js": "^1.6.5",
     "pinia": "^3.0.1",
     "swagger-typescript-api": "^13.2.7",
+    "tus-js-client": "^4.3.1",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
@@ -41,6 +43,7 @@
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-playwright": "^2.2.0",
     "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-vue": "~10.0.0",
     "jiti": "^2.4.2",
     "jsdom": "^26.0.0",

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Video } from '@/services/api'
-import type { VideoItemModes } from './VideoItem.vue'
 import { useVideoRedirect, type VideoRedirect } from '@/composables'
+import type { Video } from '@/domain/video'
 
 import { VideoItem } from '.'
+import type { VideoItemModes } from './VideoItem.vue'
 
 defineProps<{
   videos: Video[]

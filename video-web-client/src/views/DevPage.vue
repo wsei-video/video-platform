@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import { RouterView } from 'vue-router'
 
+import { useGetRecommendedVideos, useGetVideo } from '@/application/queries/video'
+import { VideoPlayer } from '@/components/player'
 import {
-  AppButton,
-  AppInput,
-  AppIcon,
   AnimatedPlaceholder,
+  AppButton,
+  AppIcon,
+  AppInput,
   type ButtonVariant,
+  UploadDropZone,
 } from '@/components/ui'
 import { VideoItem } from '@/components/video'
-import { VideoPlayer } from '@/components/player'
-
-import { VideoApi, type Video } from '@/services/api'
 
 const variants: ButtonVariant[] = [
   'primary',
@@ -25,24 +24,35 @@ const variants: ButtonVariant[] = [
   'dark',
 ]
 
-const videos = ref<Video[]>([])
-
-onMounted(async () => {
-  const apiResponse = await VideoApi.fetchTrendingVideos()
-  if (apiResponse && apiResponse.data) videos.value = apiResponse.data
-})
+const { data: watchVideo, isPending: videoPending, error: videoError } = useGetVideo('1')
+const { data: recommendedVideos, error: recommendedVideosError } = useGetRecommendedVideos('1')
 </script>
 
 <template>
-  <div v-if="videos.length > 0" class="mb-3">
-    <VideoPlayer :source="videos[0].hlsUrl" />
+  <div v-if="watchVideo" class="mb-3">
+    <VideoPlayer :source="watchVideo.hlsUrl" />
   </div>
-  <VideoItem
-    v-for="video in videos"
-    :key="video.id"
-    :video-data="video"
-    mode="auto"
-    :redirect-to="`/${video.id}`"
+  <div v-if="videoError">video error: {{ videoError.message }}</div>
+  <div v-if="videoPending">Pending...</div>
+  <div v-if="recommendedVideos">
+    <VideoItem
+      v-for="video in recommendedVideos"
+      :key="video.id"
+      :video-data="video"
+      mode="auto"
+      :redirect-to="`/${video.id}`"
+    />
+  </div>
+  <div v-if="recommendedVideosError">
+    recommendedVideos error: {{ recommendedVideosError.message }}
+  </div>
+  <UploadDropZone
+    class="p-2 my-2"
+    @file-cahnge="(files: File[]) => console.log(files)"
+    :multiple="false"
+    :data-types="['video/mp4']"
+    :prevent-default-for-unhandled="true"
+    :file-list="true"
   />
   <h1>Heading 1</h1>
   <h2>Heading 2</h2>

@@ -1,5 +1,5 @@
-import { ref, readonly } from 'vue'
 import { defineStore } from 'pinia'
+import { readonly, ref } from 'vue'
 
 export const useUiStore = defineStore('ui', () => {
   const _isSidebarOpen = ref(false)
