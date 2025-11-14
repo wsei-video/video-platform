@@ -11,34 +11,37 @@
  */
 
 export interface Creator {
-  nickname: string;
-  photoUrl: string;
+  nickname: string
+  photoUrl: string
 }
 
 export interface Video {
-  comments: VideoComment[];
-  creator: Creator;
-  description: string;
-  duration: number;
-  hlsUrl: string;
-  id: string;
-  reactions: VideoReaction[];
-  thumbnail: string;
-  title: string;
+  comments: VideoComment[]
+  creator: Creator
+  description: string
+  duration: number
+  hlsUrl: string
+  id: string
+  reactions: VideoReaction[]
+  thumbnail: string
+  title: string
   /** @format date-time */
-  uploadedDate: string;
-  views: number;
+  uploadedDate: string
+  views: number
+  visibility: VideoVisibility
 }
 
 export interface VideoComment {
-  content: string;
-  creator: Creator;
-  id: string;
+  content: string
+  creator: Creator
+  id: string
   /** @format date-time */
-  postDate: string;
+  postDate: string
 }
 
 export interface VideoReaction {
-  count: number;
-  emoji: string;
+  count: number
+  emoji: string
 }
+
+export type VideoVisibility = 'public' | 'private'

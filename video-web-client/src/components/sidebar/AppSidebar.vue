@@ -14,11 +14,14 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
     id="sidebar"
     :class="{
       closed: !uiStore.isSidebarOpen,
+      mobile: isMobile,
     }"
   >
     <div class="position-relative">
       <div id="sidebar-logo">
-        <img :src="WatchMeLogo" alt="WatchMe logo" id="watch-me" />
+        <RouterLink :to="{ name: 'trending' }">
+          <img :src="WatchMeLogo" alt="WatchMe logo" id="watch-me" />
+        </RouterLink>
       </div>
     </div>
     <div
@@ -32,7 +35,7 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
       <slot name="body" />
     </div>
   </nav>
-  <div :class="{ closed: !uiStore.isSidebarOpen || isMobile }" id="sidebar-shadow"></div>
+  <div :class="{ closed: !uiStore.isSidebarOpen, mobile: isMobile }" id="sidebar-shadow"></div>
   <div
     v-if="isMobile && uiStore.isSidebarOpen"
     class="backdrop"
@@ -67,6 +70,12 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
     min-width: 60px;
     max-width: 60px;
     padding: 0.5rem 5px;
+
+    &.mobile {
+      min-width: 0;
+      max-width: 0;
+      padding: 0;
+    }
   }
 
   #sidebar-logo {
@@ -100,6 +109,11 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
   &.closed {
     max-width: 60px;
     min-width: 60px;
+  }
+
+  &.mobile {
+    max-width: 0;
+    min-width: 0;
   }
 }
 

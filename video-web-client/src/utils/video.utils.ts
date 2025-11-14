@@ -31,6 +31,17 @@ export class VideoUtils {
     }
   }
 
+  public static formatDate(referenceDate: string, locale: string = 'en-US'): string {
+    const parsedDate = Date.parse(referenceDate)
+    const formatter = new Intl.DateTimeFormat(locale, {
+      dateStyle: 'short',
+      timeStyle: 'short',
+      hour12: false,
+    })
+
+    return formatter.format(parsedDate)
+  }
+
   /**
    * Formats a number into a compact, human-readable string using
    * locale-specific notation.
@@ -39,6 +50,16 @@ export class VideoUtils {
     const formatter = new Intl.NumberFormat(locale, {
       notation: 'compact',
       maximumFractionDigits: 1,
+    })
+    return formatter.format(count)
+  }
+
+  /**
+   * Formats a number using grouping, specific to provided locale
+   */
+  public static formatCount(count: number, locale = 'pl-PL') {
+    const formatter = new Intl.NumberFormat(locale, {
+      useGrouping: true,
     })
     return formatter.format(count)
   }

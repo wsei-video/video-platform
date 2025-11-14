@@ -24,4 +24,11 @@ defineProps<{
   font-size: $font-size-sm;
   color: $white;
 }
+
+@include media-breakpoint-down(sm) {
+  .video-duration {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+  }
+}
 </style>

@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import type { Video } from '@/services/api'
 import type { VideoItemModes } from './VideoItem.vue'
-import { useUiStore } from '@/store'
+import { useVideoRedirect, type VideoRedirect } from '@/composables'
 
 import { VideoItem } from '.'
-import { computed } from 'vue'
 
-const uiStore = useUiStore()
-
-const props = defineProps<{
+defineProps<{
   videos: Video[]
   videoItemMode: VideoItemModes
+  redirectTo: VideoRedirect
 }>()
-
-const mode = computed<VideoItemModes>(() => (uiStore.isMobile.value ? 'tile' : props.videoItemMode))
 </script>
 <template>
-  <div :class="['videos-grid', `videos-grid--${mode}`]">
-    <VideoItem v-for="video in videos" :key="video.id" :mode="mode" :video-data="video" />
+  <div :class="['videos-grid', `videos-grid--${videoItemMode}`]">
+    <VideoItem
+      v-for="video in videos"
+      :key="video.id"
+      :mode="videoItemMode"
+      :video-data="video"
+      :redirect-to="useVideoRedirect(redirectTo, video)"
+    />
   </div>
 </template>
 
@@ -26,8 +28,10 @@ const mode = computed<VideoItemModes>(() => (uiStore.isMobile.value ? 'tile' : p
   display: grid;
   gap: 1rem;
 
-  &--list {
-    grid-template-columns: 1fr;
+  &--list,
+  &--list-reactions {
+    display: flex;
+    flex-direction: column;
   }
 
   &--tile {

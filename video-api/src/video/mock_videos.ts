@@ -1,3 +1,5 @@
+import { VideoVisibility } from './video.dto';
+
 export interface Video {
   id: string;
   title: string;
@@ -10,6 +12,7 @@ export interface Video {
   creator: Creator;
   uploadedDate: Date;
   views: number;
+  visibility: VideoVisibility;
 }
 export interface Reaction {
   emoji: string;
@@ -38,6 +41,7 @@ export const MOCK_VIDEOS: Video[] = [
     hlsUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
     thumbnail: 'https://picsum.photos/300',
     duration: 4000,
+    visibility: VideoVisibility.PUBLIC,
     creator: {
       nickname: 'John Doe',
       photoUrl: 'https://picsum.photos/300',
@@ -77,6 +81,7 @@ export const MOCK_VIDEOS: Video[] = [
     hlsUrl: 'https://test-streams.mux.dev/x36xhzz/url_6/193039199_mp4_h264_aac_hq_7.m3u8',
     thumbnail: 'https://picsum.photos/300',
     duration: 4000,
+    visibility: VideoVisibility.PUBLIC,
     creator: {
       nickname: 'John Doe',
       photoUrl: 'https://picsum.photos/300',
@@ -116,6 +121,7 @@ export const MOCK_VIDEOS: Video[] = [
     hlsUrl: 'https://test-streams.mux.dev/test_001/stream.m3u8',
     thumbnail: 'https://picsum.photos/300',
     duration: 4000,
+    visibility: VideoVisibility.PUBLIC,
     creator: {
       nickname: 'John Doe',
       photoUrl: 'https://picsum.photos/300',
@@ -124,6 +130,7 @@ export const MOCK_VIDEOS: Video[] = [
       { emoji: '😁', count: 30 },
       { emoji: '❤️', count: 15 },
       { emoji: '👍', count: 10 },
+      { emoji: '🫣', count: 5 },
     ],
     comments: [
       {
@@ -155,6 +162,7 @@ export const MOCK_VIDEOS: Video[] = [
     hlsUrl: 'https://test-streams.mux.dev/tos_ismc/main.m3u8',
     thumbnail: 'https://picsum.photos/300',
     duration: 4000,
+    visibility: VideoVisibility.PUBLIC,
     creator: {
       nickname: 'John Doe',
       photoUrl: 'https://picsum.photos/300',

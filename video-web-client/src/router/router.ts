@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import type { SidebarLink } from '@/components/sidebar'
+import WatchPage from '@/views/VideoPages/WatchPage/WatchPage.vue'
 
 const VIDEO_PAGES_META_TAGS: SidebarLink[] = [
   { icon: 'mode_heat', to: '/trending', label: 'Trending' },
@@ -9,11 +10,12 @@ const VIDEO_PAGES_META_TAGS: SidebarLink[] = [
   { icon: 'account_circle', to: '/for-you', label: 'For you' },
 ]
 
+const STUDIO_BASE_LINK = 'studio'
 const STUDIO_PAGE_META_TAGS: SidebarLink[] = [
-  { icon: 'mode_heat', to: '/:userId/your-content', label: 'Your content' },
-  { icon: 'trending_up', to: '/:userId/statistics', label: 'Statistics' },
-  { icon: 'schedule', to: '/:userId/community', label: 'Community' },
-  { icon: 'account_circle', to: '/:userId/settings', label: 'Settings' },
+  { icon: 'video_library', to: `/${STUDIO_BASE_LINK}/:userId/your-content`, label: 'Your content' },
+  { icon: 'bar_chart_4_bars', to: `/${STUDIO_BASE_LINK}/:userId/statistics`, label: 'Statistics' },
+  { icon: 'group', to: `/${STUDIO_BASE_LINK}/:userId/community`, label: 'Community' },
+  { icon: 'manage_accounts', to: `/${STUDIO_BASE_LINK}/:userId/settings`, label: 'Settings' },
 ]
 
 const router = createRouter({
@@ -39,35 +41,28 @@ const router = createRouter({
         },
         {
           path: '/:videoId',
-          component: () => import('@/views/VideoPages/WatchPage/WatchPage.vue'),
+          name: 'watch-page',
+          component: WatchPage,
         },
         {
           path: 'trending',
+          name: 'trending',
           component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
-          props: {
-            pageType: 'trending',
-          },
         },
         {
           path: 'most-popular',
+          name: 'most-popular',
           component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
-          props: {
-            pageType: 'most-popular',
-          },
         },
         {
           path: 'recently-uploaded',
+          name: 'recently-uploaded',
           component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
-          props: {
-            pageType: 'recently-uploaded',
-          },
         },
         {
           path: 'for-you',
+          name: 'for-you',
           component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
-          props: {
-            pageType: 'for-you',
-          },
         },
         {
           path: 'dev',
@@ -76,39 +71,46 @@ const router = createRouter({
       ],
     },
     {
-      path: '/:userId',
+      path: `/${STUDIO_BASE_LINK}/:userId`,
       name: 'StudioPage',
       component: () => import('@/views/MainLayout.vue'),
       props: {
-        links: STUDIO_PAGE_META_TAGS,
+        sidebarLinks: STUDIO_PAGE_META_TAGS,
         profileInfo: true,
       },
       children: [
         {
           path: '',
-          redirect: (to) => `/${to.params.userId}/your-content`,
+          redirect: (to) => `/studio/${to.params.userId}/your-content`,
+        },
+        {
+          path: '/:videoId',
+          name: 'edit-video',
+          component: () => import('@/views/Studio/EditVideoView.vue'),
         },
         {
           path: 'your-content',
-          component: () => import('@/views/Studio/YourContentView.vue'),
+          name: 'your-content',
+          component: () => import('@/views/Studio/YourContent/YourContentView.vue'),
         },
         {
           path: 'statistics',
+          name: 'statistics',
           component: () => import('@/views/Studio/StatisticsView.vue'),
         },
         {
           path: 'community',
+          name: 'community',
           component: () => import('@/views/Studio/CommunityView.vue'),
         },
         {
           path: 'settings',
+          name: 'settings',
           component: () => import('@/views/Studio/SettingsView.vue'),
         },
       ],
     },
   ],
 })
-
-// TODO: use 'props:' to pass meta tags to studio page
 
 export default router

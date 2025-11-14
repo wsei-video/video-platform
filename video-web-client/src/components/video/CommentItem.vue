@@ -6,14 +6,7 @@ import { ProfileBadge } from '@/components/ui'
 import { onMounted, ref } from 'vue'
 
 const MAX_CHARS = 25
-
-/*
-TODO:
-  - separate component: AddCommentItem
-  - or another mode: add
-*/
 const { commentData } = defineProps<{ commentData: VideoComment }>()
-
 const hidden = ref(false)
 
 onMounted(() => {

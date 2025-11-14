@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
 import { useWatchPage } from '@/views/VideoPages/WatchPage'
 
 import { VideoPlayer } from '@/components/player'
@@ -13,13 +11,13 @@ const {
   selectedVideo,
   recommendedVideos,
   isMobile,
+  watchPageMode,
   isMobileCommentsSectionOpened,
   closeCommentsSection,
   openCommentsSection,
 } = useWatchPage()
 
-const watchPageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
-const videoAspectRatio = 16 / 9;
+const videoAspectRatio = 16 / 9
 </script>
 <template>
   <div :class="['watch-page', `watch-page--${watchPageMode}`]">
@@ -55,8 +53,18 @@ const videoAspectRatio = 16 / 9;
     </main>
 
     <aside v-if="!isMobileCommentsSectionOpened" class="watch-page__sidebar">
-      <VideosGrid v-if="recommendedVideos" video-item-mode="tile" :videos="recommendedVideos" />
-      <VideosGrid v-if="recommendedVideos" video-item-mode="tile" :videos="recommendedVideos" />
+      <VideosGrid
+        v-if="recommendedVideos"
+        video-item-mode="tile"
+        :videos="recommendedVideos"
+        redirect-to="watch-page"
+      />
+      <VideosGrid
+        v-if="recommendedVideos"
+        video-item-mode="tile"
+        :videos="recommendedVideos"
+        redirect-to="watch-page"
+      />
     </aside>
   </div>
 </template>

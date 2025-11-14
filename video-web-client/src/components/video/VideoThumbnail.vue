@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { VideoDuration } from '.'
-import { AppImage } from '@/components/ui'
+import { AppImage, type AppImageProps } from '@/components/ui'
 
 defineProps<{
-  thumbnailSrc: string
   duration: number
+  imageProps: AppImageProps
 }>()
 </script>
 <template>
   <div class="thumbnail-container">
-    <AppImage :src="thumbnailSrc" class="thumbnail" />
+    <AppImage v-bind="imageProps" class="thumbnail" />
     <VideoDuration :duration="duration" />
   </div>
 </template>
@@ -20,12 +20,9 @@ defineProps<{
 .thumbnail-container {
   position: relative;
   display: inline-block;
-  width: 100%;
-  height: 100%;
 }
 
 .thumbnail {
-  aspect-ratio: $video-item-aspect-ratio;
   border-radius: $video-item-border-radius;
 }
 </style>
