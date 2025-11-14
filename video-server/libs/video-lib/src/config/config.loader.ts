@@ -1,0 +1,27 @@
+import { AppConfig } from './config.types';
+
+export default (): AppConfig => ({
+  database: {
+    host: process.env.POSTGRES_HOST ?? '',
+    port: parseInt(process.env.POSTGRES_PORT ?? '', 10),
+    user: process.env.POSTGRES_USER ?? '',
+    password: process.env.POSTGRES_PASSWORD ?? '',
+    db: process.env.POSTGRES_DB ?? '',
+  },
+  rabbitmq: {
+    host: process.env.RABBITMQ_HOST ?? '',
+    port: parseInt(process.env.RABBITMQ_PORT ?? '', 10),
+    user: process.env.RABBITMQ_USER ?? '',
+    password: process.env.RABBITMQ_PASSWORD ?? '',
+  },
+  redis: {
+    host: process.env.REDIS_HOST ?? '',
+    port: parseInt(process.env.REDIS_PORT ?? '', 10),
+  },
+  minio: {
+    host: process.env.MINIO_HOST ?? '',
+    port: parseInt(process.env.MINIO_PORT ?? '', 10),
+    accessKey: process.env.MINIO_ACCESS_KEY ?? '',
+    secretKey: process.env.MINIO_SECRET_KEY ?? '',
+  },
+});

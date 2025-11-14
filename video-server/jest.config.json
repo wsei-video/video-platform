@@ -1,0 +1,15 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".test.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "roots": ["<rootDir>/apps/", "<rootDir>/libs/"],
+  "moduleNameMapper": {
+    "^@video/lib(|/.*)$": "<rootDir>/libs/video-lib/src/$1"
+  },
+  "collectCoverage": true,
+  "verbose": true
+}

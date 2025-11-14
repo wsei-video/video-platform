@@ -1,0 +1,155 @@
+name: video-platform
+
+networks:
+  video-network:
+    driver: bridge
+
+services:
+  video-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-api
+    command: npm run start:dev -- video-api
+    ports:
+      - 3000:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - video-network
+    volumes:
+      - ./apps/video-api/src:/app/apps/video-api/src
+      - ./libs:/app/libs
+
+  video-upload:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-upload
+    command: npm run start:dev -- video-upload
+    ports:
+      - 3001:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - video-network
+    volumes:
+      - ./apps/video-upload/src:/app/apps/video-upload/src
+      - ./libs:/app/libs
+
+  video-cdn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-cdn
+    command: npm run start:dev -- video-cdn
+    ports:
+      - 3002:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - video-network
+    volumes:
+      - ./apps/video-cdn/src:/app/apps/video-cdn/src
+      - ./libs:/app/libs
+
+  video-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile.processor
+      args:
+        APP_NAME: video-processor
+    command: npm run start:dev -- video-processor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - video-network
+    volumes:
+      - ./apps/video-processor/src:/app/apps/video-processor/src
+      - ./libs:/app/libs
+
+  postgres:
+    image: postgres:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass
+      POSTGRES_DB: video_platform
+    shm_size: 128mb
+    networks:
+      - video-network
+    volumes:
+      - ./volumes/postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-d', 'video_platform', '-U', 'admin']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  valkey:
+    image: valkey/valkey:8.1
+    ports:
+      - 6379:6379
+    networks:
+      - video-network
+    healthcheck:
+      test: ['CMD', 'valkey-cli', 'ping']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  minio:
+    image: quay.io/minio/minio:latest
+    ports:
+      - 9000:9000   # S3 API
+      - 9001:9001   # Web console
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: adminpass
+    command: server /data --console-address ':9001'
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+    networks:
+      - video-network
+    volumes:
+      - ./volumes/minio_data:/data
+
+  rabbitmq:
+    # image: rabbitmq:4-management
+    image: rabbitmq:4
+    ports:
+      - 5672:5672     # MQ API
+      - 15672:15672   # Web console
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: adminpass
+    networks:
+      - video-network
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 1s
+      timeout: 2s
+      retries: 10
