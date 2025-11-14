@@ -28,7 +28,7 @@ export interface Video {
   /** @format date-time */
   uploadedDate: string
   views: number
-  visibility: 'public' | 'private'
+  visibility: VideoVisibility
 }
 
 export interface VideoComment {
@@ -43,3 +43,5 @@ export interface VideoReaction {
   count: number
   emoji: string
 }
+
+export type VideoVisibility = 'public' | 'private'

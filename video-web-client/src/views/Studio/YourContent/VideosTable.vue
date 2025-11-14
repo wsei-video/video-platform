@@ -36,7 +36,7 @@ defineProps<{
         </td>
         <td>{{ VideoUtils.formatDuration(video.duration) }}</td>
         <td>{{ VideoUtils.formatDate(video.uploadedDate) }}</td>
-        <td>{{ StringUtils.Capitalize(video.visibility) }}</td>
+        <td>{{ StringUtils.capitalize(video.visibility) }}</td>
         <td>{{ VideoUtils.formatCount(video.views) }}</td>
       </tr>
     </RouterLink>

@@ -22,7 +22,7 @@ const isMobile = breakpoints.smaller('sm')
 const {
   videoData,
   mode = 'auto',
-  redirectTo = `/`,
+  redirectTo = '/',
 } = defineProps<{
   videoData: Video
   mode?: VideoItemModes
@@ -208,6 +208,7 @@ const computedMode = computed(() => {
       .video-item__title {
         font-size: 0.75rem;
       }
+
       .video-item__description {
         font-size: 0.75rem;
       }
@@ -219,6 +220,7 @@ const computedMode = computed(() => {
       .video-item__reactions {
         font-size: 0.625rem;
       }
+
       .video-item__profile-badge {
         font-size: 0.625rem;
       }

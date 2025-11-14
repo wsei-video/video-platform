@@ -57,6 +57,6 @@ export class VideoResponseDto {
   uploadedDate: Date;
   @ApiProperty()
   views: number;
-  @ApiProperty({ enum: VideoVisibility })
+  @ApiProperty({ enum: VideoVisibility, enumName: 'VideoVisibility' })
   visibility: VideoVisibility;
 }
