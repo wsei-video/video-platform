@@ -1,0 +1,67 @@
+export enum QueueExchange {
+  /** RabbitMQ exchange used to publish tasks for the Video Processor. */
+  Media = 'media.direct',
+}
+
+/** List of tasks supported by the Video Processor. */
+export enum QueueTask {
+  /** Checks if the uploaded file is a multimedia file and schedules media processing jobs. */
+  Identify = 'identify',
+
+  /** Produces adaptive bitrate streaming video files for a section of the video and in the given resolution. */
+  AdaptiveVideo = 'adaptive_video',
+
+  /** Produces adaptive bitrate streaming audio files for the given video. */
+  AdaptiveAudio = 'adaptive_audio',
+}
+
+/** Base message for tasks operating on uploaded files. */
+export interface QueueMessageMediaUpload {
+  /** S3 object key in the uploads bucket. */
+  key: string;
+}
+
+export type QueueMessageIdentify = QueueMessageMediaUpload;
+
+export interface QueueMessageAdaptiveVideo extends QueueMessageMediaUpload {
+  /** Input video specification. */
+  input: {
+    /** Input video duration in seconds. */
+    duration: number;
+  };
+
+  /** Output video specification. */
+  output: {
+    /** Output video width. */
+    width: number;
+
+    /** Output video height. */
+    height: number;
+
+    /** Output video framerate. */
+    fps: number;
+  };
+
+  /** Split-and-stitch encoding options. */
+  split: {
+    /** Start time of the video in seconds when the encoding should start. */
+    from: number;
+
+    /**
+     * Duration of the video in seconds that the encoding should work on.
+     * If `null` the encoding will work until the end of the video.
+     */
+    duration: number | null;
+
+    /** Index of the first segment that should be produced during encoding. */
+    segmentStartIndex: number;
+  };
+}
+
+export type QueueMessageAdaptiveAudio = QueueMessageMediaUpload;
+
+export interface QueueMessages {
+  [QueueTask.Identify]: QueueMessageIdentify;
+  [QueueTask.AdaptiveVideo]: QueueMessageAdaptiveVideo;
+  [QueueTask.AdaptiveAudio]: QueueMessageAdaptiveAudio;
+}
