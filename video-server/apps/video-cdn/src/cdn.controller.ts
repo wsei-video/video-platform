@@ -8,7 +8,7 @@ export class CdnController {
   constructor(private readonly cdnService: CdnService) {}
 
   @Get(':bucket/*key')
-  public getHello(
+  public get(
     @Param('bucket') bucket: string,
     @Param('key') key: string[],
     @Headers('range') range: string | undefined,
