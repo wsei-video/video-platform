@@ -1,0 +1,10 @@
+model Account {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  accountChannelConnections AccountChannelConnection[]
+  authSessions AuthSession[]
+}

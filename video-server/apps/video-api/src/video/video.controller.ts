@@ -1,51 +1,43 @@
-import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, UseGuards } from '@nestjs/common';
+
+import { IdPipe, Serialize } from '@video/lib/restful';
+
+import { AuthGuard } from '../auth/auth.guard';
+import { VideoDto, VideosDto } from './video.dto';
 import { VideoService } from './video.service';
-import { ApiOkResponse } from '@nestjs/swagger';
-import { VideoResponseDto } from './video.dto';
 
-@Controller('video')
+@Controller('videos')
 export class VideoController {
-  constructor(private readonly videoService: VideoService) {}
+  public constructor(private readonly videoService: VideoService) {}
 
-  @Get('trending')
-  @ApiOkResponse({ type: [VideoResponseDto] })
-  public getTrendingVideos() {
-    return this.videoService.getTrendingVideos();
-  }
-
-  @Get('most-popular')
-  @ApiOkResponse({ type: [VideoResponseDto] })
-  public getMostPopularVideos() {
-    return this.videoService.getMostPopularVideos();
-  }
-
-  @Get('recently-uploaded')
-  @ApiOkResponse({ type: [VideoResponseDto] })
-  public getRecentlyUploadedVideos() {
-    return this.videoService.getRecentlyUploadedVideos();
-  }
-
-  @Get('for-you/:userId')
-  @ApiOkResponse({ type: [VideoResponseDto] })
-  public getForYouVideos(@Param('userId') userId: string) {
-    return this.videoService.getForYouVideos(userId);
-  }
+  @Get()
+  @UseGuards(AuthGuard)
+  @Serialize(VideosDto, ApiOkResponse)
+  public list() {}
 
   @Get(':videoId')
-  @ApiOkResponse({ type: VideoResponseDto })
-  public getVideoById(@Param('videoId') videoId: string) {
-    const video = this.videoService.getVideoById(videoId);
-
-    if (!video) throw new NotFoundException();
-
-    return video;
-  }
+  @Serialize(VideoDto, ApiOkResponse)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public find(@Param('videoId', IdPipe) videoId: number) {}
 
   @Get(':videoId/recommended')
-  @ApiOkResponse({ type: [VideoResponseDto] })
-  public getRecomendedVideos(@Param('videoId') videoId: string) {
-    const videos = this.videoService.getRecomendedVideos(videoId);
+  @Serialize(VideosDto, ApiOkResponse)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public recommended(@Param('videoId', IdPipe) videoId: number) {}
 
-    return videos;
-  }
+  @Post()
+  @Serialize(VideoDto, ApiOkResponse)
+  public create() {}
+
+  @Patch(':videoId')
+  @Serialize(VideoDto, ApiOkResponse)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public update(@Param('videoId', IdPipe) videoId: number) {}
+
+  @Delete(':videoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public delete(@Param('videoId', IdPipe) videoId: number) {}
 }

@@ -2,7 +2,7 @@ import { Controller, Get, Inject } from '@nestjs/common';
 
 export const HELLO_SERVICE_NAME = Symbol('SERVICE_NAME');
 
-@Controller()
+@Controller({ version: '' })
 export class HelloController {
   public constructor(@Inject(HELLO_SERVICE_NAME) private readonly serviceName: string) {}
 

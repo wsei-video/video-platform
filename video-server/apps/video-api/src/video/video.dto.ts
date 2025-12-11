@@ -1,62 +1,90 @@
 import { ApiProperty, ApiSchema } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+
+import { PagedResponse } from '@video/lib/restful';
 
 @ApiSchema({ name: 'VideoReaction' })
 export class VideoReactionDto {
   @ApiProperty()
-  emoji: string;
+  public emoji: string;
+
   @ApiProperty()
-  count: number;
+  public count: number;
 }
 
 @ApiSchema({ name: 'Creator' })
 export class VideoCreatorDto {
   @ApiProperty()
-  nickname: string;
+  public nickname: string;
+
   @ApiProperty()
-  photoUrl: string;
+  public photoUrl: string;
 }
 
 @ApiSchema({ name: 'VideoComment' })
 export class VideoCommentDto {
   @ApiProperty()
-  id: string;
+  public id: string;
+
   @ApiProperty()
-  creator: VideoCreatorDto;
+  public creator: VideoCreatorDto;
+
   @ApiProperty()
-  postDate: Date;
+  public postDate: Date;
+
   @ApiProperty()
-  content: string;
+  public content: string;
 }
 
 export enum VideoVisibility {
-  PUBLIC = 'public',
-  PRIVATE = 'private',
+  Public = 'public',
+  Private = 'private',
+  Unlisted = 'unlisted',
 }
 
 @ApiSchema({ name: 'Video' })
-export class VideoResponseDto {
+export class VideoDto {
   @ApiProperty()
-  id: string;
+  public id: string;
+
   @ApiProperty()
-  title: string;
+  public title: string;
+
   @ApiProperty()
-  description: string;
+  public description: string;
+
   @ApiProperty()
-  hlsUrl: string;
+  public hlsUrl: string;
+
   @ApiProperty()
-  thumbnail: string;
+  public thumbnail: string;
+
   @ApiProperty({ type: [VideoReactionDto] })
-  reactions: VideoReactionDto[];
+  public reactions: VideoReactionDto[];
+
   @ApiProperty({ type: [VideoCommentDto] })
-  comments: VideoCommentDto[];
+  public comments: VideoCommentDto[];
+
   @ApiProperty()
-  duration: number;
+  public duration: number;
+
   @ApiProperty()
-  creator: VideoCreatorDto;
+  public creator: VideoCreatorDto;
+
   @ApiProperty()
-  uploadedDate: Date;
+  public uploadedDate: Date;
+
   @ApiProperty()
-  views: number;
+  public views: number;
+
   @ApiProperty({ enum: VideoVisibility, enumName: 'VideoVisibility' })
-  visibility: VideoVisibility;
+  public visibility: VideoVisibility;
+}
+
+@ApiSchema({ name: 'Videos' })
+export class VideosDto extends PagedResponse<VideoDto> {
+  @ApiProperty({ type: [VideoDto] })
+  @Type(() => VideoDto)
+  @Expose()
+  public items!: VideoDto[];
 }

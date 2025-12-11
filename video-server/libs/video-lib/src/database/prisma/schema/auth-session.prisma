@@ -1,0 +1,12 @@
+model AuthSession {
+  id           Int      @id @default(autoincrement())
+  accountId    Int
+  device       String?
+  browser      String?
+  lastAccessAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([accountId])
+}
