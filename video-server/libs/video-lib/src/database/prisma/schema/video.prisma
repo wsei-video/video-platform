@@ -1,0 +1,25 @@
+model Video {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String          @default("")
+  duration    Int             @default(0)
+  status      VideoStatus     @default(none)
+  visibility  VideoVisibility @default(public)
+  channelId   Int
+  createdAt   DateTime        @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+}
+
+enum VideoVisibility {
+  public
+  private
+  unlisted
+}
+
+enum VideoStatus {
+  none
+  processing
+  successful
+  failed
+}

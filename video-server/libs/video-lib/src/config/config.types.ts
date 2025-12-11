@@ -4,6 +4,7 @@ export interface DatabaseConfig {
   user: string;
   password: string;
   db: string;
+  url: string;
 }
 
 export interface RabbitMQConfig {

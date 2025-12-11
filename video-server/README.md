@@ -77,3 +77,21 @@ Remove the video platform containers:
 ```bash
 $ docker compose down
 ```
+
+Generate migration:
+
+```bash
+$ npx prisma migrate dev
+```
+
+Apply migrations to the database:
+
+```bash
+$ npx prisma migrate deploy
+```
+
+Generate Prisma client:
+
+```bash
+$ npx prisma generate
+```

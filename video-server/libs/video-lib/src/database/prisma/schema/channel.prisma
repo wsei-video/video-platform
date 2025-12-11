@@ -1,0 +1,8 @@
+model Channel {
+  id   Int    @id @default(autoincrement())
+  name String
+  slug String @unique
+
+  accountChannelConnections AccountChannelConnection[]
+  videos Video[]
+}
