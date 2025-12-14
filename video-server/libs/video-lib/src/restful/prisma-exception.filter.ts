@@ -27,7 +27,9 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
   private extractConflictingColumn(exception: Prisma.PrismaClientKnownRequestError): string {
     // @ts-expect-error Private API
     const target = exception.meta.driverAdapterError.cause.constraint.fields;
-    return Array.isArray(target) ? target[0] : '';
+    const column: string = Array.isArray(target) ? target[0] : '';
+    // Multi-column keys formatting
+    return column.replaceAll('"', '');
   }
 
   private capitalizeFirstLetter(text: string): string {

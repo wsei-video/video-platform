@@ -21,7 +21,7 @@ export class VideoCreatorDto {
   public photoUrl: string;
 }
 
-@ApiSchema({ name: 'VideoComment' })
+@ApiSchema({ name: 'DeprecatedVideoComment' })
 export class VideoCommentDto {
   @ApiProperty()
   public id: string;

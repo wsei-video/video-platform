@@ -2,11 +2,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 
+import { Account, AuthSession } from '@video/lib/database/client';
 import { DatabaseService } from '@video/lib/database';
+import { DateUtils } from '@video/lib/utils';
+import { Hasher } from '@video/lib/crypto';
 
+import { AccessToken } from '../../src/auth/access-token';
 import { AppModule } from '../../src/app.module';
 import { configureApplication } from '../../src/app.config';
-import { DateUtils } from '@video/lib/utils';
 
 export class TestingFixture {
   public readonly database: DatabaseService;
@@ -36,4 +39,32 @@ export class TestingFixture {
   public request() {
     return request(this.app.getHttpServer());
   }
+
+  public async createAuth(): Promise<TestingAuth> {
+    const passwordHash = await Hasher.hash('password1');
+
+    const account = await this.database.account.create({
+      data: { email: 'john@example.com', name: 'John Doe', passwordHash, createdAt: DateUtils.now() },
+    });
+
+    const session = await this.database.authSession.create({
+      data: { accountId: account.id, lastAccessAt: DateUtils.now(), createdAt: DateUtils.now() },
+    });
+
+    const accessToken = new AccessToken({ accountId: session.accountId, sessionId: session.id }).encrypt();
+
+    return {
+      accessToken,
+      account,
+      header: `Bearer ${accessToken}`,
+      session,
+    };
+  }
+}
+
+export interface TestingAuth {
+  accessToken: string;
+  header: string;
+  account: Account;
+  session: AuthSession;
 }

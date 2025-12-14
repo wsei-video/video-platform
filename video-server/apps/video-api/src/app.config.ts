@@ -7,7 +7,7 @@ export const configureApplication = (app: NestExpressApplication): NestExpressAp
 
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
-  const config = new DocumentBuilder().setTitle('Video platform API').setVersion('1.0').build();
+  const config = new DocumentBuilder().setTitle('Video platform API').setVersion('1.0').addBearerAuth().build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('swagger', app, documentFactory, {

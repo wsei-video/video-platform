@@ -6,5 +6,5 @@ model Account {
   createdAt    DateTime @default(now())
 
   accountChannelConnections AccountChannelConnection[]
-  authSessions AuthSession[]
+  authSessions              AuthSession[]
 }

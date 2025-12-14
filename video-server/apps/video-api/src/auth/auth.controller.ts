@@ -1,12 +1,11 @@
-import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse } from '@nestjs/swagger';
-import { Body, Controller, Delete, Get, Headers, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { Controller, Delete, Get, HttpCode, HttpStatus } from '@nestjs/common';
 
 import { Account, AuthSession } from '@video/lib/database/client';
-import { BodyValidator, Serialize } from '@video/lib/restful';
-import { UserAgentUtils } from '@video/lib/utils';
+import { Serialize } from '@video/lib/restful';
 
-import { AuthDto, AuthCreateDto } from './auth.dto';
-import { AuthGuard } from './auth.guard';
+import { AuthDto } from './auth.dto';
+import { AuthRequired } from './auth-required';
 import { AuthService } from './auth.service';
 import { ReqAccount, ReqSession } from './auth-request.context';
 
@@ -15,22 +14,18 @@ export class AuthController {
   public constructor(private readonly authService: AuthService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @AuthRequired()
   @Serialize(AuthDto, ApiOkResponse)
+  @ApiOperation({ summary: 'Get currently signed in account and session' })
   public auth(@ReqAccount() account: Account, @ReqSession() session: AuthSession) {
     return this.authService.getCurrentAuth(account, session);
   }
 
-  @Post()
-  @Serialize(AuthDto, ApiCreatedResponse)
-  public register(@Body(BodyValidator) body: AuthCreateDto, @Headers('user-agent') userAgent: string | undefined) {
-    return this.authService.register(body, UserAgentUtils.getUserAgentInfo(userAgent));
-  }
-
-  @Delete()
-  @UseGuards(AuthGuard)
+  @Delete('session')
+  @AuthRequired()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
+  @ApiOperation({ summary: 'Sign out from current session' })
   public logout(@ReqSession() session: AuthSession) {
     return this.authService.logout(session);
   }
