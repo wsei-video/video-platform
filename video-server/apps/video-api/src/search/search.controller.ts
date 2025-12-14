@@ -1,16 +1,20 @@
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Controller, Get, Query } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
 
+import { QueryValidator, Serialize } from '@video/lib/restful';
+
+import { SearchQuery } from './search.dto';
 import { SearchService } from './search.service';
-import { VideoDto } from '../video/video.dto';
+import { VideosDto } from '../video/video.dto';
 
 @Controller('search')
 export class SearchController {
   public constructor(private readonly searchService: SearchService) {}
 
   @Get()
-  @ApiOkResponse({ type: [VideoDto] })
-  public search(@Query('phrase') phrase: string) {
-    return this.searchService.search(phrase);
+  @Serialize(VideosDto, ApiOkResponse)
+  @ApiOperation({ summary: 'Search content on the platform' })
+  public search(@Query(QueryValidator) query: SearchQuery) {
+    return this.searchService.search(query);
   }
 }

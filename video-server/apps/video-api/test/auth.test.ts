@@ -15,7 +15,15 @@ describe('Auth', () => {
 
   afterEach(() => fixture.destroy());
 
-  test('Get current user when unauthenticated', () => {
+  test('Get current account when unauthenticated', () => {
+    return fixture
+      .request()
+      .get('/v1/account')
+      .expect(HttpStatus.UNAUTHORIZED)
+      .expect({ error: 'Unauthorized', statusCode: 401 });
+  });
+
+  test('Get current session when unauthenticated', () => {
     return fixture
       .request()
       .get('/v1/auth')
@@ -26,7 +34,7 @@ describe('Auth', () => {
   test('Logout when unauthenticated', () => {
     return fixture
       .request()
-      .delete('/v1/auth')
+      .delete('/v1/auth/session')
       .expect(HttpStatus.UNAUTHORIZED)
       .expect({ error: 'Unauthorized', statusCode: 401 });
   });
@@ -42,7 +50,7 @@ describe('Auth', () => {
   test('Register with invalid body', () => {
     return fixture
       .request()
-      .post('/v1/auth')
+      .post('/v1/account')
       .send({ email: 'invalid', password: '', name: '' })
       .expect(HttpStatus.BAD_REQUEST)
       .expect({
@@ -66,7 +74,7 @@ describe('Auth', () => {
 
     return fixture
       .request()
-      .post('/v1/auth')
+      .post('/v1/account')
       .set('user-agent', userAgent)
       .send({ email: 'john@example.com', password: 'password1', name: 'John Doe' })
       .expect(HttpStatus.CREATED)
@@ -102,7 +110,7 @@ describe('Auth', () => {
     test('Register email taken', () => {
       return fixture
         .request()
-        .post('/v1/auth')
+        .post('/v1/account')
         .send({ email: 'john@example.com', password: 'password1', name: 'John Doe' })
         .expect(HttpStatus.CONFLICT)
         .expect({ error: 'Conflict', statusCode: 409, reason: { name: 'EmailAlreadyExists', resource: 'Account' } });
@@ -182,7 +190,24 @@ describe('Auth', () => {
         accessToken = new AccessToken({ accountId: session.accountId, sessionId: session.id }).encrypt();
       });
 
+      test('Get current account', () => {
+        return fixture
+          .request()
+          .get('/v1/account')
+          .set('authorization', `Bearer ${accessToken}`)
+          .send()
+          .expect(HttpStatus.OK)
+          .expect({
+            id: '-Y5OWS2exwnMaKM-RWHDVg',
+            email: 'john@example.com',
+            name: 'John Doe',
+            createdAt: '2025-10-01T10:00:00.000Z',
+          });
+      });
+
       test('Get current auth', () => {
+        fixture.dateSpy.mockReturnValue(new Date('2025-12-10T14:30:00.000Z'));
+
         return fixture
           .request()
           .get('/v1/auth')
@@ -200,7 +225,7 @@ describe('Auth', () => {
               id: '-Y5OWS2exwnMaKM-RWHDVg',
               device: null,
               browser: null,
-              lastAccessAt: '2025-10-01T10:00:00.000Z',
+              lastAccessAt: '2025-12-10T14:30:00.000Z',
               createdAt: '2025-10-01T10:00:00.000Z',
             },
             accessToken: 'LxnUKhdhQrZ02-iSQpazRGBtc7E1S9bPVyeGNZbwLtE',
@@ -268,7 +293,7 @@ describe('Auth', () => {
       test('Logout', async () => {
         await fixture
           .request()
-          .delete('/v1/auth')
+          .delete('/v1/auth/session')
           .set('authorization', `Bearer ${accessToken}`)
           .send()
           .expect(HttpStatus.NO_CONTENT)
@@ -276,7 +301,7 @@ describe('Auth', () => {
 
         await fixture
           .request()
-          .delete('/v1/auth')
+          .delete('/v1/auth/session')
           .set('authorization', `Bearer ${accessToken}`)
           .send()
           .expect(HttpStatus.UNAUTHORIZED)
@@ -313,7 +338,7 @@ describe('Auth', () => {
 
         await fixture
           .request()
-          .delete('/v1/auth')
+          .get('/v1/auth')
           .set('authorization', `Bearer ${accessToken}`)
           .send()
           .expect(HttpStatus.UNAUTHORIZED)

@@ -1,33 +1,39 @@
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
-import { ApiOkResponse } from '@nestjs/swagger';
+
+import { Serialize } from '@video/lib/restful';
 
 import { VideoFeedService } from './video-feed.service';
-import { VideoDto } from '../video/video.dto';
+import { VideosDto } from '../video/video.dto';
 
 @Controller('video/feed')
 export class VideoFeedController {
   public constructor(private readonly videoFeedService: VideoFeedService) {}
 
   @Get('trending')
-  @ApiOkResponse({ type: [VideoDto] })
+  @Serialize(VideosDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List trending videos on the platform' })
   public trending() {
     return this.videoFeedService.getTrendingVideos();
   }
 
   @Get('most-popular')
-  @ApiOkResponse({ type: [VideoDto] })
+  @Serialize(VideosDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List the most popular videos on the platform' })
   public mostPopular() {
     return this.videoFeedService.getMostPopularVideos();
   }
 
   @Get('recently-uploaded')
-  @ApiOkResponse({ type: [VideoDto] })
+  @Serialize(VideosDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List the recently uploaded videos on the platform' })
   public recentlyUploaded() {
     return this.videoFeedService.getRecentlyUploadedVideos();
   }
 
   @Get('for-you')
-  @ApiOkResponse({ type: [VideoDto] })
+  @Serialize(VideosDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List recommended videos for the signed in user' })
   public forYou() {
     return this.videoFeedService.getForYouVideos();
   }

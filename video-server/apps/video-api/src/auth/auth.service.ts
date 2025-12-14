@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { Account } from '@video/lib/database/client';
+import { Account, AuthSession } from '@video/lib/database/client';
 import { BadRequestError, ListQuery } from '@video/lib/restful';
 import { DatabaseService } from '@video/lib/database';
 import { DateUtils, UserAgentInfo } from '@video/lib/utils';
 import { Hasher } from '@video/lib/crypto';
 
 import { AccessToken } from './access-token';
-import { AuthDto, AuthCreateDto } from './auth.dto';
+import { AccountCreateDto } from '../account/account.dto';
+import { AuthDto } from './auth.dto';
 import { AuthSessionDto, AuthSessionCreateDto, AuthSessionsDto } from '../auth-session/auth-session.dto';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class AuthService {
     return { account, session, accessToken: accessToken.encrypt() };
   }
 
-  public async register(body: AuthCreateDto, userAgentInfo: UserAgentInfo): Promise<AuthDto> {
+  public async register(body: AccountCreateDto, userAgentInfo: UserAgentInfo): Promise<AuthDto> {
     const account = await this.createAccount(body);
     const session = await this.createSession(account, userAgentInfo);
     const accessToken = new AccessToken({ accountId: account.id, sessionId: session.id });
@@ -78,12 +79,18 @@ export class AuthService {
     await this.database.authSession.delete({ where: { id: session.id } });
   }
 
-  private async createAccount(body: AuthCreateDto) {
+  public async updateSessionLastAccessAt(session: AuthSession) {
+    const now = DateUtils.now();
+    await this.database.authSession.update({ where: { id: session.id }, data: { lastAccessAt: now } });
+    session.lastAccessAt = now;
+  }
+
+  private async createAccount(body: AccountCreateDto) {
     const passwordHash = await Hasher.hash(body.password);
 
     return await this.database.account.create({
       data: {
-        email: body.email,
+        email: body.email.toLowerCase(),
         name: body.name,
         passwordHash,
         createdAt: DateUtils.now(),
