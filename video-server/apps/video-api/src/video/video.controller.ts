@@ -1,11 +1,13 @@
-import { ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 
-import { IdPipe, Serialize } from '@video/lib/restful';
+import { BodyValidator, IdPipe, ListQuery, QueryValidator, Serialize } from '@video/lib/restful';
 
 import { AuthRequired } from '../auth/auth-required';
-import { VideoDto, VideosDto } from './video.dto';
+import { VideoCreateDto, VideoDto, VideosDto, VideoUpdateDto } from './video.dto';
 import { VideoService } from './video.service';
+import { ReqAccount } from '../auth/auth-request.context';
+import { Account } from '@video/lib/database/client';
 
 @Controller('videos')
 export class VideoController {
@@ -14,33 +16,43 @@ export class VideoController {
   @Get(':videoId')
   @Serialize(VideoDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get specific video' })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public find(@Param('videoId', IdPipe) videoId: number) {}
+  public find(@Param('videoId', IdPipe) videoId: number) {
+    return this.videoService.findById(videoId);
+  }
 
   @Get(':videoId/recommended')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get recommended videos for the specific video' })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public recommended(@Param('videoId', IdPipe) videoId: number) {}
+  public async recommended(@Param('videoId', IdPipe) videoId: number, @Query(QueryValidator) query: ListQuery) {
+    return this.videoService.getRecommendedVideos(videoId, query);
+  }
 
   @Post()
   @AuthRequired()
-  @Serialize(VideoDto, ApiOkResponse)
+  @Serialize(VideoDto, ApiCreatedResponse)
   @ApiOperation({ summary: 'Create a new video' })
-  public create() {}
+  public create(@Body(BodyValidator) body: VideoCreateDto) {
+    return this.videoService.createVideo(body);
+  }
 
   @Patch(':videoId')
   @AuthRequired()
   @Serialize(VideoDto, ApiOkResponse)
   @ApiOperation({ summary: 'Update video details' })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public update(@Param('videoId', IdPipe) videoId: number) {}
+  public update(
+    @ReqAccount() account: Account,
+    @Param('videoId', IdPipe) videoId: number,
+    @Body(BodyValidator) body: VideoUpdateDto,
+  ) {
+    return this.videoService.updateVideo(account, videoId, body);
+  }
 
   @Delete(':videoId')
   @AuthRequired()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
   @ApiOperation({ summary: 'Delete the specific video' })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public delete(@Param('videoId', IdPipe) videoId: number) {}
+  public delete(@ReqAccount() account: Account, @Param('videoId', IdPipe) videoId: number) {
+    return this.videoService.deleteVideo(account, videoId);
+  }
 }

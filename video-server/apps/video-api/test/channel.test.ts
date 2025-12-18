@@ -399,5 +399,42 @@ describe('Channel', () => {
           reason: { resource: 'AccountChannelConnection' },
         });
     });
+
+    describe('Existing video', () => {
+      beforeEach(async () => {
+        await fixture.database.video.create({
+          data: {
+            title: 'My video',
+            channelId: myChannel.id,
+            createdAt: DateUtils.now(),
+          },
+        });
+      });
+
+      test('List videos on channel', () => {
+        return fixture
+          .request()
+          .get(`/v1/channels/${Id.clear(myChannel.id).encrypted}/videos`)
+          .expect(HttpStatus.OK)
+          .expect({
+            total: 1,
+            next: false,
+            items: [
+              {
+                id: '-Y5OWS2exwnMaKM-RWHDVg',
+                title: 'My video',
+                description: '',
+                hlsUrl: null,
+                thumbnail: null,
+                duration: 0,
+                createdAt: '2025-10-01T10:00:00.000Z',
+                views: 0,
+                visibility: 'public',
+                status: 'none',
+              },
+            ],
+          });
+      });
+    });
   });
 });

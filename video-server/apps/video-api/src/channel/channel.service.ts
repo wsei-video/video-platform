@@ -55,9 +55,17 @@ export class ChannelService {
     return { items: accounts, total, next };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public listChannelVideos(channelId: number, query: ListQuery) {
-    throw new Error('Method not implemented.');
+  public async listChannelVideos(channelId: number, query: ListQuery) {
+    const videos = await this.database.video.findMany({
+      where: { channelId },
+      skip: (query.page - 1) * query.count,
+      take: query.count,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const total = await this.database.video.count({ where: { channelId } });
+    const next = total > (query.page - 1) * query.count + videos.length;
+    return { items: videos, total, next };
   }
 
   public createAccountChannel(account: Account, body: ChannelCreateDto) {
