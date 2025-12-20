@@ -15,7 +15,7 @@ export class VideoReactionService {
       where: { videoId },
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.videoReaction.count({ where: { videoId } });

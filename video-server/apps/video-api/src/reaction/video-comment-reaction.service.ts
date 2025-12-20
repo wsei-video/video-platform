@@ -4,10 +4,10 @@ import { DatabaseService } from '@video/lib/database';
 import { Account } from '@video/lib/database/client';
 import { ForbiddenError, ListQuery } from '@video/lib/restful';
 import { DateUtils } from '@video/lib/utils';
-import { CommentReactionCreateDto } from './reaction.dto';
+import { VideoCommentReactionCreateDto } from './reaction.dto';
 
 @Injectable()
-export class CommentReactionService {
+export class VideoCommentReactionService {
   public constructor(private readonly database: DatabaseService) {}
 
   public async listCommentReactions(commentId: number, query: ListQuery) {
@@ -15,7 +15,7 @@ export class CommentReactionService {
       where: { commentId },
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.commentReaction.count({ where: { commentId } });
@@ -35,7 +35,7 @@ export class CommentReactionService {
     });
   }
 
-  public async reactToComment(account: Account, commentId: number, body: CommentReactionCreateDto) {
+  public async reactToComment(account: Account, commentId: number, body: VideoCommentReactionCreateDto) {
     const now = DateUtils.now();
 
     return this.database.commentReaction.upsert({

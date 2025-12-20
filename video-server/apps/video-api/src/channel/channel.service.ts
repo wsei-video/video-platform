@@ -2,21 +2,25 @@ import { Injectable } from '@nestjs/common';
 
 import { Account } from '@video/lib/database/client';
 import { DatabaseService } from '@video/lib/database';
+import { DateUtils } from '@video/lib/utils';
 import { ForbiddenError, ListQuery } from '@video/lib/restful';
 
 import { ChannelAccountCreateDto, ChannelCreateDto, ChannelUpdateDto } from './channel.dto';
-import { DateUtils } from '@video/lib/utils';
+import { VideoCommonService } from '../video/video-common.service';
 
 @Injectable()
 export class ChannelService {
-  public constructor(private readonly database: DatabaseService) {}
+  public constructor(
+    private readonly database: DatabaseService,
+    private readonly videoCommonService: VideoCommonService,
+  ) {}
 
   public async listAccountChannels(account: Account, query: ListQuery) {
     const connections = await this.database.accountChannelConnection.findMany({
       where: { accountId: account.id },
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { accountId: 'asc' }],
       include: {
         channel: true,
       },
@@ -43,7 +47,7 @@ export class ChannelService {
       where: { channelId },
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { accountId: 'asc' }],
       include: {
         account: true,
       },
@@ -55,17 +59,42 @@ export class ChannelService {
     return { items: accounts, total, next };
   }
 
-  public async listChannelVideos(channelId: number, query: ListQuery) {
+  public async listChannelVideos(account: Account | null, channelId: number, query: ListQuery) {
     const videos = await this.database.video.findMany({
       where: { channelId },
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: {
+        channel: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+        reactions: account
+          ? {
+              where: { userId: account.id },
+            }
+          : undefined,
+      },
     });
+
+    const reactions = await this.videoCommonService.aggregateVideoReactions(videos.map(video => video.id));
 
     const total = await this.database.video.count({ where: { channelId } });
     const next = total > (query.page - 1) * query.count + videos.length;
-    return { items: videos, total, next };
+
+    return {
+      items: videos.map(video => ({
+        ...video,
+        commentCount: video._count.comments,
+        reactions: reactions.get(video.id) ?? [],
+        userReaction: video.reactions?.[0] ?? null,
+      })),
+      total,
+      next,
+    };
   }
 
   public createAccountChannel(account: Account, body: ChannelCreateDto) {

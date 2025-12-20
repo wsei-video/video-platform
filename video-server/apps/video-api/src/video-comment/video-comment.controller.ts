@@ -16,40 +16,35 @@ export class VideoCommentController {
   @Get('')
   @Serialize(VideoCommentsDto, ApiOkResponse)
   @ApiOperation({ summary: 'List video comments' })
-  public list(@Param('videoId', IdPipe) videoId: number, @Query(QueryValidator) query: ListQuery) {
-    return this.videoCommentService.listVideoComments(videoId, query);
+  public list(
+    @ReqAccount() account: Account | null,
+    @Param('videoId', IdPipe) videoId: number,
+    @Query(QueryValidator) query: ListQuery,
+  ) {
+    return this.videoCommentService.listVideoComments(account, videoId, query);
   }
 
   @Get(':commentId')
   @Serialize(VideoCommentDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get a specific video comment' })
-  public find(@Param('videoId', IdPipe) videoId: number, @Param('commentId', IdPipe) commentId: number) {
-    return this.videoCommentService.getComment(videoId, commentId);
+  public find(
+    @ReqAccount() account: Account | null,
+    @Param('videoId', IdPipe) videoId: number,
+    @Param('commentId', IdPipe) commentId: number,
+  ) {
+    return this.videoCommentService.findComment(account, videoId, commentId);
   }
 
   @Post('')
   @AuthRequired()
   @Serialize(VideoCommentDto, ApiCreatedResponse)
   @ApiOperation({ summary: 'Create a new video comment' })
-  public comment(
+  public create(
     @ReqAccount() account: Account,
     @Param('videoId', IdPipe) videoId: number,
     @Body(BodyValidator) body: VideoCommentCreateDto,
   ) {
-    return this.videoCommentService.commentVideo(account, videoId, body);
-  }
-
-  @Post(':commentId')
-  @AuthRequired()
-  @Serialize(VideoCommentDto, ApiCreatedResponse)
-  @ApiOperation({ summary: 'Reply to a video comment' })
-  public reply(
-    @ReqAccount() account: Account,
-    @Param('videoId', IdPipe) videoId: number,
-    @Param('commentId', IdPipe) commentId: number,
-    @Body(BodyValidator) body: VideoCommentCreateDto,
-  ) {
-    return this.videoCommentService.replyToComment(account, videoId, commentId, body);
+    return this.videoCommentService.createComment(account, videoId, body);
   }
 
   @Patch(':commentId')

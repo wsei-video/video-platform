@@ -1,10 +1,11 @@
 import { ApiProperty, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { IsOptional, IsString } from 'class-validator';
 
 import { Id, IdTransform, IsId, PagedResponse, ToId } from '@video/lib/restful';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+
 import { ChannelDto } from '../channel/channel.dto';
-import { VideoReactionDto } from '../reaction/reaction.dto';
+import { ReactionAggregateDto, VideoReactionDto } from '../reaction/reaction.dto';
 
 export enum VideoVisibility {
   Public = 'public',
@@ -59,6 +60,10 @@ export class VideoDto {
   @Expose()
   public views: number;
 
+  @ApiProperty({ description: 'Comment count' })
+  @Expose()
+  public commentCount: number;
+
   @ApiProperty({ enum: VideoVisibility, enumName: 'VideoVisibility', description: 'Video visibility' })
   @Expose()
   public visibility: VideoVisibility;
@@ -67,15 +72,20 @@ export class VideoDto {
   @Expose()
   public status: VideoStatus;
 
-  @ApiProperty({ type: [VideoReactionDto], description: 'Video reactions' })
+  @ApiProperty({ type: [ReactionAggregateDto], description: 'Aggregated video reactions' })
+  @Type(() => ReactionAggregateDto)
+  @Expose()
+  public reactions: ReactionAggregateDto[];
+
+  @ApiProperty({ type: VideoReactionDto, description: 'Video reaction of the current user', nullable: true })
   @Type(() => VideoReactionDto)
   @Expose()
-  public reactions: VideoReactionDto[];
+  public userReaction: VideoReactionDto | null;
 }
 
 @ApiSchema({ name: 'VideoCreate', description: 'Video create request schema' })
 export class VideoCreateDto {
-  @ApiProperty({ description: 'Channel that video is on' })
+  @ApiProperty({ description: 'Channel that video is on', type: 'string' })
   @IsId()
   @ToId()
   public channelId: Id;
@@ -84,50 +94,21 @@ export class VideoCreateDto {
   @IsString()
   public title: string;
 
-  @ApiProperty({ description: 'Video description' })
+  @ApiProperty({ description: 'Video description', default: '' })
   @Expose()
   @IsString()
   @IsOptional()
-  public description: string;
+  public description: string = '';
 
-  @ApiProperty({ description: 'HLS stream URL' })
-  @Expose()
-  @IsString()
-  @IsOptional()
-  public hlsUrl: string;
-
-  @ApiProperty({ description: 'Thumbnail URL' })
-  @Expose()
-  @IsString()
-  @IsOptional()
-  public thumbnail: string;
-
-  @ApiProperty({ description: 'Video duration in seconds' })
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  public duration: number;
-
-  @ApiProperty({ description: 'Video upload date' })
+  @ApiProperty({
+    enum: VideoVisibility,
+    enumName: 'VideoVisibility',
+    description: 'Video visibility',
+    default: VideoVisibility.Public,
+  })
   @Expose()
   @IsOptional()
-  public createdAt: Date;
-
-  @ApiProperty({ description: 'View count' })
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  public views: number;
-
-  @ApiProperty({ enum: VideoVisibility, enumName: 'VideoVisibility', description: 'Video visibility' })
-  @Expose()
-  @IsOptional()
-  public visibility: VideoVisibility;
-
-  @ApiProperty({ enum: VideoStatus, enumName: 'VideoStatus', description: 'Processing status' })
-  @Expose()
-  @IsOptional()
-  public status: VideoStatus;
+  public visibility: VideoVisibility = VideoVisibility.Public;
 }
 
 @ApiSchema({ name: 'VideoUpdate', description: 'Video update request schema' })

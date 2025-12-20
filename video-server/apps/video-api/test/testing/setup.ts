@@ -1,3 +1,5 @@
+import { execSync } from 'child_process';
+
 import compose from 'docker-compose';
 import dotenv from 'dotenv';
 import expand from 'dotenv-expand';
@@ -15,4 +17,7 @@ export default async () => {
   await compose.upAll({ config: 'docker-compose.test.yml' });
 
   console.log('Testing Docker containers are up!');
+
+  // Reset the testing database before running all E2E test.
+  execSync('npm run prisma -- migrate reset -f');
 };

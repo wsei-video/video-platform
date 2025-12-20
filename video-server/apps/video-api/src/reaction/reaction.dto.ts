@@ -45,8 +45,8 @@ export class VideoReactionsDto extends PagedResponse<VideoReactionDto> {
   public items!: VideoReactionDto[];
 }
 
-@ApiSchema({ name: 'CommentReaction', description: 'Comment reaction details' })
-export class CommentReactionDto {
+@ApiSchema({ name: 'VideoCommentReaction', description: 'Video comment reaction details' })
+export class VideoCommentReactionDto {
   @ApiProperty({ description: 'Unique comment reaction identifier' })
   @Expose()
   @IdTransform()
@@ -71,17 +71,28 @@ export class CommentReactionDto {
   public commentId: string;
 }
 
-@ApiSchema({ name: 'CommentReactionCreate', description: 'Comment reaction create schema' })
-export class CommentReactionCreateDto {
+@ApiSchema({ name: 'VideoCommentReactionCreate', description: 'Video comment reaction create schema' })
+export class VideoCommentReactionCreateDto {
   @ApiProperty({ description: 'Reaction content (e.g., like, dislike)' })
   @IsString()
   public content: string;
 }
 
-@ApiSchema({ name: 'CommentReactions', description: 'Paged comment reaction list' })
-export class CommentReactionsDto extends PagedResponse<CommentReactionDto> {
-  @ApiProperty({ type: [CommentReactionDto], description: 'Comment reactions' })
-  @Type(() => CommentReactionDto)
+@ApiSchema({ name: 'VideoCommentReactions', description: 'Paged comment reaction list' })
+export class VideoCommentReactionsDto extends PagedResponse<VideoCommentReactionDto> {
+  @ApiProperty({ type: [VideoCommentReactionDto], description: 'Comment reactions' })
+  @Type(() => VideoCommentReactionDto)
   @Expose()
-  public items!: CommentReactionDto[];
+  public items!: VideoCommentReactionDto[];
+}
+
+@ApiSchema({ name: 'ReactionAggregate', description: 'Aggregated reaction details ' })
+export class ReactionAggregateDto {
+  @ApiProperty({ description: 'Reaction content (e.g., like, dislike)' })
+  @Expose()
+  public content: string;
+
+  @ApiProperty({ description: 'Number of reactions of this type on the resource' })
+  @Expose()
+  public count: number;
 }

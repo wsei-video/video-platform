@@ -1,17 +1,17 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": "test",
+  "rootDir": ".",
   "testEnvironment": "node",
-  "testRegex": ".test.ts$",
+  "testMatch": ["<rootDir>/test/**/*.test.ts"],
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^@video/lib(|/.*)$": "<rootDir>/../../../libs/video-lib/src/$1"
+    "^@video/lib(|/.*)$": "<rootDir>/../../libs/video-lib/src/$1"
   },
   "collectCoverage": true,
   "verbose": true,
-  "globalSetup": "<rootDir>/testing/setup.ts",
-  "globalTeardown": "<rootDir>/testing/teardown.ts",
-  "setupFilesAfterEnv": ["<rootDir>/testing/database.ts"]
+  "globalSetup": "<rootDir>/test/testing/setup.ts",
+  "globalTeardown": "<rootDir>/test/testing/teardown.ts",
+  "setupFilesAfterEnv": ["<rootDir>/test/testing/database.ts"]
 }

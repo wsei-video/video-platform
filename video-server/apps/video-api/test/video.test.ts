@@ -1,8 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
-import { TestingAuth, TestingFixture } from './testing/fixture';
-import { Id } from '@video/lib/restful';
-import { DateUtils } from '@video/lib/utils';
+
 import { Account, Channel, Video, VideoStatus, VideoVisibility } from '@video/lib/database/client';
+import { DateUtils } from '@video/lib/utils';
+import { Id } from '@video/lib/restful';
+
+import { TestingAuth, TestingFixture } from './testing/fixture';
 
 describe('Video', () => {
   let fixture: TestingFixture;
@@ -79,10 +81,19 @@ describe('Video', () => {
         hlsUrl: null,
         thumbnail: null,
         duration: 0,
+        channel: {
+          id: '-Y5OWS2exwnMaKM-RWHDVg',
+          name: 'My Channel',
+          slug: 'my-channel',
+          createdAt: '2025-10-01T10:00:00.000Z',
+        },
         createdAt: '2025-10-01T10:00:00.000Z',
         views: 0,
+        commentCount: 0,
         visibility: VideoVisibility.public,
         status: VideoStatus.none,
+        reactions: [],
+        userReaction: null,
       });
   });
 
@@ -162,6 +173,7 @@ describe('Video', () => {
           duration: 0,
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
+          commentCount: 0,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {
@@ -171,10 +183,11 @@ describe('Video', () => {
             createdAt: '2025-10-01T10:00:00.000Z',
           },
           reactions: [],
+          userReaction: null,
         });
     });
 
-    test('Find video by id with reactions', async () => {
+    test('Find video by id with reactions and comments', async () => {
       await fixture.database.videoReaction.create({
         data: {
           content: 'like',
@@ -193,9 +206,19 @@ describe('Video', () => {
         },
       });
 
+      await fixture.database.comment.create({
+        data: {
+          content: 'Cool video',
+          createdAt: DateUtils.now(),
+          videoId: myVideo.id,
+          userId: auth.account.id,
+        },
+      });
+
       return fixture
         .request()
         .get(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}`)
+        .set('Authorization', auth.header)
         .expect(HttpStatus.OK)
         .expect({
           id: '-Y5OWS2exwnMaKM-RWHDVg',
@@ -206,6 +229,7 @@ describe('Video', () => {
           duration: 0,
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
+          commentCount: 1,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {
@@ -216,20 +240,21 @@ describe('Video', () => {
           },
           reactions: [
             {
-              id: '-Y5OWS2exwnMaKM-RWHDVg',
-              content: 'like',
-              createdAt: '2025-10-01T10:00:00.000Z',
-              userId: '-Y5OWS2exwnMaKM-RWHDVg',
-              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+              content: 'dislike',
+              count: 1,
             },
             {
-              id: '1F7QtAWVDfuRrA54Fs_6Nw',
-              content: 'dislike',
-              createdAt: '2025-10-01T10:00:00.000Z',
-              userId: '1F7QtAWVDfuRrA54Fs_6Nw',
-              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+              content: 'like',
+              count: 1,
             },
           ],
+          userReaction: {
+            id: '-Y5OWS2exwnMaKM-RWHDVg',
+            content: 'like',
+            createdAt: '2025-10-01T10:00:00.000Z',
+            userId: '-Y5OWS2exwnMaKM-RWHDVg',
+            videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+          },
         });
     });
 
@@ -287,6 +312,7 @@ describe('Video', () => {
           duration: 0,
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
+          commentCount: 0,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {
@@ -295,6 +321,8 @@ describe('Video', () => {
             slug: 'my-channel',
             createdAt: '2025-10-01T10:00:00.000Z',
           },
+          reactions: [],
+          userReaction: null,
         });
     });
 

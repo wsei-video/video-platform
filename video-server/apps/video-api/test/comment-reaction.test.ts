@@ -13,7 +13,7 @@ describe('Comment reaction', () => {
   let myComment: Comment;
 
   const reactionEndpoint = (videoId: number, commentId: number) =>
-    `/v1/videos/${Id.clear(videoId).encrypted}/comments/${Id.clear(commentId).encrypted}/reactions`;
+    `/v1/videos/${Id.clear(videoId).encrypted}/comments/${Id.clear(commentId).encrypted}`;
 
   beforeEach(async () => {
     fixture = await TestingFixture.create();
@@ -56,7 +56,7 @@ describe('Comment reaction', () => {
   test('Get non existent reaction', () => {
     return fixture
       .request()
-      .get(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(123).encrypted}`)
+      .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(123).encrypted}`)
       .expect(HttpStatus.NOT_FOUND)
       .expect({ error: 'NotFound', statusCode: 404, reason: { resource: 'CommentReaction' } });
   });
@@ -64,22 +64,26 @@ describe('Comment reaction', () => {
   test('Get reaction wrong id', () => {
     return fixture
       .request()
-      .get(`${reactionEndpoint(myVideo.id, myComment.id)}/invalid-id`)
+      .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/invalid-id`)
       .expect(HttpStatus.BAD_REQUEST);
   });
 
   test('List reactions empty', () => {
-    return fixture.request().get(reactionEndpoint(myVideo.id, myComment.id)).expect(HttpStatus.OK).expect({
-      total: 0,
-      next: false,
-      items: [],
-    });
+    return fixture
+      .request()
+      .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions`)
+      .expect(HttpStatus.OK)
+      .expect({
+        total: 0,
+        next: false,
+        items: [],
+      });
   });
 
   test('React to comment unauthenticated', () => {
     return fixture
       .request()
-      .post(reactionEndpoint(myVideo.id, myComment.id))
+      .put(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
       .send({ content: 'like' })
       .expect(HttpStatus.UNAUTHORIZED);
   });
@@ -87,7 +91,7 @@ describe('Comment reaction', () => {
   test('React to comment invalid body', () => {
     return fixture
       .request()
-      .post(reactionEndpoint(myVideo.id, myComment.id))
+      .put(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
       .set('Authorization', auth.header)
       .expect(HttpStatus.BAD_REQUEST)
       .expect({
@@ -103,10 +107,10 @@ describe('Comment reaction', () => {
   test('React to comment', () => {
     return fixture
       .request()
-      .post(reactionEndpoint(myVideo.id, myComment.id))
+      .put(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
       .set('Authorization', auth.header)
       .send({ content: 'like' })
-      .expect(HttpStatus.CREATED)
+      .expect(HttpStatus.OK)
       .expect({
         id: '-Y5OWS2exwnMaKM-RWHDVg',
         content: 'like',
@@ -128,10 +132,10 @@ describe('Comment reaction', () => {
 
     return fixture
       .request()
-      .post(reactionEndpoint(myVideo.id, myComment.id))
+      .put(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
       .set('Authorization', auth.header)
       .send({ content: 'dislike' })
-      .expect(HttpStatus.CREATED)
+      .expect(HttpStatus.OK)
       .expect({
         id: '-Y5OWS2exwnMaKM-RWHDVg',
         content: 'dislike',
@@ -178,7 +182,7 @@ describe('Comment reaction', () => {
     test('Find reaction by id', () => {
       return fixture
         .request()
-        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(myReaction.id).encrypted}`)
+        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(myReaction.id).encrypted}`)
         .expect(HttpStatus.OK)
         .expect({
           id: '-Y5OWS2exwnMaKM-RWHDVg',
@@ -192,7 +196,7 @@ describe('Comment reaction', () => {
     test('Get my reaction', () => {
       return fixture
         .request()
-        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/me`)
+        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
         .set('Authorization', auth.header)
         .expect(HttpStatus.OK)
         .expect({
@@ -207,14 +211,14 @@ describe('Comment reaction', () => {
     test('Get my reaction unauthenticated', () => {
       return fixture
         .request()
-        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/me`)
+        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     test('List reactions', () => {
       return fixture
         .request()
-        .get(reactionEndpoint(myVideo.id, myComment.id))
+        .get(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions`)
         .expect(HttpStatus.OK)
         .expect({
           total: 2,
@@ -241,7 +245,7 @@ describe('Comment reaction', () => {
     test('Delete reaction not found', () => {
       return fixture
         .request()
-        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(123).encrypted}`)
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(123).encrypted}`)
         .set('Authorization', auth.header)
         .expect(HttpStatus.NOT_FOUND)
         .expect({ error: 'NotFound', statusCode: 404, reason: { resource: 'CommentReaction' } });
@@ -250,14 +254,14 @@ describe('Comment reaction', () => {
     test('Delete reaction not authenticated', () => {
       return fixture
         .request()
-        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(myReaction.id).encrypted}`)
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(myReaction.id).encrypted}`)
         .expect(HttpStatus.UNAUTHORIZED);
     });
 
     test('Delete reaction not owner', () => {
       return fixture
         .request()
-        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(anotherReaction.id).encrypted}`)
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(anotherReaction.id).encrypted}`)
         .set('Authorization', auth.header)
         .expect(HttpStatus.FORBIDDEN)
         .expect({ error: 'Forbidden', statusCode: 403 });
@@ -266,7 +270,7 @@ describe('Comment reaction', () => {
     test('Delete reaction', () => {
       return fixture
         .request()
-        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/${Id.clear(myReaction.id).encrypted}`)
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reactions/${Id.clear(myReaction.id).encrypted}`)
         .set('Authorization', auth.header)
         .expect(HttpStatus.NO_CONTENT)
         .expect('');
@@ -275,14 +279,17 @@ describe('Comment reaction', () => {
     test('Remove my reaction', () => {
       return fixture
         .request()
-        .delete(reactionEndpoint(myVideo.id, myComment.id))
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
         .set('Authorization', auth.header)
         .expect(HttpStatus.NO_CONTENT)
         .expect('');
     });
 
     test('Remove my reaction unauthenticated', () => {
-      return fixture.request().delete(reactionEndpoint(myVideo.id, myComment.id)).expect(HttpStatus.UNAUTHORIZED);
+      return fixture
+        .request()
+        .delete(`${reactionEndpoint(myVideo.id, myComment.id)}/reaction`)
+        .expect(HttpStatus.UNAUTHORIZED);
     });
   });
 });

@@ -2,9 +2,9 @@ import { HttpStatus } from '@nestjs/common';
 
 import { DateUtils } from '@video/lib/utils';
 
-import { TestingAuth, TestingFixture } from './testing/fixture';
 import { Account, Channel } from '@video/lib/database/client';
 import { Id } from '@video/lib/restful';
+import { TestingAuth, TestingFixture } from './testing/fixture';
 
 describe('Channel', () => {
   let fixture: TestingFixture;
@@ -133,7 +133,7 @@ describe('Channel', () => {
     });
 
     test('Find channel by slug', () => {
-      return fixture.request().get(`/v1/channels/slug/${myChannel.slug}`).expect(HttpStatus.OK).expect({
+      return fixture.request().get(`/v1/channel/slug/${myChannel.slug}`).expect(HttpStatus.OK).expect({
         id: '-Y5OWS2exwnMaKM-RWHDVg',
         name: 'My Channel',
         slug: 'my-channel',
@@ -144,7 +144,7 @@ describe('Channel', () => {
     test('Find channel by slug not found', () => {
       return fixture
         .request()
-        .get('/v1/channels/slug/not-found')
+        .get('/v1/channel/slug/not-found')
         .expect(HttpStatus.NOT_FOUND)
         .expect({ error: 'NotFound', statusCode: 404, reason: { resource: 'Channel' } });
     });
@@ -402,11 +402,29 @@ describe('Channel', () => {
 
     describe('Existing video', () => {
       beforeEach(async () => {
-        await fixture.database.video.create({
+        const video = await fixture.database.video.create({
           data: {
             title: 'My video',
             channelId: myChannel.id,
             createdAt: DateUtils.now(),
+          },
+        });
+
+        await fixture.database.videoReaction.create({
+          data: {
+            content: 'like',
+            videoId: video.id,
+            userId: auth.account.id,
+            createdAt: DateUtils.now(),
+          },
+        });
+
+        await fixture.database.comment.create({
+          data: {
+            content: 'Cool video',
+            createdAt: DateUtils.now(),
+            videoId: video.id,
+            userId: auth.account.id,
           },
         });
       });
@@ -415,6 +433,7 @@ describe('Channel', () => {
         return fixture
           .request()
           .get(`/v1/channels/${Id.clear(myChannel.id).encrypted}/videos`)
+          .set('Authorization', auth.header)
           .expect(HttpStatus.OK)
           .expect({
             total: 1,
@@ -427,10 +446,30 @@ describe('Channel', () => {
                 hlsUrl: null,
                 thumbnail: null,
                 duration: 0,
+                channel: {
+                  id: '-Y5OWS2exwnMaKM-RWHDVg',
+                  name: 'My Channel',
+                  slug: 'my-channel',
+                  createdAt: '2025-10-01T10:00:00.000Z',
+                },
                 createdAt: '2025-10-01T10:00:00.000Z',
                 views: 0,
+                commentCount: 1,
                 visibility: 'public',
                 status: 'none',
+                reactions: [
+                  {
+                    content: 'like',
+                    count: 1,
+                  },
+                ],
+                userReaction: {
+                  id: '-Y5OWS2exwnMaKM-RWHDVg',
+                  content: 'like',
+                  createdAt: '2025-10-01T10:00:00.000Z',
+                  userId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+                },
               },
             ],
           });

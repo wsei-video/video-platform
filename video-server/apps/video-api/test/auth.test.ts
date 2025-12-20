@@ -23,6 +23,24 @@ describe('Auth', () => {
       .expect({ error: 'Unauthorized', statusCode: 401 });
   });
 
+  test('Get current account invalid header', () => {
+    return fixture
+      .request()
+      .get('/v1/account')
+      .set('Authorization', 'Basic invalid')
+      .expect(HttpStatus.UNAUTHORIZED)
+      .expect({ error: 'Unauthorized', statusCode: 401 });
+  });
+
+  test('Get current account invalid token', () => {
+    return fixture
+      .request()
+      .get('/v1/account')
+      .set('Authorization', 'Bearer invalid')
+      .expect(HttpStatus.UNAUTHORIZED)
+      .expect({ error: 'Unauthorized', statusCode: 401 });
+  });
+
   test('Get current session when unauthenticated', () => {
     return fixture
       .request()

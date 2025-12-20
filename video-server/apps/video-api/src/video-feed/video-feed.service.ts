@@ -11,7 +11,7 @@ export class VideoFeedService {
     const videos = await this.database.video.findMany({
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.video.count();
@@ -23,7 +23,7 @@ export class VideoFeedService {
     const videos = await this.database.video.findMany({
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.video.count();
@@ -35,7 +35,7 @@ export class VideoFeedService {
     const videos = await this.database.video.findMany({
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.video.count();
@@ -47,7 +47,7 @@ export class VideoFeedService {
     const videos = await this.database.video.findMany({
       skip: (query.page - 1) * query.count,
       take: query.count,
-      orderBy: { createdAt: 'desc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     });
 
     const total = await this.database.video.count();

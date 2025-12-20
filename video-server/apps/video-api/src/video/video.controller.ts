@@ -16,23 +16,27 @@ export class VideoController {
   @Get(':videoId')
   @Serialize(VideoDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get specific video' })
-  public find(@Param('videoId', IdPipe) videoId: number) {
-    return this.videoService.findById(videoId);
+  public find(@ReqAccount() account: Account | null, @Param('videoId', IdPipe) videoId: number) {
+    return this.videoService.findById(account, videoId);
   }
 
   @Get(':videoId/recommended')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get recommended videos for the specific video' })
-  public async recommended(@Param('videoId', IdPipe) videoId: number, @Query(QueryValidator) query: ListQuery) {
-    return this.videoService.getRecommendedVideos(videoId, query);
+  public async recommended(
+    @ReqAccount() account: Account | null,
+    @Param('videoId', IdPipe) videoId: number,
+    @Query(QueryValidator) query: ListQuery,
+  ) {
+    return this.videoService.getRecommendedVideos(account, videoId, query);
   }
 
   @Post()
   @AuthRequired()
   @Serialize(VideoDto, ApiCreatedResponse)
   @ApiOperation({ summary: 'Create a new video' })
-  public create(@Body(BodyValidator) body: VideoCreateDto) {
-    return this.videoService.createVideo(body);
+  public create(@ReqAccount() account: Account, @Body(BodyValidator) body: VideoCreateDto) {
+    return this.videoService.createVideo(account, body);
   }
 
   @Patch(':videoId')

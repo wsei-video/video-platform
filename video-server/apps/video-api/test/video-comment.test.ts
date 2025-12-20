@@ -101,9 +101,10 @@ describe('Video comment', () => {
         content: 'This is a test comment',
         createdAt: '2025-10-01T10:00:00.000Z',
         updatedAt: null,
-        parentId: null,
-        replies: [],
+        videoId: '-Y5OWS2exwnMaKM-RWHDVg',
         reactions: [],
+        replyCount: 0,
+        userReaction: null,
       });
   });
 
@@ -151,9 +152,10 @@ describe('Video comment', () => {
           content: 'My comment',
           createdAt: '2025-10-01T10:00:00.000Z',
           updatedAt: null,
-          parentId: null,
-          replies: [],
+          videoId: '-Y5OWS2exwnMaKM-RWHDVg',
           reactions: [],
+          replyCount: 0,
+          userReaction: null,
         });
     });
 
@@ -169,7 +171,7 @@ describe('Video comment', () => {
 
       await fixture.database.commentReaction.create({
         data: {
-          content: 'dislike',
+          content: 'like',
           commentId: myComment.id,
           userId: anotherAccount.id,
           createdAt: DateUtils.now(),
@@ -185,24 +187,15 @@ describe('Video comment', () => {
           content: 'My comment',
           createdAt: '2025-10-01T10:00:00.000Z',
           updatedAt: null,
-          parentId: null,
-          replies: [],
+          videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+          replyCount: 0,
           reactions: [
             {
-              id: '-Y5OWS2exwnMaKM-RWHDVg',
               content: 'like',
-              createdAt: '2025-10-01T10:00:00.000Z',
-              userId: '-Y5OWS2exwnMaKM-RWHDVg',
-              commentId: '-Y5OWS2exwnMaKM-RWHDVg',
-            },
-            {
-              id: '1F7QtAWVDfuRrA54Fs_6Nw',
-              content: 'dislike',
-              createdAt: '2025-10-01T10:00:00.000Z',
-              userId: '1F7QtAWVDfuRrA54Fs_6Nw',
-              commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+              count: 2,
             },
           ],
+          userReaction: null,
         });
     });
 
@@ -228,6 +221,7 @@ describe('Video comment', () => {
       return fixture
         .request()
         .get(commentEndpoint(myVideo.id))
+        .set('Authorization', auth.header)
         .expect(HttpStatus.OK)
         .expect({
           total: 2,
@@ -238,33 +232,35 @@ describe('Video comment', () => {
               content: 'My comment',
               createdAt: '2025-10-01T10:00:00.000Z',
               updatedAt: null,
-              parentId: null,
-              replies: [],
+              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
               reactions: [
                 {
-                  id: '-Y5OWS2exwnMaKM-RWHDVg',
-                  content: 'like',
-                  createdAt: '2025-10-01T10:00:00.000Z',
-                  userId: '-Y5OWS2exwnMaKM-RWHDVg',
-                  commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  content: 'dislike',
+                  count: 1,
                 },
                 {
-                  id: '1F7QtAWVDfuRrA54Fs_6Nw',
-                  content: 'dislike',
-                  createdAt: '2025-10-01T10:00:00.000Z',
-                  userId: '1F7QtAWVDfuRrA54Fs_6Nw',
-                  commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  content: 'like',
+                  count: 1,
                 },
               ],
+              replyCount: 0,
+              userReaction: {
+                id: '-Y5OWS2exwnMaKM-RWHDVg',
+                content: 'like',
+                createdAt: '2025-10-01T10:00:00.000Z',
+                userId: '-Y5OWS2exwnMaKM-RWHDVg',
+                commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+              },
             },
             {
               id: '1F7QtAWVDfuRrA54Fs_6Nw',
               content: 'Another comment',
               createdAt: '2025-10-01T10:00:00.000Z',
               updatedAt: null,
-              parentId: null,
-              replies: [],
+              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
               reactions: [],
+              replyCount: 0,
+              userReaction: null,
             },
           ],
         });
@@ -310,9 +306,10 @@ describe('Video comment', () => {
           content: 'Updated comment content',
           createdAt: '2025-10-01T10:00:00.000Z',
           updatedAt: '2025-10-01T10:00:00.000Z',
-          parentId: null,
-          replies: [],
+          videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+          replyCount: 0,
           reactions: [],
+          userReaction: null,
         });
     });
 
@@ -354,7 +351,7 @@ describe('Video comment', () => {
       test('Reply to comment unauthenticated', () => {
         return fixture
           .request()
-          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}`)
+          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies`)
           .send({ content: 'Reply content' })
           .expect(HttpStatus.UNAUTHORIZED);
       });
@@ -362,7 +359,7 @@ describe('Video comment', () => {
       test('Reply to non existent comment', () => {
         return fixture
           .request()
-          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(123).encrypted}`)
+          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(123).encrypted}/replies`)
           .set('Authorization', auth.header)
           .send({ content: 'Reply content' })
           .expect(HttpStatus.NOT_FOUND)
@@ -372,7 +369,7 @@ describe('Video comment', () => {
       test('Reply to comment', () => {
         return fixture
           .request()
-          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}`)
+          .post(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies`)
           .set('Authorization', auth.header)
           .send({ content: 'This is a reply' })
           .expect(HttpStatus.CREATED)
@@ -381,63 +378,160 @@ describe('Video comment', () => {
             content: 'This is a reply',
             createdAt: '2025-10-01T10:00:00.000Z',
             updatedAt: null,
-            parentId: '-Y5OWS2exwnMaKM-RWHDVg',
-            replies: [],
+            videoId: '-Y5OWS2exwnMaKM-RWHDVg',
             reactions: [],
+            commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+            userReaction: null,
           });
       });
 
-      test('Find comment with replies', async () => {
-        await fixture.database.comment.create({
-          data: {
-            content: 'Reply 1',
-            videoId: myVideo.id,
-            userId: auth.account.id,
-            parentId: myComment.id,
-            createdAt: DateUtils.now(),
-          },
-        });
+      describe('Comment with replies', () => {
+        let reply1: Comment;
+        let reply2: Comment;
 
-        await fixture.database.comment.create({
-          data: {
-            content: 'Reply 2',
-            videoId: myVideo.id,
-            userId: anotherAccount.id,
-            parentId: myComment.id,
-            createdAt: DateUtils.now(),
-          },
-        });
-
-        return fixture
-          .request()
-          .get(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}`)
-          .expect(HttpStatus.OK)
-          .expect({
-            id: '-Y5OWS2exwnMaKM-RWHDVg',
-            content: 'My comment',
-            createdAt: '2025-10-01T10:00:00.000Z',
-            updatedAt: null,
-            parentId: null,
-            replies: [
-              {
-                id: 'qlgbfa88WMVNug8OWMR-9w',
-                content: 'Reply 1',
-                createdAt: '2025-10-01T10:00:00.000Z',
-                updatedAt: null,
-                parentId: '-Y5OWS2exwnMaKM-RWHDVg',
-                reactions: [],
-              },
-              {
-                id: 'DS-EMNX2snGTfBbZYtkaZg',
-                content: 'Reply 2',
-                createdAt: '2025-10-01T10:00:00.000Z',
-                updatedAt: null,
-                parentId: '-Y5OWS2exwnMaKM-RWHDVg',
-                reactions: [],
-              },
-            ],
-            reactions: [],
+        beforeEach(async () => {
+          reply1 = await fixture.database.comment.create({
+            data: {
+              content: 'Reply 1',
+              videoId: myVideo.id,
+              userId: auth.account.id,
+              parentId: myComment.id,
+              createdAt: DateUtils.now(),
+            },
           });
+
+          reply2 = await fixture.database.comment.create({
+            data: {
+              content: 'Reply 2',
+              videoId: myVideo.id,
+              userId: anotherAccount.id,
+              parentId: myComment.id,
+              createdAt: DateUtils.now(),
+            },
+          });
+        });
+
+        test('Find comment with replies', () => {
+          return fixture
+            .request()
+            .get(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}`)
+            .expect(HttpStatus.OK)
+            .expect({
+              id: '-Y5OWS2exwnMaKM-RWHDVg',
+              content: 'My comment',
+              createdAt: '2025-10-01T10:00:00.000Z',
+              updatedAt: null,
+              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+              replyCount: 2,
+              reactions: [],
+              userReaction: null,
+            });
+        });
+
+        test('List comment replies', () => {
+          return fixture
+            .request()
+            .get(`${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies`)
+            .expect(HttpStatus.OK)
+            .expect({
+              total: 2,
+              next: false,
+              items: [
+                {
+                  id: 'qlgbfa88WMVNug8OWMR-9w',
+                  content: 'Reply 1',
+                  createdAt: '2025-10-01T10:00:00.000Z',
+                  updatedAt: null,
+                  videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  reactions: [],
+                  commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  userReaction: null,
+                },
+                {
+                  id: 'DS-EMNX2snGTfBbZYtkaZg',
+                  content: 'Reply 2',
+                  createdAt: '2025-10-01T10:00:00.000Z',
+                  updatedAt: null,
+                  videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  reactions: [],
+                  commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+                  userReaction: null,
+                },
+              ],
+            });
+        });
+
+        test('Find comment reply', () => {
+          return fixture
+            .request()
+            .get(
+              `${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies/${Id.clear(reply1.id).encrypted}`,
+            )
+            .expect(HttpStatus.OK)
+            .expect({
+              id: 'qlgbfa88WMVNug8OWMR-9w',
+              content: 'Reply 1',
+              createdAt: '2025-10-01T10:00:00.000Z',
+              updatedAt: null,
+              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+              reactions: [],
+              commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+              userReaction: null,
+            });
+        });
+
+        test('Delete own reply', () => {
+          return fixture
+            .request()
+            .delete(
+              `${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies/${Id.clear(reply1.id).encrypted}`,
+            )
+            .set('Authorization', auth.header)
+            .expect(HttpStatus.NO_CONTENT)
+            .expect('');
+        });
+
+        test('Delete reply of another user', () => {
+          return fixture
+            .request()
+            .delete(
+              `${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies/${Id.clear(reply2.id).encrypted}`,
+            )
+            .set('Authorization', auth.header)
+            .expect(HttpStatus.FORBIDDEN);
+        });
+
+        test('Update own reply', () => {
+          return fixture
+            .request()
+            .patch(
+              `${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies/${Id.clear(reply1.id).encrypted}`,
+            )
+            .set('Authorization', auth.header)
+            .send({ content: 'Updated content' })
+            .expect(HttpStatus.OK)
+            .expect({
+              id: 'qlgbfa88WMVNug8OWMR-9w',
+              content: 'Updated content',
+              updatedAt: '2025-10-01T10:00:00.000Z',
+              createdAt: '2025-10-01T10:00:00.000Z',
+              videoId: '-Y5OWS2exwnMaKM-RWHDVg',
+              reactions: [],
+              commentId: '-Y5OWS2exwnMaKM-RWHDVg',
+              userReaction: null,
+            });
+        });
+
+        test('Update reply of another user', () => {
+          return fixture
+            .request()
+            .patch(
+              `${commentEndpoint(myVideo.id)}/${Id.clear(myComment.id).encrypted}/replies/${Id.clear(reply2.id).encrypted}`,
+            )
+            .set('Authorization', auth.header)
+            .send({ content: 'Updated content' })
+            .expect(HttpStatus.FORBIDDEN);
+        });
       });
     });
   });
