@@ -16,7 +16,8 @@
     "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test:lib": "jest --config ./libs/video-lib/jest.config.json",
     "test:api:e2e": "jest --config ./apps/video-api/jest.config.e2e.json --runInBand",
-    "test:api:e2e:watch": "jest --config ./apps/video-api/jest.config.e2e.json --coverage --watch --runInBand"
+    "test:api:e2e:watch": "jest --config ./apps/video-api/jest.config.e2e.json --coverage --watch --runInBand",
+    "prisma": "prisma"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.927.0",

@@ -4,11 +4,11 @@ import { Request } from 'express';
 import { Account, AuthSession } from '@video/lib/database/client';
 
 export const ReqAccount = createParamDecorator((_data: unknown, context: ExecutionContext) => {
-  return context.switchToHttp().getRequest<Request>().user?.account;
+  return context.switchToHttp().getRequest<Request>().user?.account ?? null;
 });
 
 export const ReqSession = createParamDecorator((_data: unknown, context: ExecutionContext) => {
-  return context.switchToHttp().getRequest<Request>().user?.session;
+  return context.switchToHttp().getRequest<Request>().user?.session ?? null;
 });
 
 export type AuthRequestContext = { account: Account; session: AuthSession };

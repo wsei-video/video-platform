@@ -51,7 +51,7 @@ export class ChannelUpdateDto extends PartialType(ChannelCreateDto) {}
 
 @ApiSchema({ name: 'ChannelAccountCreate', description: 'Link the account with the channel' })
 export class ChannelAccountCreateDto {
-  @ApiProperty({ description: 'Unique channel identifier' })
+  @ApiProperty({ description: 'Unique channel identifier', type: 'string' })
   @IsId()
   @ToId()
   public accountId: Id;

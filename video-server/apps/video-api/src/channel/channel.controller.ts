@@ -11,11 +11,11 @@ import { ChannelService } from './channel.service';
 import { ReqAccount } from '../auth/auth-request.context';
 import { VideosDto } from '../video/video.dto';
 
-@Controller('channels')
+@Controller()
 export class ChannelController {
   public constructor(private readonly channelService: ChannelService) {}
 
-  @Get()
+  @Get('channels')
   @AuthRequired()
   @Serialize(ChannelsDto, ApiOkResponse)
   @ApiOperation({ summary: 'List channels available for the account' })
@@ -23,21 +23,14 @@ export class ChannelController {
     return this.channelService.listAccountChannels(account, query);
   }
 
-  @Get(':channelId')
+  @Get('channels/:channelId')
   @Serialize(ChannelDto, ApiOkResponse)
   @ApiOperation({ summary: 'Get channel details' })
   public find(@Param('channelId', IdPipe) channelId: number) {
     return this.channelService.find(channelId);
   }
 
-  @Get('slug/:channelSlug')
-  @Serialize(ChannelDto, ApiOkResponse)
-  @ApiOperation({ summary: 'Get channel details by URL slug' })
-  public findBySlug(@Param('channelSlug') channelSlug: string) {
-    return this.channelService.findBySlug(channelSlug);
-  }
-
-  @Get(':channelId/accounts')
+  @Get('channels/:channelId/accounts')
   @AuthRequired()
   @Serialize(AccountsDto, ApiOkResponse)
   @ApiOperation({ summary: 'List of accounts that have access to the channel' })
@@ -49,7 +42,7 @@ export class ChannelController {
     return this.channelService.listChannelAccounts(account, channelId, query);
   }
 
-  @Post(':channelId/accounts')
+  @Post('channels/:channelId/accounts')
   @AuthRequired()
   @ApiNoContentResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -62,7 +55,7 @@ export class ChannelController {
     return this.channelService.linkChannelAccount(account, channelId, body);
   }
 
-  @Delete(':channelId/accounts/:accountId')
+  @Delete('channels/:channelId/accounts/:accountId')
   @AuthRequired()
   @ApiNoContentResponse()
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -75,14 +68,18 @@ export class ChannelController {
     return this.channelService.unlinkChannelAccount(account, channelId, accountId);
   }
 
-  @Get(':channelId/videos')
+  @Get('channels/:channelId/videos')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'List of videos on the channel' })
-  public videos(@Param('channelId', IdPipe) channelId: number, @Query(QueryValidator) query: ListQuery) {
-    return this.channelService.listChannelVideos(channelId, query);
+  public videos(
+    @ReqAccount() account: Account | null,
+    @Param('channelId', IdPipe) channelId: number,
+    @Query(QueryValidator) query: ListQuery,
+  ) {
+    return this.channelService.listChannelVideos(account, channelId, query);
   }
 
-  @Post()
+  @Post('channels')
   @AuthRequired()
   @Serialize(ChannelDto, ApiCreatedResponse)
   @ApiOperation({ summary: 'Create a new channel' })
@@ -90,7 +87,7 @@ export class ChannelController {
     return this.channelService.createAccountChannel(account, body);
   }
 
-  @Patch(':channelId')
+  @Patch('channels/:channelId')
   @AuthRequired()
   @Serialize(ChannelDto, ApiOkResponse)
   @ApiOperation({ summary: 'Update channel details' })
@@ -102,12 +99,19 @@ export class ChannelController {
     return this.channelService.updateAccountChannel(account, channelId, body);
   }
 
-  @Delete(':channelId')
+  @Delete('channels/:channelId')
   @AuthRequired()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
   @ApiOperation({ summary: 'Delete the specific channel' })
   public delete(@ReqAccount() account: Account, @Param('channelId', IdPipe) channelId: number) {
     return this.channelService.deleteAccountChannel(account, channelId);
+  }
+
+  @Get('channel/slug/:channelSlug')
+  @Serialize(ChannelDto, ApiOkResponse)
+  @ApiOperation({ summary: 'Get channel details by URL slug' })
+  public findBySlug(@Param('channelSlug') channelSlug: string) {
+    return this.channelService.findBySlug(channelSlug);
   }
 }
