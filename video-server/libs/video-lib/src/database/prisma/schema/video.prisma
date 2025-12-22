@@ -1,19 +1,24 @@
 model Video {
-  id            Int             @id @default(autoincrement())
-  title         String
-  description   String          @default("")
-  duration      Int             @default(0)
-  views         Int             @default(0)
-  status        VideoStatus     @default(none)
-  visibility    VideoVisibility @default(public)
-  channelId     Int
-  createdAt     DateTime        @default(now())
-  hlsUrl        String?
-  thumbnail     String?
+  id           Int             @id @default(autoincrement())
+  title        String
+  description  String          @default("")
+  duration     Int             @default(0)
+  views        Int             @default(0)
+  status       VideoStatus     @default(none)
+  visibility   VideoVisibility @default(public)
+  channelId    Int
+  createdAt    DateTime        @default(now())
+  hlsUrl       String?
+  thumbnail    String?
+  sourceName   String?
+  sourceSize   Int?
+  sourceKey    String?
+  sourceUserId Int?
 
-  reactions   VideoReaction[]
-  comments    Comment[]
-  channel     Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  reactions  VideoReaction[]
+  comments   Comment[]
+  channel    Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  sourceUser Account?        @relation(fields: [sourceUserId], references: [id], onDelete: SetNull)
 }
 
 enum VideoVisibility {

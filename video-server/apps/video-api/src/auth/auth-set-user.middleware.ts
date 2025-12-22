@@ -1,9 +1,8 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request } from 'express';
 
+import { AccessToken } from '@video/lib/token';
 import { DatabaseService } from '@video/lib/database';
-
-import { AccessToken } from './access-token';
 
 @Injectable()
 export class AuthSetUserMiddleware implements NestMiddleware {

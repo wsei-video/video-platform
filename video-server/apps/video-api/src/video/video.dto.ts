@@ -1,9 +1,10 @@
 import { ApiProperty, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 import { Id, IdTransform, IsId, PagedResponse, ToId } from '@video/lib/restful';
 
+import { AccountDto } from '../account/account.dto';
 import { ChannelDto } from '../channel/channel.dto';
 import { ReactionAggregateDto, VideoReactionDto } from '../reaction/reaction.dto';
 
@@ -120,4 +121,55 @@ export class VideosDto extends PagedResponse<VideoDto> {
   @Type(() => VideoDto)
   @Expose()
   public items!: VideoDto[];
+}
+
+@ApiSchema({ name: 'VideoSource', description: 'Information about video source file' })
+export class VideoSourceDto {
+  @ApiProperty({ description: 'Name of the uploaded file' })
+  @Expose()
+  public name: string;
+
+  @ApiProperty({ description: 'Size of the uploaded file in bytes' })
+  @Expose()
+  public size: number;
+
+  @ApiProperty({ description: 'User that uploaded the file', nullable: true, type: AccountDto })
+  @Type(() => AccountDto)
+  @Expose()
+  public user: AccountDto | null;
+
+  @ApiProperty({ description: 'Uploaded file download URL' })
+  @Expose()
+  public url: string;
+}
+
+@ApiSchema({ name: 'VideoUploadSource', description: 'Object containing video upload URL' })
+export class VideoUploadSourceDto {
+  @ApiProperty({ description: 'Resumable video upload URL via multipart' })
+  @Expose()
+  public simpleUploadUrl: string;
+
+  @ApiProperty({ description: 'Resumable video upload URL via TUS' })
+  @Expose()
+  public resumableUploadUrl: string;
+}
+
+@ApiSchema({ name: 'VideoSourceUpdate', description: 'Update information about video source file' })
+export class VideoSourceUpdateDto {
+  @ApiProperty({ description: 'Name of the uploaded file' })
+  @IsString()
+  public name: string;
+
+  @ApiProperty({ description: 'Size of the uploaded file in bytes' })
+  @IsInt()
+  public size: number;
+
+  @ApiProperty({ description: 'Id of user that uploaded the file', type: 'string' })
+  @IsId()
+  @ToId()
+  public userId: Id;
+
+  @ApiProperty({ description: 'Uploaded file key' })
+  @IsString()
+  public key: string;
 }

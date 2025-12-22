@@ -1,17 +1,26 @@
 import { Injectable } from '@nestjs/common';
 
 import { Account } from '@video/lib/database/client';
+import { Config } from '@video/lib/config';
 import { DatabaseService } from '@video/lib/database';
 import { DateUtils } from '@video/lib/utils';
-import { ListQuery } from '@video/lib/restful';
+import { Id, ListQuery, NotFoundError } from '@video/lib/restful';
+import { UploadToken } from '@video/lib/token';
 
 import { ChannelService } from '../channel/channel.service';
 import { VideoCommonService } from './video-common.service';
-import { VideoCreateDto, VideoUpdateDto } from './video.dto';
+import {
+  VideoCreateDto,
+  VideoSourceDto,
+  VideoSourceUpdateDto,
+  VideoUpdateDto,
+  VideoUploadSourceDto,
+} from './video.dto';
 
 @Injectable()
 export class VideoService {
   public constructor(
+    private readonly config: Config,
     private readonly database: DatabaseService,
     private readonly channelService: ChannelService,
     private readonly videoCommonService: VideoCommonService,
@@ -87,8 +96,55 @@ export class VideoService {
     };
   }
 
+  public async findSource(account: Account, videoId: number): Promise<VideoSourceDto> {
+    const video = await this.verifyAccountVideoPermission(account, videoId);
+    if (!video.sourceName || !video.sourceSize || !video.sourceUserId || !video.sourceKey)
+      throw new NotFoundError({ resource: 'VideoSource' });
+
+    const user = await this.database.account.findFirst({ where: { id: video.sourceUserId } });
+
+    return {
+      name: video.sourceName,
+      size: video.sourceSize,
+      url: `${this.config.video.cdnUrl}/uploads/${video.sourceKey}`,
+      user,
+    };
+  }
+
+  public async createUploadUrl(account: Account, videoId: number): Promise<VideoUploadSourceDto> {
+    await this.verifyAccountVideoPermission(account, videoId);
+
+    const expiresAt = DateUtils.now();
+    expiresAt.setTime(expiresAt.getTime() + UploadToken.DefaultTokenExpiresIn);
+
+    const baseUrl = `${this.config.video.uploadUrl}/v1/upload/video`;
+    const uploadToken = new UploadToken({
+      accountId: Id.clear(account.id),
+      expiresAt,
+      videoId: Id.clear(videoId),
+    }).encrypt();
+
+    return {
+      simpleUploadUrl: `${baseUrl}/simple/${uploadToken}`,
+      resumableUploadUrl: `${baseUrl}/resumable/${uploadToken}`,
+    };
+  }
+
+  public async updateSource(videoId: number, body: VideoSourceUpdateDto) {
+    await this.database.video.update({
+      where: { id: videoId },
+      data: {
+        sourceKey: body.key,
+        sourceName: body.name,
+        sourceSize: body.size,
+        sourceUserId: body.userId.clear,
+      },
+    });
+  }
+
   public async verifyAccountVideoPermission(account: Account, videoId: number) {
     const video = await this.database.video.findFirstOrThrow({ where: { id: videoId } });
     await this.channelService.verifyAccountChannelPermissions(account, video.channelId);
+    return video;
   }
 }

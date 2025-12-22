@@ -26,9 +26,18 @@ export interface MinioConfig {
   secretKey: string;
 }
 
+export interface VideoConfig {
+  webClientUrl: string;
+  apiUrl: string;
+  apiUrlInternal: string;
+  uploadUrl: string;
+  cdnUrl: string;
+}
+
 export interface AppConfig {
   database: DatabaseConfig;
   rabbitmq: RabbitMQConfig;
   redis: RedisConfig;
   minio: MinioConfig;
+  video: VideoConfig;
 }

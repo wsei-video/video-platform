@@ -25,4 +25,11 @@ export default (): AppConfig => ({
     accessKey: process.env.MINIO_ACCESS_KEY ?? '',
     secretKey: process.env.MINIO_SECRET_KEY ?? '',
   },
+  video: {
+    apiUrl: process.env.VIDEO_API_URL ?? '',
+    apiUrlInternal: process.env.VIDEO_API_URL_INTERNAL ?? '',
+    cdnUrl: process.env.VIDEO_CDN_URL ?? '',
+    uploadUrl: process.env.VIDEO_UPLOAD_URL ?? '',
+    webClientUrl: process.env.VIDEO_WEB_CLIENT_URL ?? '',
+  },
 });

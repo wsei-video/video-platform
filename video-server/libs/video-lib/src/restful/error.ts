@@ -35,3 +35,9 @@ export class ConflictError extends HttpError {
     super('Conflict', HttpStatus.CONFLICT, reason);
   }
 }
+
+export class GoneError extends HttpError {
+  public constructor(reason?: Record<string, unknown>) {
+    super('Gone', HttpStatus.GONE, reason);
+  }
+}

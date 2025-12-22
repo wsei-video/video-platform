@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
+import { AccessToken } from '@video/lib/token';
 import { Account, AuthSession } from '@video/lib/database/client';
 import { BadRequestError, ListQuery } from '@video/lib/restful';
 import { DatabaseService } from '@video/lib/database';
 import { DateUtils, UserAgentInfo } from '@video/lib/utils';
 import { Hasher } from '@video/lib/crypto';
 
-import { AccessToken } from './access-token';
 import { AccountCreateDto } from '../account/account.dto';
 import { AuthDto } from './auth.dto';
 import { AuthSessionDto, AuthSessionCreateDto, AuthSessionsDto } from '../auth-session/auth-session.dto';

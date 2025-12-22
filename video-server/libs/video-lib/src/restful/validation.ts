@@ -40,10 +40,12 @@ export const QueryValidator = new ValidationPipe({
 
 export const ToId = (): PropertyDecorator =>
   Transform(({ value }) => {
-    if (!value || typeof value !== 'string') return value;
+    if (!value) return value;
 
     try {
-      return Id.encrypted(value);
+      if (typeof value === 'string') return Id.encrypted(value);
+      if (typeof value === 'number') return Id.clear(value);
+      return value;
     } catch {
       return value;
     }

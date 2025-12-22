@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module, OnModuleInit } from '@nestjs/common';
 
 import { ConfigModule } from '@video/lib/config';
@@ -6,14 +7,19 @@ import { QueueModule } from '@video/lib/queue';
 import { StorageConstants, StorageModule, StorageService } from '@video/lib/storage';
 
 import { UploadController } from './upload.controller';
-import { UploadPublishService } from './upload-publish.service';
 import { UploadResumableService } from './upload-resumable.service';
 import { UploadSimpleService } from './upload-simple.service';
 
 @Module({
-  imports: [HelloModule.forRoot({ serviceName: 'Video Upload Service' }), ConfigModule, StorageModule, QueueModule],
+  imports: [
+    ConfigModule,
+    HelloModule.forRoot({ serviceName: 'Video Upload Service' }),
+    HttpModule,
+    QueueModule,
+    StorageModule,
+  ],
   controllers: [UploadController],
-  providers: [UploadResumableService, UploadSimpleService, UploadPublishService],
+  providers: [UploadResumableService, UploadSimpleService],
 })
 export class UploadModule implements OnModuleInit {
   public constructor(private readonly storageService: StorageService) {}

@@ -52,8 +52,6 @@ services:
       retries: 10
     networks:
       - video-network
-    volumes:
-      - /tmp/volumes/minio_data:/data
 
   rabbitmq:
     # image: rabbitmq:4.2.1-management

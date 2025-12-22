@@ -1,6 +1,6 @@
 import { ClassConstructor, plainToClass } from 'class-transformer';
 
-import { Crypto } from './crypto';
+import { Crypto } from '../crypto/crypto';
 
 export class EncryptedToken {
   public static encrypt(value: object): string {

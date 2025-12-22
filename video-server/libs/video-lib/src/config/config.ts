@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-import { AppConfig, DatabaseConfig, RabbitMQConfig, RedisConfig, MinioConfig } from './config.types';
+import { AppConfig, DatabaseConfig, RabbitMQConfig, RedisConfig, MinioConfig, VideoConfig } from './config.types';
 
 @Injectable()
 export class Config {
@@ -21,5 +21,9 @@ export class Config {
 
   public get minio(): MinioConfig {
     return this.configService.getOrThrow<MinioConfig>('minio');
+  }
+
+  public get video(): VideoConfig {
+    return this.configService.getOrThrow<VideoConfig>('video');
   }
 }
