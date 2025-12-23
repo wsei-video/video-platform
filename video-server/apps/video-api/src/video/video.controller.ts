@@ -1,13 +1,21 @@
 import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from '@nestjs/common';
 
+import { Account } from '@video/lib/database/client';
 import { BodyValidator, IdPipe, ListQuery, QueryValidator, Serialize } from '@video/lib/restful';
 
 import { AuthRequired } from '../auth/auth-required';
-import { VideoCreateDto, VideoDto, VideosDto, VideoUpdateDto } from './video.dto';
-import { VideoService } from './video.service';
 import { ReqAccount } from '../auth/auth-request.context';
-import { Account } from '@video/lib/database/client';
+import {
+  VideoCreateDto,
+  VideoDto,
+  VideosDto,
+  VideoSourceDto,
+  VideoSourceUpdateDto,
+  VideoUpdateDto,
+  VideoUploadSourceDto,
+} from './video.dto';
+import { VideoService } from './video.service';
 
 @Controller('videos')
 export class VideoController {
@@ -58,5 +66,32 @@ export class VideoController {
   @ApiOperation({ summary: 'Delete the specific video' })
   public delete(@ReqAccount() account: Account, @Param('videoId', IdPipe) videoId: number) {
     return this.videoService.deleteVideo(account, videoId);
+  }
+
+  @Get(':videoId/source')
+  @AuthRequired()
+  @Serialize(VideoSourceDto, ApiOkResponse)
+  @ApiOperation({ summary: 'Details about the uploaded video source file' })
+  public findSource(@ReqAccount() account: Account, @Param('videoId', IdPipe) videoId: number) {
+    return this.videoService.findSource(account, videoId);
+  }
+
+  @Put(':videoId/source')
+  @AuthRequired()
+  @Serialize(VideoUploadSourceDto, ApiOkResponse)
+  @ApiOperation({ summary: 'Retrieve video upload URL' })
+  public createSource(@ReqAccount() account: Account, @Param('videoId', IdPipe) videoId: number) {
+    return this.videoService.createUploadUrl(account, videoId);
+  }
+
+  @Patch(':videoId/source')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  @ApiOperation({ summary: 'Update details about the uploaded video source file' })
+  public async updateSource(
+    @Param('videoId', IdPipe) videoId: number,
+    @Body(BodyValidator) body: VideoSourceUpdateDto,
+  ) {
+    await this.videoService.updateSource(videoId, body);
   }
 }

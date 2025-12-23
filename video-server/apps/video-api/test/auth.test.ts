@@ -1,11 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
+import { AccessToken } from '@video/lib/token';
 import { Account, AuthSession } from '@video/lib/database/client';
 import { DateUtils } from '@video/lib/utils';
 import { Hasher } from '@video/lib/crypto';
 import { Id } from '@video/lib/restful';
 
-import { AccessToken } from '../src/auth/access-token';
 import { TestingFixture } from './testing/fixture';
 
 describe('Auth', () => {

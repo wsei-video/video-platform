@@ -1,6 +1,6 @@
 import { IsInt } from 'class-validator';
 
-import { EncryptedToken } from '@video/lib/crypto/encrypted-token';
+import { EncryptedToken } from '@video/lib/token/encrypted-token';
 
 export class AccessToken {
   @IsInt()

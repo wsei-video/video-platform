@@ -2,12 +2,12 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 
+import { AccessToken } from '@video/lib/token';
 import { Account, AuthSession } from '@video/lib/database/client';
 import { DatabaseService } from '@video/lib/database';
 import { DateUtils } from '@video/lib/utils';
 import { Hasher } from '@video/lib/crypto';
 
-import { AccessToken } from '../../src/auth/access-token';
 import { AppModule } from '../../src/app.module';
 import { configureApplication } from '../../src/app.config';
 

@@ -13,7 +13,7 @@ import { Task } from './task';
 export class TaskAdaptiveAudio extends Task<QueueTask.AdaptiveAudio> {
   public async run(message: QueueMessageAdaptiveAudio): Promise<void> {
     const input = await this.storageService.getDownloadUrl(StorageConstants.uploadsBucket, message.key);
-    const output = path.join('/tmp', message.key, 'audio_aac');
+    const output = path.join('/tmp', message.videoId, 'audio_aac');
 
     const options: MediaEncoderAudioHlsOptions = {
       bitrate: 128,
@@ -30,7 +30,7 @@ export class TaskAdaptiveAudio extends Task<QueueTask.AdaptiveAudio> {
     for (const fileName of files) {
       await this.storageService.uploadLocalFile(
         StorageConstants.mediaBucket,
-        path.join(message.key, 'audio', 'aac', fileName),
+        path.join(message.videoId, 'audio', 'aac', fileName),
         path.join(output, fileName),
       );
     }

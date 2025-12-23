@@ -5,6 +5,7 @@ import { DateUtils } from '@video/lib/utils';
 import { Id } from '@video/lib/restful';
 
 import { TestingAuth, TestingFixture } from './testing/fixture';
+import { UploadToken } from '@video/lib/token';
 
 describe('Video', () => {
   let fixture: TestingFixture;
@@ -293,7 +294,7 @@ describe('Video', () => {
         .expect({ error: 'Forbidden', statusCode: 403 });
     });
 
-    test('Update video', async () => {
+    test('Update video', () => {
       return fixture
         .request()
         .patch(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}`)
@@ -323,6 +324,95 @@ describe('Video', () => {
           },
           reactions: [],
           userReaction: null,
+        });
+    });
+
+    test('Create video upload URL not authenticated', () => {
+      return fixture
+        .request()
+        .put(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .send()
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
+
+    test('Create video upload URL not channel member', () => {
+      return fixture
+        .request()
+        .put(`${videoEndpoint}/${Id.clear(anotherVideo.id).encrypted}/source`)
+        .set('Authorization', auth.header)
+        .send()
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    test('Create video upload URL', () => {
+      const expectedToken = new UploadToken({
+        accountId: Id.clear(auth.account.id),
+        expiresAt: new Date('2025-10-01T10:01:00.000Z'), // 1 minute from now
+        videoId: Id.clear(myVideo.id),
+      }).encrypt();
+
+      return fixture
+        .request()
+        .put(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .set('Authorization', auth.header)
+        .send()
+        .expect(HttpStatus.OK)
+        .expect({
+          simpleUploadUrl: `http://upload.video.local/v1/upload/video/simple/${expectedToken}`,
+          resumableUploadUrl: `http://upload.video.local/v1/upload/video/resumable/${expectedToken}`,
+        });
+    });
+
+    test('Video source not channel member', () => {
+      return fixture
+        .request()
+        .get(`${videoEndpoint}/${Id.clear(anotherVideo.id).encrypted}/source`)
+        .set('Authorization', auth.header)
+        .send()
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    test('Video source', async () => {
+      await fixture
+        .request()
+        .get(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .set('Authorization', auth.header)
+        .send()
+        .expect(HttpStatus.NOT_FOUND)
+        .expect({
+          error: 'NotFound',
+          statusCode: 404,
+          reason: { resource: 'VideoSource' },
+        });
+
+      await fixture
+        .request()
+        .patch(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .send({
+          name: 'my-cool-video.mp4',
+          size: 103844,
+          userId: Id.clear(auth.account.id).encrypted,
+          key: 'some-key',
+        })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .get(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .set('Authorization', auth.header)
+        .send()
+        .expect(HttpStatus.OK)
+        .expect({
+          name: 'my-cool-video.mp4',
+          size: 103844,
+          user: {
+            id: '-Y5OWS2exwnMaKM-RWHDVg',
+            email: 'john@example.com',
+            name: 'John Doe',
+            createdAt: '2025-10-01T10:00:00.000Z',
+          },
+          url: 'http://cdn.video.local/uploads/some-key',
         });
     });
 

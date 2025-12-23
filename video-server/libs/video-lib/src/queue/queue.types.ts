@@ -17,13 +17,18 @@ export enum QueueTask {
 
 /** Base message for tasks operating on uploaded files. */
 export interface QueueMessageMediaUpload {
-  /** S3 object key in the uploads bucket. */
+  /** S3 object key in the uploads bucket. Has to be an encrypted `UploadToken`. */
   key: string;
 }
 
 export type QueueMessageIdentify = QueueMessageMediaUpload;
 
-export interface QueueMessageAdaptiveVideo extends QueueMessageMediaUpload {
+export interface QueueMessageMediaProcess extends QueueMessageMediaUpload {
+  /** Encrypted video id */
+  videoId: string;
+}
+
+export interface QueueMessageAdaptiveVideo extends QueueMessageMediaProcess {
   /** Input video specification. */
   input: {
     /** Input video duration in seconds. */
@@ -58,7 +63,7 @@ export interface QueueMessageAdaptiveVideo extends QueueMessageMediaUpload {
   };
 }
 
-export type QueueMessageAdaptiveAudio = QueueMessageMediaUpload;
+export type QueueMessageAdaptiveAudio = QueueMessageMediaProcess;
 
 export interface QueueMessages {
   [QueueTask.Identify]: QueueMessageIdentify;

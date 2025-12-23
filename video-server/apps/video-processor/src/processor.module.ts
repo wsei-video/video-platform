@@ -1,4 +1,5 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { HttpModule } from '@nestjs/axios';
 import { Module, OnApplicationBootstrap, Type } from '@nestjs/common';
 
 import { ConfigModule } from '@video/lib/config';
@@ -14,7 +15,7 @@ import { TaskIdentify } from './tasks/task-identify';
 const tasks: Type<Task<QueueTask>>[] = [TaskIdentify, TaskAdaptiveAudio, TaskAdaptiveVideo];
 
 @Module({
-  imports: [ConfigModule, QueueModule, StorageModule],
+  imports: [ConfigModule, HttpModule, QueueModule, StorageModule],
   providers: [ProcessorConsumer, ...tasks],
 })
 export class ProcessorModule implements OnApplicationBootstrap {

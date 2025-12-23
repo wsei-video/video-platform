@@ -16,7 +16,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
     const input = await this.storageService.getDownloadUrl(StorageConstants.uploadsBucket, message.key);
     const output = path.join(
       '/tmp',
-      message.key,
+      message.videoId,
       `video_avc1_${message.output.height}_${message.split.segmentStartIndex}`,
     );
 
@@ -48,7 +48,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
     const timeBase = parseInt(timeBaseString.split('/')[1] ?? '0');
 
     const files = await FileUtils.listFiles(output);
-    const mediaBucketPath = path.join(message.key, 'video', 'avc1', `${message.output.height}p`);
+    const mediaBucketPath = path.join(message.videoId, 'video', 'avc1', `${message.output.height}p`);
 
     for (const filename of files) {
       const filepath = path.join(output, filename);

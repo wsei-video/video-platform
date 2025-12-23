@@ -10,4 +10,6 @@ model Account {
   videoReactions            VideoReaction[]
   commentReactions          CommentReaction[]
   comments                  Comment[]
+
+  uploadedVideos Video[]
 }
