@@ -1,8 +1,14 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger, OnModuleInit, Type } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
+import { AuthConstants } from '@video/lib/auth';
+import { Config } from '@video/lib/config';
 import { QueueExchange, QueueMessages, QueueTask } from '@video/lib/queue';
+import { RedisService } from '@video/lib/redis';
+import { VideoUpdate } from '@video/lib/services';
 
 import { Task } from './tasks/task';
 import { TaskAdaptiveAudio } from './tasks/task-adaptive-audio';
@@ -14,8 +20,11 @@ export class ProcessorConsumer implements OnModuleInit {
   private readonly logger = new Logger(ProcessorConsumer.name);
 
   public constructor(
-    private readonly moduleRef: ModuleRef,
+    private readonly config: Config,
     private readonly connection: AmqpConnection,
+    private readonly httpService: HttpService,
+    private readonly moduleRef: ModuleRef,
+    private readonly redisService: RedisService,
   ) {}
 
   public async onModuleInit(): Promise<void> {
@@ -62,7 +71,23 @@ export class ProcessorConsumer implements OnModuleInit {
       this.logger.log(`Task '${task}' finished in ${finishTime - startTime} ms`);
     } catch (error) {
       this.logger.log(`Task '${task}' failed:`, error);
-      throw error;
+
+      if ('videoId' in message) {
+        await this.redisService.del(`${QueueTask.AdaptiveVideo}:${message.videoId}:*`);
+        await firstValueFrom(
+          this.httpService.patch<void, VideoUpdate>(
+            `${this.config.video.apiUrlInternal}/v1/videos/${message.videoId}`,
+            {
+              status: 'failed',
+            },
+            {
+              headers: {
+                [AuthConstants.InternalHeader]: this.config.video.apiInternalKey,
+              },
+            },
+          ),
+        );
+      }
     }
   }
 }

@@ -1,16 +1,18 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { Account, Channel, Video, VideoStatus, VideoVisibility } from '@video/lib/database/client';
+import { AuthConstants } from '@video/lib/auth';
 import { DateUtils } from '@video/lib/utils';
 import { Id } from '@video/lib/restful';
-
-import { TestingAuth, TestingFixture } from './testing/fixture';
 import { UploadToken } from '@video/lib/token';
 
+import { TestingAuth, TestingFixture } from './testing/fixture';
+
 describe('Video', () => {
+  const videoEndpoint = '/v1/videos';
+
   let fixture: TestingFixture;
   let auth: TestingAuth;
-  const videoEndpoint = '/v1/videos';
 
   beforeEach(async () => {
     fixture = await TestingFixture.create();
@@ -372,6 +374,21 @@ describe('Video', () => {
         .expect(HttpStatus.FORBIDDEN);
     });
 
+    test('Update video source not internal', async () => {
+      await fixture
+        .request()
+        .patch(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .send({})
+        .expect(HttpStatus.FORBIDDEN);
+
+      await fixture
+        .request()
+        .patch(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .set(AuthConstants.InternalHeader, 'invalid')
+        .send({})
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
     test('Video source', async () => {
       await fixture
         .request()
@@ -388,6 +405,7 @@ describe('Video', () => {
       await fixture
         .request()
         .patch(`${videoEndpoint}/${Id.clear(myVideo.id).encrypted}/source`)
+        .set(AuthConstants.InternalHeader, fixture.config.video.apiInternalKey)
         .send({
           name: 'my-cool-video.mp4',
           size: 103844,

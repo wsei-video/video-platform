@@ -8,7 +8,6 @@ export interface MediaEncoderHlsOptions {
 export interface MediaEncoderVideoHlsOptions extends MediaEncoderHlsOptions {
   bitrate: {
     average: number;
-    maximum: number;
     bufferSize: number;
   };
   width: number;
@@ -16,9 +15,10 @@ export interface MediaEncoderVideoHlsOptions extends MediaEncoderHlsOptions {
   groupOfPicturesSize: number;
   minimumKeyframeInterval: number;
   fps: number;
-  sceneChangeThreshold: number;
   startTime: string;
   duration?: string;
+  profile: string;
+  level: string;
 }
 
 export interface MediaEncoderAudioHlsOptions extends MediaEncoderHlsOptions {

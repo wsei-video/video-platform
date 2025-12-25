@@ -13,7 +13,7 @@ export class HlsPlaylistEncoder {
     ];
 
     const segmentCount = Math.ceil(duration / StorageConstants.hlsSegmentDuration);
-    const lastSegmentDuration = duration % StorageConstants.hlsSegmentDuration;
+    const lastSegmentDuration = duration % StorageConstants.hlsSegmentDuration || StorageConstants.hlsSegmentDuration;
 
     for (let index = 0; index < segmentCount; index++) {
       const segmentDuration = index + 1 === segmentCount ? lastSegmentDuration : StorageConstants.hlsSegmentDuration;

@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
+import { ConfigModule } from '@video/lib/config';
 import { DatabaseModule } from '@video/lib/database';
 import { HelloModule } from '@video/lib/hello';
 import { providePrismaClientExceptionFilter } from '@video/lib/restful';
@@ -15,6 +16,7 @@ import { SearchModule } from './search/search.module';
 import { VideoCommentModule } from './video-comment/video-comment.module';
 import { VideoFeedModule } from './video-feed/video-feed.module';
 import { VideoModule } from './video/video.module';
+import { VideoStreamModule } from './video-stream/video-stream.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { VideoModule } from './video/video.module';
     AuthModule,
     AuthSessionModule,
     ChannelModule,
+    ConfigModule,
     DatabaseModule,
     HelloModule.forRoot({ serviceName: 'Video API Service' }),
     ReactionModule,
@@ -29,6 +32,7 @@ import { VideoModule } from './video/video.module';
     VideoCommentModule,
     VideoFeedModule,
     VideoModule,
+    VideoStreamModule,
   ],
   providers: [provideAuthSessionStampInterceptor(), providePrismaClientExceptionFilter()],
 })

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import { Id, IdTransform, IsId, PagedResponse, ToId } from '@video/lib/restful';
 
@@ -96,7 +96,6 @@ export class VideoCreateDto {
   public title: string;
 
   @ApiProperty({ description: 'Video description', default: '' })
-  @Expose()
   @IsString()
   @IsOptional()
   public description: string = '';
@@ -107,9 +106,24 @@ export class VideoCreateDto {
     description: 'Video visibility',
     default: VideoVisibility.Public,
   })
-  @Expose()
+  @IsEnum(VideoVisibility)
   @IsOptional()
   public visibility: VideoVisibility = VideoVisibility.Public;
+
+  @ApiProperty({ description: '[Internal] View count' })
+  @IsInt()
+  @IsOptional()
+  public views: number;
+
+  @ApiProperty({ enum: VideoStatus, enumName: 'VideoStatus', description: '[Internal] Processing status' })
+  @IsEnum(VideoStatus)
+  @IsOptional()
+  public status: VideoStatus;
+
+  @ApiProperty({ description: '[Internal] Video duration in seconds' })
+  @IsNumber()
+  @IsOptional()
+  public duration: number;
 }
 
 @ApiSchema({ name: 'VideoUpdate', description: 'Video update request schema' })

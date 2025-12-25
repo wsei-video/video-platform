@@ -1,0 +1,15 @@
+model VideoStream {
+  id             Int    @id @default(autoincrement())
+  videoId        Int
+  codecName      String
+  codecId        String
+  stream         String
+  width          Int
+  height         Int
+  framerate      Int
+  size           BigInt
+  averageBitrate Int
+  peakBitrate    Int
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}

@@ -2,10 +2,12 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { Inject, Injectable } from '@nestjs/common';
 
+import { AuthConstants } from '@video/lib/auth';
 import { Config } from '@video/lib/config';
 import { GoneError, UnauthorizedError } from '@video/lib/restful';
 import { QueueService, QueueTask } from '@video/lib/queue';
 import { UploadToken } from '@video/lib/token';
+import { VideoSourceUpdate } from '@video/lib/services';
 
 @Injectable()
 export class UploadService {
@@ -30,12 +32,20 @@ export class UploadService {
     if (!uploadToken) return;
 
     await firstValueFrom(
-      this.httpService.patch(`${this.config.video.apiUrlInternal}/v1/videos/${uploadToken.videoId.encrypted}/source`, {
-        name: upload.originalFileName,
-        size: upload.originalFileSize,
-        userId: uploadToken.accountId.encrypted,
-        key: upload.key,
-      }),
+      this.httpService.patch<void, VideoSourceUpdate>(
+        `${this.config.video.apiUrlInternal}/v1/videos/${uploadToken.videoId.encrypted}/source`,
+        {
+          name: upload.originalFileName,
+          size: upload.originalFileSize,
+          userId: uploadToken.accountId.encrypted,
+          key: upload.key,
+        },
+        {
+          headers: {
+            [AuthConstants.InternalHeader]: this.config.video.apiInternalKey,
+          },
+        },
+      ),
     );
   }
 

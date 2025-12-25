@@ -7,7 +7,7 @@ import { UnauthorizedError } from '@video/lib/restful';
 export class AuthGuard implements CanActivate {
   public canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-    if (!request.user) throw new UnauthorizedError();
+    if (!request.user?.session && !request.user?.internal) throw new UnauthorizedError();
     return true;
   }
 }
