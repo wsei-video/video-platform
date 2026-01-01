@@ -30,6 +30,7 @@ export interface VideoConfig {
   webClientUrl: string;
   apiUrl: string;
   apiUrlInternal: string;
+  apiInternalKey: string;
   uploadUrl: string;
   cdnUrl: string;
 }

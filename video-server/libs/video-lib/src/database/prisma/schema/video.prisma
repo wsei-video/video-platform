@@ -17,6 +17,9 @@ model Video {
 
   reactions  VideoReaction[]
   comments   Comment[]
+  videoStreams VideoStream[]
+  audioStreams AudioStream[]
+
   channel    Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sourceUser Account?        @relation(fields: [sourceUserId], references: [id], onDelete: SetNull)
 }

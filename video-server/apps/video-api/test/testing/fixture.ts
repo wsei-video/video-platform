@@ -4,6 +4,7 @@ import request from 'supertest';
 
 import { AccessToken } from '@video/lib/token';
 import { Account, AuthSession } from '@video/lib/database/client';
+import { Config } from '@video/lib/config';
 import { DatabaseService } from '@video/lib/database';
 import { DateUtils } from '@video/lib/utils';
 import { Hasher } from '@video/lib/crypto';
@@ -12,6 +13,7 @@ import { AppModule } from '../../src/app.module';
 import { configureApplication } from '../../src/app.config';
 
 export class TestingFixture {
+  public readonly config: Config;
   public readonly database: DatabaseService;
   public readonly dateSpy: jest.SpyInstance;
 
@@ -19,6 +21,7 @@ export class TestingFixture {
     public readonly app: NestExpressApplication,
     public readonly module: TestingModule,
   ) {
+    this.config = app.get(Config);
     this.database = app.get(DatabaseService);
     this.dateSpy = jest.spyOn(DateUtils, 'now').mockReturnValue(new Date('2025-10-01T10:00:00.000Z'));
   }

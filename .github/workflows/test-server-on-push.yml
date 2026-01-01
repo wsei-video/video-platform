@@ -35,6 +35,10 @@ jobs:
       - name: Run video-lib unit tests
         working-directory: ./video-server
         run: npm run test:lib
+        
+      - name: Run video-processor unit tests
+        working-directory: ./video-server
+        run: npm run test:processor
 
       - name: Run video-api E2E tests
         working-directory: ./video-server
@@ -43,3 +47,7 @@ jobs:
       - name: Run video-upload E2E tests
         working-directory: ./video-server
         run: export NODE_OPTIONS="--max_old_space_size=4096" && npm run test:upload:e2e
+
+      - name: Run video-cdn E2E tests
+        working-directory: ./video-server
+        run: export NODE_OPTIONS="--max_old_space_size=4096" && npm run test:cdn:e2e

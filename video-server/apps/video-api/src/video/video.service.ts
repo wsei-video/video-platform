@@ -26,7 +26,7 @@ export class VideoService {
     private readonly videoCommonService: VideoCommonService,
   ) {}
 
-  public async updateVideo(account: Account, videoId: number, body: VideoUpdateDto) {
+  public async updateVideo(account: Account | null, videoId: number, body: VideoUpdateDto) {
     await this.verifyAccountVideoPermission(account, videoId);
     await this.database.video.update({ where: { id: videoId }, data: body });
     return await this.findById(account, videoId);
@@ -74,8 +74,8 @@ export class VideoService {
     };
   }
 
-  public async createVideo(account: Account, body: VideoCreateDto) {
-    await this.channelService.verifyAccountChannelPermissions(account, body.channelId.clear);
+  public async createVideo(account: Account | null, body: VideoCreateDto) {
+    if (account) await this.channelService.verifyAccountChannelPermissions(account, body.channelId.clear);
 
     const video = await this.database.video.create({
       data: {
@@ -142,9 +142,9 @@ export class VideoService {
     });
   }
 
-  public async verifyAccountVideoPermission(account: Account, videoId: number) {
+  public async verifyAccountVideoPermission(account: Account | null, videoId: number) {
     const video = await this.database.video.findFirstOrThrow({ where: { id: videoId } });
-    await this.channelService.verifyAccountChannelPermissions(account, video.channelId);
+    if (account) await this.channelService.verifyAccountChannelPermissions(account, video.channelId);
     return video;
   }
 }

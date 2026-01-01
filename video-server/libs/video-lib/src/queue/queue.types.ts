@@ -1,3 +1,5 @@
+import { VideoCodec } from '../media';
+
 export enum QueueExchange {
   /** RabbitMQ exchange used to publish tasks for the Video Processor. */
   Media = 'media.direct',
@@ -45,6 +47,12 @@ export interface QueueMessageAdaptiveVideo extends QueueMessageMediaProcess {
 
     /** Output video framerate. */
     fps: number;
+
+    /** Output video codec. */
+    codec: VideoCodec;
+
+    /** Bits per pixel. */
+    bpp: number;
   };
 
   /** Split-and-stitch encoding options. */
@@ -63,7 +71,13 @@ export interface QueueMessageAdaptiveVideo extends QueueMessageMediaProcess {
   };
 }
 
-export type QueueMessageAdaptiveAudio = QueueMessageMediaProcess;
+export interface QueueMessageAdaptiveAudio extends QueueMessageMediaProcess {
+  /** Input audio specification. */
+  input: {
+    /** Input audio duration in seconds. */
+    duration: number;
+  };
+}
 
 export interface QueueMessages {
   [QueueTask.Identify]: QueueMessageIdentify;

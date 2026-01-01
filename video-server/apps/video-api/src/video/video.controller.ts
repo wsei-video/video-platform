@@ -2,10 +2,11 @@ import { ApiCreatedResponse, ApiNoContentResponse, ApiOkResponse, ApiOperation }
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query } from '@nestjs/common';
 
 import { Account } from '@video/lib/database/client';
-import { BodyValidator, IdPipe, ListQuery, QueryValidator, Serialize } from '@video/lib/restful';
+import { BodyValidator, ForbiddenError, IdPipe, ListQuery, QueryValidator, Serialize } from '@video/lib/restful';
 
+import { AuthInternal } from '../auth/auth-internal.guard';
 import { AuthRequired } from '../auth/auth-required';
-import { ReqAccount } from '../auth/auth-request.context';
+import { ReqAccount, ReqInternal } from '../auth/auth-request.context';
 import {
   VideoCreateDto,
   VideoDto,
@@ -43,7 +44,12 @@ export class VideoController {
   @AuthRequired()
   @Serialize(VideoDto, ApiCreatedResponse)
   @ApiOperation({ summary: 'Create a new video' })
-  public create(@ReqAccount() account: Account, @Body(BodyValidator) body: VideoCreateDto) {
+  public create(
+    @ReqAccount() account: Account | null,
+    @ReqInternal() isInternal: boolean,
+    @Body(BodyValidator) body: VideoCreateDto,
+  ) {
+    if (!isInternal) this.ensureNoInternalFields(body);
     return this.videoService.createVideo(account, body);
   }
 
@@ -52,10 +58,12 @@ export class VideoController {
   @Serialize(VideoDto, ApiOkResponse)
   @ApiOperation({ summary: 'Update video details' })
   public update(
-    @ReqAccount() account: Account,
+    @ReqAccount() account: Account | null,
+    @ReqInternal() isInternal: boolean,
     @Param('videoId', IdPipe) videoId: number,
     @Body(BodyValidator) body: VideoUpdateDto,
   ) {
+    if (!isInternal) this.ensureNoInternalFields(body);
     return this.videoService.updateVideo(account, videoId, body);
   }
 
@@ -85,6 +93,7 @@ export class VideoController {
   }
 
   @Patch(':videoId/source')
+  @AuthInternal()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
   @ApiOperation({ summary: 'Update details about the uploaded video source file' })
@@ -93,5 +102,12 @@ export class VideoController {
     @Body(BodyValidator) body: VideoSourceUpdateDto,
   ) {
     await this.videoService.updateSource(videoId, body);
+  }
+
+  private ensureNoInternalFields(body: VideoUpdateDto): void {
+    const internalFields = ['duration', 'views', 'status'] as const;
+    internalFields.forEach(field => {
+      if (field in body && body[field] !== undefined) throw new ForbiddenError({ field });
+    });
   }
 }

@@ -1,16 +1,36 @@
+export interface VideoResolution {
+  /** Maximum video width for the format. */
+  width: number;
+  /** Maximum video height for the format. */
+  height: number;
+}
+
+export interface VideoCodec {
+  /** Libav codec name. */
+  name: string;
+
+  /** Codec profile. */
+  profile: string;
+
+  /** Target decoder compatibility level. */
+  level: string;
+}
+
 export interface VideoFormat {
-  resolution: {
-    /** Maximum video width for the format. */
-    width: number;
-    /** Maximum video height for the format. */
-    height: number;
-  };
+  /** Max video resolution. */
+  resolution: VideoResolution;
+
+  /** Video bitrate information. */
   bitrate: {
     /** Bits per pixel for average bitrate if encoded with H.264 (AVC). */
     bpp: number;
   };
+
   /** Maximum fps used when encoding format. */
   fpsCap: number;
+
+  /** Video codec information. */
+  codec: VideoCodec;
 }
 
 export enum VideoCoding {
@@ -26,6 +46,36 @@ export const VideoCodingSpec: Record<VideoCoding, { bitrate: { efficiency: numbe
 export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
   {
     resolution: {
+      width: 256,
+      height: 144,
+    },
+    bitrate: {
+      bpp: 0.17,
+    },
+    fpsCap: 30,
+    codec: {
+      name: 'libx264',
+      profile: 'main',
+      level: '3.0',
+    },
+  },
+  {
+    resolution: {
+      width: 426,
+      height: 240,
+    },
+    bitrate: {
+      bpp: 0.16,
+    },
+    fpsCap: 30,
+    codec: {
+      name: 'libx264',
+      profile: 'main',
+      level: '3.0',
+    },
+  },
+  {
+    resolution: {
       width: 640,
       height: 360,
     },
@@ -33,6 +83,11 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.15,
     },
     fpsCap: 30,
+    codec: {
+      name: 'libx264',
+      profile: 'main',
+      level: '3.0',
+    },
   },
   {
     resolution: {
@@ -42,7 +97,12 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
     bitrate: {
       bpp: 0.12,
     },
-    fpsCap: 30,
+    fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'main',
+      level: '3.1',
+    },
   },
   {
     resolution: {
@@ -53,6 +113,11 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.11,
     },
     fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'high',
+      level: '4.0',
+    },
   },
   {
     resolution: {
@@ -63,6 +128,11 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.1,
     },
     fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'high',
+      level: '4.2',
+    },
   },
   {
     resolution: {
@@ -73,6 +143,11 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.09,
     },
     fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'high',
+      level: '5.1',
+    },
   },
   {
     resolution: {
@@ -83,6 +158,11 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.08,
     },
     fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'high',
+      level: '5.2',
+    },
   },
   {
     resolution: {
@@ -93,5 +173,10 @@ export const SUPPORTED_VIDEO_FORMATS: VideoFormat[] = [
       bpp: 0.06,
     },
     fpsCap: 60,
+    codec: {
+      name: 'libx264',
+      profile: 'high',
+      level: '6.0',
+    },
   },
 ];

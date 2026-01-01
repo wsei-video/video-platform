@@ -11,4 +11,8 @@ export const ReqSession = createParamDecorator((_data: unknown, context: Executi
   return context.switchToHttp().getRequest<Request>().user?.session ?? null;
 });
 
-export type AuthRequestContext = { account: Account; session: AuthSession };
+export const ReqInternal = createParamDecorator((_data: unknown, context: ExecutionContext) => {
+  return context.switchToHttp().getRequest<Request>().user?.internal ?? false;
+});
+
+export type AuthRequestContext = { account?: Account; session?: AuthSession; internal: boolean };

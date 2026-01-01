@@ -41,3 +41,14 @@ export class GoneError extends HttpError {
     super('Gone', HttpStatus.GONE, reason);
   }
 }
+export class NotImplementedError extends HttpError {
+  public constructor(reason?: Record<string, unknown>) {
+    super('NotImplemented', HttpStatus.NOT_IMPLEMENTED, reason);
+  }
+}
+
+export class BadGatewayError extends HttpError {
+  public constructor(reason?: Record<string, unknown>) {
+    super('BadGateway', HttpStatus.BAD_GATEWAY, reason);
+  }
+}

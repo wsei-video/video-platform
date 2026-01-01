@@ -1,0 +1,11 @@
+model AudioStream {
+  id        Int    @id @default(autoincrement())
+  videoId   Int
+  codecName String
+  codecId   String
+  stream    String
+  channels  Int
+  size      BigInt
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}

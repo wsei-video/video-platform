@@ -4,6 +4,7 @@ import { Module, OnApplicationBootstrap, Type } from '@nestjs/common';
 
 import { ConfigModule } from '@video/lib/config';
 import { QueueModule, QueueTask } from '@video/lib/queue';
+import { RedisModule } from '@video/lib/redis';
 import { StorageModule } from '@video/lib/storage';
 
 import { ProcessorConsumer } from './processor.consumer';
@@ -15,7 +16,7 @@ import { TaskIdentify } from './tasks/task-identify';
 const tasks: Type<Task<QueueTask>>[] = [TaskIdentify, TaskAdaptiveAudio, TaskAdaptiveVideo];
 
 @Module({
-  imports: [ConfigModule, HttpModule, QueueModule, StorageModule],
+  imports: [ConfigModule, HttpModule, QueueModule, RedisModule, StorageModule],
   providers: [ProcessorConsumer, ...tasks],
 })
 export class ProcessorModule implements OnApplicationBootstrap {

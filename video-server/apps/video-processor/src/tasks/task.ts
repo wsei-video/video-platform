@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 import { Config } from '@video/lib/config';
 import { QueueMessages, QueueService, QueueTask } from '@video/lib/queue';
+import { RedisService } from '@video/lib/redis';
 import { StorageService } from '@video/lib/storage';
 
 /** Video Processor base task. */
@@ -14,6 +15,7 @@ export abstract class Task<TQueueTask extends QueueTask> {
     protected readonly config: Config,
     protected readonly httpService: HttpService,
     protected readonly queueService: QueueService,
+    protected readonly redisService: RedisService,
     protected readonly storageService: StorageService,
   ) {}
 

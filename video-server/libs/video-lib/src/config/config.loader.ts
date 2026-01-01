@@ -28,6 +28,7 @@ export default (): AppConfig => ({
   video: {
     apiUrl: process.env.VIDEO_API_URL ?? '',
     apiUrlInternal: process.env.VIDEO_API_URL_INTERNAL ?? '',
+    apiInternalKey: process.env.VIDEO_API_INTERNAL_KEY ?? '',
     cdnUrl: process.env.VIDEO_CDN_URL ?? '',
     uploadUrl: process.env.VIDEO_UPLOAD_URL ?? '',
     webClientUrl: process.env.VIDEO_WEB_CLIENT_URL ?? '',
