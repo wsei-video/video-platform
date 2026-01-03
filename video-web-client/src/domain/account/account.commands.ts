@@ -8,7 +8,6 @@ export interface AccountLoginCommand {
   email: string
   password: string
 }
-
 export interface AccountUpdateCommand {
   id: string
   name: string

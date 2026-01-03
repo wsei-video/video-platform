@@ -1,4 +1,5 @@
 import type { RedirectTo } from '@/components/video/VideoItem.vue'
+import { NotAuthenticatedError } from '@/domain/shared/error'
 import type { Video } from '@/domain/video'
 import { useAuthStore } from '@/store/auth.store'
 
@@ -8,9 +9,10 @@ export const useVideoRedirect = (to: VideoRedirect, video: Video): RedirectTo =>
   const authStore = useAuthStore()
   switch (to) {
     case 'studio':
+      if (!authStore.isAuthenticated) throw new NotAuthenticatedError()
       return {
         name: 'edit-video',
-        params: { userId: authStore.currentAuth?.account.id, videoId: video.id },
+        params: { userId: authStore.currentAuth!.account.id, videoId: video.id },
       }
     case 'watch-page':
       return { name: 'watch-page', params: { videoId: video.id } }

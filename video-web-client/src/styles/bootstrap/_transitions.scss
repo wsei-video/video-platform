@@ -1,36 +1,35 @@
-// Slide from bottom transition
-.slide-bottom-enter-active,
-.slide-bottom-leave-active {
-  transition: all 0.2s ease-out;
+.nested-enter-active .inner,
+.nested-leave-active .inner {
+  transition: all 0.3s ease-in-out;
 }
 
-.slide-bottom-enter-from {
+.nested-enter-from .inner {
   opacity: 0;
   transform: translate(-50%, 100vh);
 }
 
-.slide-bottom-enter-to {
+.nested-enter-to .inner {
   opacity: 1;
   transform: translate(-50%, -50%);
 }
 
-.slide-bottom-leave-from {
+.nested-leave-from .inner {
   opacity: 1;
   transform: translate(-50%, -50%);
 }
 
-.slide-bottom-leave-to {
-  opacity: 0;
+.nested-leave-to .inner {
+  opacity: 50;
   transform: translate(-50%, 100vh);
 }
 
 // Fade transition
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
+.nested-enter-active,
+.nested-leave-active {
+  transition: opacity 0.3s ease-in-out;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.nested-enter-from,
+.nested-leave-to {
   opacity: 0;
 }

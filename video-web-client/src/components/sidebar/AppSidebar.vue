@@ -116,14 +116,4 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
     min-width: 0;
   }
 }
-
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: $zindex-backdrop;
-  background-color: rgba(0, 0, 0, 0.5);
-}
 </style>

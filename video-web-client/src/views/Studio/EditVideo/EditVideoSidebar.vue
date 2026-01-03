@@ -9,7 +9,7 @@ import EditVideoSidebarElement from './EditVideoSidebarElement.vue'
 
 const { videoData, videoSource, mediaStreams } = defineProps<{
   videoData: Video
-  videoSource: VideoSource
+  videoSource?: VideoSource
   mediaStreams: MediaStreamsDto
 }>()
 const tempVideo = defineModel<VideoUpdateCommand>({ required: true })
@@ -19,7 +19,7 @@ const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'h
 <template>
   <aside class="edit-video__sidebar">
     <!-- Video Preview Card -->
-    <div class="edit-video__preview-card">
+    <div v-if="videoSource" class="edit-video__preview-card">
       <VideoPlayer class="edit-video__player" :source="adaptiveHlsUrl" :scrubber="mediaStreams.scrubber" />
 
       <div class="edit-video__preview-info">

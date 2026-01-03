@@ -1,8 +1,13 @@
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 import { useCreateVideo, useUploadFile } from '@/application/commands'
 import { useGetUploadUrl } from '@/application/queries/upload'
-import { handleError, NoChannelError, NotAuthenticatedError } from '@/domain/shared/error'
+import {
+  DomainError,
+  handleError,
+  NoChannelError,
+  NotAuthenticatedError,
+} from '@/domain/shared/error'
 import type { UploadProgress } from '@/domain/upload'
 import type { VideoCreateCommand } from '@/domain/video'
 import { uploadFactory } from '@/infrastructure/upload'
@@ -33,13 +38,16 @@ export function useUploadVideoWithProgress() {
     error: uploadError,
   } = useUploadFile(strategy)
 
+  const validationError = ref<Error | null>()
   const isSetupLoading = computed(() => isCreating.value || isGettingUploadUrl.value)
-  const setupError = computed(() => videoCreateError.value || uploadUrlError.value)
+  const setupError = computed(
+    () => videoCreateError.value || uploadUrlError.value || validationError.value,
+  )
 
   const uploadVideo = async (file: File, onProgress: (p: UploadProgress) => void) => {
     try {
-      if (!channelStore.selectedChannelId) throw new NoChannelError()
       if (!authStore.isAuthenticated) throw new NotAuthenticatedError()
+      if (!channelStore.selectedChannelId) throw new NoChannelError()
 
       const command: VideoCreateCommand = {
         channelId: channelStore.selectedChannelId,
@@ -66,8 +74,8 @@ export function useUploadVideoWithProgress() {
         usedStrategy: strategy,
       }
     } catch (e) {
-      if (e instanceof NotAuthenticatedError) {
-        console.log('User not authenticated => redirect to login page')
+      if (e instanceof DomainError) {
+        validationError.value = e
       }
       throw e
     }

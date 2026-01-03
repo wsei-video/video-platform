@@ -28,6 +28,7 @@ export const useVideoUploadStore = defineStore('video-upload', () => {
   function abort() {
     strategy.value?.abort()
     progress.value = { percentage: 0 }
+    resetUpload()
   }
 
   const { isSetupLoading, isUploadPending, uploadError, setupError, resetUpload, uploadVideo } =

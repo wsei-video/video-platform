@@ -24,38 +24,39 @@ videoClient.interceptors.response.use(
         resolve('test')
       }, 500)
     })
-    console.log('Response: \n', config)
+    console.log('Response:', config)
     return config
   },
   (error) => {
     if (!error.response) return Promise.reject(new NetworkError(error.message))
 
     const status = error.response.data.statusCode
+    const reason = error.response.data.reason
     console.error(error.response.data)
 
     switch (status) {
       case 400:
-        return Promise.reject(new BadRequest())
+        return Promise.reject(new BadRequest(reason))
       case 401:
-        return Promise.reject(new NotAuthenticatedError())
+        return Promise.reject(new NotAuthenticatedError(reason))
       case 403:
-        return Promise.reject(new ForbiddenError())
+        return Promise.reject(new ForbiddenError(reason))
       case 404:
-        return Promise.reject(new NotFoundError())
+        return Promise.reject(new NotFoundError(reason))
       case 409:
-        return Promise.reject(new ConflictError())
+        return Promise.reject(new ConflictError(reason))
       case 410:
-        return Promise.reject(new GoneError())
+        return Promise.reject(new GoneError(reason))
       case 500:
-        return Promise.reject(new UnexpectedServerError())
+        return Promise.reject(new UnexpectedServerError(reason))
       default:
-        return Promise.reject(new UnexpectedServerError())
+        return Promise.reject(new UnexpectedServerError(reason))
     }
   },
 )
 
 videoClient.interceptors.request.use(async (config) => {
-  console.log('Sending:\n', config)
+  console.log('Sending:', config)
 
   const authStore = useAuthStore()
   if (authStore.authToken) {

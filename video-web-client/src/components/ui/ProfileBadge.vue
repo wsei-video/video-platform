@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 
 import { AppImage } from '@/components/ui'
-
 import { type AppImageProps } from '@/components/ui'
 
 const {

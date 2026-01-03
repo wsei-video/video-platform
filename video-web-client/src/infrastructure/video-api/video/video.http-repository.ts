@@ -44,7 +44,6 @@ export default class HttpVideoRepository implements VideoRepository {
         count,
       },
     })
-    console.log(res.data)
     return VideoMapper.toPaginatedModel(res.data)
   }
 

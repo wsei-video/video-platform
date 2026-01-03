@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
-import { AppIcon, AppInput, ProfileBadge } from '@/components/ui'
+import { AppIcon, AppInput } from '@/components/ui'
 import { useUiStore } from '@/store'
-import { useAuthStore } from '@/store/auth.store'
+
+import ProfileDropdown from './ProfileDropdown.vue'
 const uiStore = useUiStore()
-const authStore = useAuthStore()
 
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
@@ -18,17 +18,7 @@ const isMobile = breakpoints.smaller('md')
       <AppInput v-if="!isMobile" variant="dark" placeholder="Search..." />
       <AppIcon name="search" />
     </div>
-    <RouterLink
-      v-if="authStore.currentAuth"
-      class="header-link"
-      :to="{ name: 'your-content', params: { userId: authStore.currentAuth.account.id } }"
-    >
-      <ProfileBadge
-        profile-image="https://picsum.photos/200"
-        profile-name="John Doe"
-        :avatar-only="isMobile"
-      />
-    </RouterLink>
+    <ProfileDropdown />
   </header>
 </template>
 <style lang="scss">

@@ -8,6 +8,8 @@ import {
   SidebarLinkItem,
   SidebarProfileInfo,
 } from '@/components/sidebar'
+import AppSpinner from '@/components/ui/AppSpinner.vue'
+import { useUiStore } from '@/store'
 
 defineProps<{
   sidebarLinks: SidebarLink[]
@@ -15,6 +17,7 @@ defineProps<{
 }>()
 
 const route = useRoute()
+const uiStore = useUiStore()
 
 const processLinkPath = (to: string): string => {
   return to.replace('/:userId', `/${route.params.userId}`)
@@ -42,6 +45,7 @@ const processLinkPath = (to: string): string => {
       <router-view :key="$route.fullPath" />
     </div>
   </div>
+  <AppSpinner v-if="uiStore.isRouteLoading" />
 </template>
 
 <style scoped lang="scss">

@@ -1,5 +1,6 @@
 import {
   Controller,
+  Head,
   HttpCode,
   HttpStatus,
   Param,
@@ -30,6 +31,11 @@ export class UploadController {
 
   @Patch('video/resumable/:token')
   public async resumableChunk(@Req() req: Request, @Res() res: Response): Promise<void> {
+    await this.uploadResumableService.handleUploadChunk(req, res);
+  }
+
+  @Head('video/resumable/:token')
+  public async resumableHead(@Req() req: Request, @Res() res: Response): Promise<void> {
     await this.uploadResumableService.handleUploadChunk(req, res);
   }
 
