@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import type { Video } from '@/services/api'
-import { VideoUtils, StringUtils } from '@/utils'
-import { useVideoRedirect, type VideoRedirect } from '@/composables'
-
 import { AppImage } from '@/components/ui'
+import { useVideoRedirect, type VideoRedirect } from '@/composables'
+import type { Video } from '@/domain/video'
+import { StringUtils, VideoUtils } from '@/infrastructure/video-api/shared/utils'
 
 defineProps<{
   videos: Video[]
@@ -12,34 +11,42 @@ defineProps<{
 </script>
 <template>
   <table class="videos-table">
-    <tr>
-      <th>Video</th>
-      <th></th>
-      <th>Duration</th>
-      <th>Uploaded</th>
-      <th>Visibility</th>
-      <th>Views</th>
-    </tr>
-    <RouterLink
-      v-for="video in videos"
-      :key="video.id"
-      :to="useVideoRedirect(redirectTo, video)"
-      custom
-      v-slot="{ navigate, href }"
-    >
-      <tr :href="href" @click="navigate">
-        <td>
-          <AppImage class="videos-table__thumbnail" :src="video.thumbnail" :aspect-ratio="16 / 9" />
-        </td>
-        <td class="videos-table__title">
-          <p v-tooltip:top="video.title" v-max-lines="3">{{ video.title }}</p>
-        </td>
-        <td>{{ VideoUtils.formatDuration(video.duration) }}</td>
-        <td>{{ VideoUtils.formatDate(video.uploadedDate) }}</td>
-        <td>{{ StringUtils.capitalize(video.visibility) }}</td>
-        <td>{{ VideoUtils.formatCount(video.views) }}</td>
+    <thead>
+      <tr>
+        <th>Video</th>
+        <th></th>
+        <th>Duration</th>
+        <th>Uploaded</th>
+        <th>Visibility</th>
+        <th>Views</th>
       </tr>
-    </RouterLink>
+    </thead>
+    <tbody>
+      <RouterLink
+        v-for="video in videos"
+        :key="video.id"
+        :to="useVideoRedirect(redirectTo, video)"
+        custom
+        v-slot="{ navigate, href }"
+      >
+        <tr :href="href" @click="navigate">
+          <td>
+            <AppImage
+              class="videos-table__thumbnail"
+              :src="video.thumbnail"
+              :aspect-ratio="16 / 9"
+            />
+          </td>
+          <td class="videos-table__title">
+            <p v-tooltip:top="video.title" v-max-lines="3">{{ video.title }}</p>
+          </td>
+          <td>{{ VideoUtils.formatDuration(video.duration) }}</td>
+          <td>{{ VideoUtils.formatDate(video.createdAt) }}</td>
+          <td>{{ StringUtils.capitalize(video.visibility) }}</td>
+          <td>{{ VideoUtils.formatCount(video.views) }}</td>
+        </tr>
+      </RouterLink>
+    </tbody>
   </table>
 </template>
 

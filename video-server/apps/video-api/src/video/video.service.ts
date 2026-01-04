@@ -28,7 +28,7 @@ export class VideoService {
 
   public async updateVideo(account: Account | null, videoId: number, body: VideoUpdateDto) {
     await this.verifyAccountVideoPermission(account, videoId);
-    await this.database.video.update({ where: { id: videoId }, data: body });
+    await this.database.video.update({ where: { id: videoId }, data: body, include: { channel: true } });
     return await this.findById(account, videoId);
   }
 
@@ -37,6 +37,7 @@ export class VideoService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      include: { channel: true },
     });
 
     const total = await this.database.video.count();

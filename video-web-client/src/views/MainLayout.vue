@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 
+import { AppHeader } from '@/components/header'
 import {
   AppSidebar,
-  SidebarProfileInfo,
-  SidebarLinkItem,
   type SidebarLink,
+  SidebarLinkItem,
+  SidebarProfileInfo,
 } from '@/components/sidebar'
-import { AppHeader } from '@/components/header'
 
 defineProps<{
   sidebarLinks: SidebarLink[]
@@ -39,7 +39,7 @@ const processLinkPath = (to: string): string => {
     </AppSidebar>
     <div id="app-content" class="w-100">
       <AppHeader />
-      <router-view />
+      <router-view :key="$route.fullPath" />
     </div>
   </div>
 </template>

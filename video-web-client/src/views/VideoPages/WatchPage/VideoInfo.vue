@@ -1,31 +1,24 @@
 <script setup lang="ts">
+import { FeedbackComponent } from '@/components/feedback'
+import { AppButton, AppIcon, ProfileBadge } from '@/components/ui'
+
 import { useWatchPageContext } from '.'
 
-import { FeedbackComponent } from '@/components/feedback'
-import { ProfileBadge, AppButton, AppIcon } from '@/components/ui'
-
-const { selectedVideo, updateReaction } = useWatchPageContext()
+const { video, updateReaction } = useWatchPageContext()
 </script>
 <template>
-  <div v-if="selectedVideo" class="video-info">
+  <div v-if="video" class="video-info">
     <div class="video__reactions">
-      <FeedbackComponent
-        :reactions="selectedVideo.reactions"
-        mode="picker"
-        @emoji-selected="updateReaction"
-      />
+      <FeedbackComponent :reactions="[]" mode="picker" @emoji-selected="updateReaction" />
     </div>
     <h1 class="video-info__title">
-      {{ selectedVideo.title }}
+      {{ video.title }}
     </h1>
     <div class="video-info__channel">
-      <ProfileBadge
-        :profile-image="selectedVideo.creator.photoUrl"
-        :profile-name="selectedVideo.creator.nickname"
-      />
+      <ProfileBadge :profile-image="''" :profile-name="video.channel.name" />
       <AppButton><AppIcon name="notification_add" />Subscribe</AppButton>
     </div>
-    <p class="video-info__description">{{ selectedVideo.description }}</p>
+    <p class="video-info__description">{{ video.description || 'No description provided :(' }}</p>
   </div>
 </template>
 

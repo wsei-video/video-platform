@@ -1,31 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { useVideoPages, type VideoPageTypes } from './useVideoPages'
-import type { Video } from '@/services/api'
-
+import { useGetVideoPagesProps, type VideoPageTypes } from '@/application'
 import { AppIcon } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
+import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
 
 const route = useRoute()
-
-const videos = ref<Video[]>()
-const props = computed(() => {
-  const pages = useVideoPages()
-  const name = route.name
-  if (!name || !(name in pages)) {
-    // move user to error page
-    throw new Error('There is no such page')
-  } else {
-    return pages[name as VideoPageTypes]
-  }
+const props = useGetVideoPagesProps({
+  pageType: route.name as VideoPageTypes,
 })
-
-onMounted(async () => {
-  const apiResponse = await props.value.fetchFunction()
-  if (apiResponse) videos.value = apiResponse.data
-})
+const { data: videosData, isPending: isVideosPending, error: videosError } = props.getVideosQuery()
 </script>
 <template>
   <div class="video-page">
@@ -34,12 +19,15 @@ onMounted(async () => {
       {{ props.title }}
     </h1>
     <section class="video-page__content">
-      <VideosGrid
-        v-if="videos"
-        :videos="videos"
-        :video-item-mode="props.videoItemMode"
-        redirect-to="watch-page"
-      />
+      <div v-if="videosData?.pages">
+        <VideosGrid
+          :videos="flattenPagination(videosData)"
+          :video-item-mode="props.videoItemMode"
+          redirect-to="watch-page"
+        />
+      </div>
+      <div v-if="isVideosPending">Pending</div>
+      <div v-if="videosError">Error: {{ videosError.message }}</div>
     </section>
   </div>
 </template>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import Hls from 'hls.js'
+import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+
+import VideoPlaceholder from '@/assets/video-placeholder.png'
+import { useVideoPlayerStore } from '@/store'
 
 import { QualityLevel } from './quality'
-import { useVideoPlayerStore } from '@/store'
 import { VideoPlayerUtils } from './video-player.utils'
 
 const videoPlayerStore = useVideoPlayerStore()
@@ -126,11 +128,13 @@ watch(
   <video
     ref="videoRef"
     class="video-player-hls-renderer"
+    :poster="videoPlayerStore.source || VideoPlaceholder"
     @loadstart="handleVideoLoadStart"
     @durationchange="handleVideoDurationChange"
     @timeupdate="handleVideoTimeUpdate"
     @waiting="videoPlayerStore.setBuffering(true)"
     @playing="videoPlayerStore.setBuffering(false)"
+    @pause="videoPlayerStore.setBuffering(false)"
   ></video>
 </template>
 

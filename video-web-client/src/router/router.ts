@@ -84,9 +84,10 @@ const router = createRouter({
           redirect: (to) => `/studio/${to.params.userId}/your-content`,
         },
         {
-          path: '/:videoId',
+          path: ':videoId',
           name: 'edit-video',
-          component: () => import('@/views/Studio/EditVideoView.vue'),
+          props: true,
+          component: () => import('@/views/Studio/EditVideo/EditVideoView.vue'),
         },
         {
           path: 'your-content',

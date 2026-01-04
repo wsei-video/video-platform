@@ -2,13 +2,14 @@
 import { ref, watch } from 'vue'
 
 import { useVideoPlayerStore } from '@/store'
+
 import VideoPlayerBufferingIndicator from './VideoPlayerBufferingIndicator.vue'
 import VideoPlayerControlBar from './VideoPlayerControlBar.vue'
 import VideoPlayerHlsRenderer from './VideoPlayerHlsRenderer.vue'
 import VideoPlayerOverlayControls from './VideoPlayerOverlayControls.vue'
 import VideoPlayerSettingsMenu from './VideoPlayerSettingsMenu.vue'
 
-const { source } = defineProps<{ source: string }>()
+const { source, isPending = false } = defineProps<{ source: string; isPending?: boolean }>()
 
 const videoPlayerStore = useVideoPlayerStore()
 const videoPlayerRef = ref<HTMLElement | null>(null)
@@ -16,6 +17,12 @@ const videoPlayerRef = ref<HTMLElement | null>(null)
 const updateFullscreen = () => {
   videoPlayerStore.setFullscreen(document.fullscreenElement === videoPlayerRef.value)
 }
+
+watch(
+  () => isPending,
+  (isPending) => videoPlayerStore.setBuffering(isPending),
+  { immediate: true },
+)
 
 watch(
   () => source,
@@ -49,11 +56,18 @@ watch(
 </template>
 
 <style lang="scss" scoped>
+@import '../../styles/bootstrap/index.scss';
+
 .video-player {
   position: relative;
-  border-radius: 8px;
   overflow: hidden;
   display: flex;
   aspect-ratio: 16 / 9;
+}
+
+@include media-breakpoint-up(md) {
+  .video-player {
+    border-radius: 8px;
+  }
 }
 </style>

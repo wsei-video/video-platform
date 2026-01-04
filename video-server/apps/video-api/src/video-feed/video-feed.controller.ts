@@ -1,7 +1,7 @@
 import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 
-import { ListQuery, Serialize } from '@video/lib/restful';
+import { ListQuery, QueryValidator, Serialize } from '@video/lib/restful';
 
 import { VideoFeedService } from './video-feed.service';
 import { VideosDto } from '../video/video.dto';
@@ -13,28 +13,28 @@ export class VideoFeedController {
   @Get('trending')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'List trending videos on the platform' })
-  public trending(query: ListQuery) {
+  public trending(@Query(QueryValidator) query: ListQuery) {
     return this.videoFeedService.getTrendingVideos(query);
   }
 
   @Get('most-popular')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'List the most popular videos on the platform' })
-  public mostPopular(query: ListQuery) {
+  public mostPopular(@Query(QueryValidator) query: ListQuery) {
     return this.videoFeedService.getMostPopularVideos(query);
   }
 
   @Get('recently-uploaded')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'List the recently uploaded videos on the platform' })
-  public recentlyUploaded(query: ListQuery) {
+  public recentlyUploaded(@Query(QueryValidator) query: ListQuery) {
     return this.videoFeedService.getRecentlyUploadedVideos(query);
   }
 
   @Get('for-you')
   @Serialize(VideosDto, ApiOkResponse)
   @ApiOperation({ summary: 'List recommended videos for the signed in user' })
-  public forYou(query: ListQuery) {
+  public forYou(@Query(QueryValidator) query: ListQuery) {
     return this.videoFeedService.getForYouVideos(query);
   }
 }

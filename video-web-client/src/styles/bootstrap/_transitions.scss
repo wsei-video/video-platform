@@ -1,0 +1,36 @@
+// Slide from bottom transition
+.slide-bottom-enter-active,
+.slide-bottom-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.slide-bottom-enter-from {
+  opacity: 0;
+  transform: translate(-50%, 100vh);
+}
+
+.slide-bottom-enter-to {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.slide-bottom-leave-from {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.slide-bottom-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 100vh);
+}
+
+// Fade transition
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}

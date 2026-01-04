@@ -23,10 +23,22 @@ $inactive-link: #b7b7b7;
 $zindex-header: 1000;
 $zindex-sidebar: 1050;
 $zindex-backdrop: 1040;
+$zindex-popup-backdrop: 1060;
+$zindex-popup: 1070;
 $zindex-login-cover: 100;
 $zindex-login-content: 200;
 
+// popups
+.popup-backdrop {
+  z-index: $zindex-popup-backdrop;
+}
+
+.app-popup {
+  z-index: $zindex-popup;
+}
+
 // sidebar
+$sidebar-closed-width: 60px;
 $sidebar-width: 300px;
 $sidebar-header-height: 200px;
 

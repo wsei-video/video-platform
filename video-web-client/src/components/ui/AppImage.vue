@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted, type CSSProperties, computed } from 'vue'
+import { computed, type CSSProperties, onMounted, ref, useTemplateRef } from 'vue'
+
+import NoImagePlaceholder from '@/assets/no-image-placeholder.jpg'
 
 import AnimatedPlaceholder from './AnimatedPlaceholder.vue'
 
@@ -28,6 +30,11 @@ const imgRef = useTemplateRef('img-ref')
 
 function onLoad() {
   loaded.value = true
+}
+function onError() {
+  if (imgRef.value) {
+    imgRef.value.src = NoImagePlaceholder
+  }
 }
 
 const imageStyle = computed<CSSProperties>(() => ({
@@ -58,6 +65,7 @@ onMounted(() => {
       class="image-main"
       loading="lazy"
       @load="onLoad"
+      @error="onError"
     />
   </div>
 </template>

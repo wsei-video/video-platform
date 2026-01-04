@@ -67,8 +67,8 @@ import WatchMeLogo from '@/assets/watch-me-logo.svg'
   transition: 0.35s ease-in-out;
 
   &.closed {
-    min-width: 60px;
-    max-width: 60px;
+    min-width: $sidebar-closed-width;
+    max-width: $sidebar-closed-width;
     padding: 0.5rem 5px;
 
     &.mobile {
