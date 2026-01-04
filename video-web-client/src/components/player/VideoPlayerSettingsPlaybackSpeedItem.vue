@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { usePlaybackSpeedOptions } from './playback-speed'
 import { useVideoPlayerStore } from '@/store'
+
+import { usePlaybackSpeedOptions } from './playback-speed'
 import VideoPlayerMenuItem from './VideoPlayerMenuItem.vue'
 
 const videoPlayerStore = useVideoPlayerStore()

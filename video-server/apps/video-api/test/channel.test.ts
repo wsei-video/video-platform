@@ -443,7 +443,6 @@ describe('Channel', () => {
                 id: '-Y5OWS2exwnMaKM-RWHDVg',
                 title: 'My video',
                 description: '',
-                hlsUrl: null,
                 thumbnail: null,
                 duration: 0,
                 channel: {

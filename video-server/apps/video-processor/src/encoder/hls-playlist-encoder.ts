@@ -18,7 +18,7 @@ export class HlsPlaylistEncoder {
     for (let index = 0; index < segmentCount; index++) {
       const segmentDuration = index + 1 === segmentCount ? lastSegmentDuration : StorageConstants.hlsSegmentDuration;
       playlist.push(`#EXTINF:${segmentDuration.toFixed(6)},`);
-      playlist.push(`segment_${index.toString(10).padStart(3, '0')}.m4s`);
+      playlist.push(`segment_${index.toString(10).padStart(6, '0')}.m4s`);
     }
 
     playlist.push('#EXT-X-ENDLIST');

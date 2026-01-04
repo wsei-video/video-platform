@@ -5,7 +5,13 @@ import type { Video, VideoSource, VideoUploadSource } from '@/domain/video'
 import type { VideoCreateCommand, VideoUpdateCommand } from '@/domain/video'
 import type { VideoRepository } from '@/domain/video/video.repository'
 
-import type { VideoDto, VideosDto, VideoSourceDto, VideoUploadSourceDto } from '../shared'
+import type {
+  MediaStreamsDto,
+  VideoDto,
+  VideosDto,
+  VideoSourceDto,
+  VideoUploadSourceDto,
+} from '../shared'
 import { VideoMapper } from './video.mapper'
 import { VideoSourceMapper } from './video-source.mapper'
 
@@ -101,5 +107,10 @@ export default class HttpVideoRepository implements VideoRepository {
       },
     })
     return VideoMapper.toPaginatedModel(res.data)
+  }
+
+  async getMediaStreams(videoId: string): Promise<MediaStreamsDto> {
+    const res = await this.httpClient.get<MediaStreamsDto>(`/v1/videos/${videoId}/streams`)
+    return res.data
   }
 }

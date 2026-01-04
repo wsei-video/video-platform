@@ -15,6 +15,9 @@ export enum QueueTask {
 
   /** Produces adaptive bitrate streaming audio files for the given video. */
   AdaptiveAudio = 'adaptive_audio',
+
+  /** Produces scrubber image allowing the usr to preview the frames near given playback time. */
+  ScrubberImage = 'scrubber_image',
 }
 
 /** Base message for tasks operating on uploaded files. */
@@ -79,8 +82,23 @@ export interface QueueMessageAdaptiveAudio extends QueueMessageMediaProcess {
   };
 }
 
+export interface QueueMessageScrubberImage extends QueueMessageMediaProcess {
+  /** Input audio specification. */
+  input: {
+    /** Input audio duration in seconds. */
+    duration: number;
+
+    /** Input video width. */
+    width: number;
+
+    /** Input video height. */
+    height: number;
+  };
+}
+
 export interface QueueMessages {
   [QueueTask.Identify]: QueueMessageIdentify;
   [QueueTask.AdaptiveVideo]: QueueMessageAdaptiveVideo;
   [QueueTask.AdaptiveAudio]: QueueMessageAdaptiveAudio;
+  [QueueTask.ScrubberImage]: QueueMessageScrubberImage;
 }

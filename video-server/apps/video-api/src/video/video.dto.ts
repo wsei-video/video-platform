@@ -36,10 +36,6 @@ export class VideoDto {
   @Expose()
   public description: string;
 
-  @ApiProperty({ description: 'HLS stream URL' })
-  @Expose()
-  public hlsUrl: string;
-
   @ApiProperty({ description: 'Thumbnail URL' })
   @Expose()
   public thumbnail: string;

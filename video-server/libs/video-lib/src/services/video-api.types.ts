@@ -277,6 +277,8 @@ export interface MediaStreams {
   adaptive: AdaptiveStream[];
   /** List of audio streams */
   audio: AudioStream[];
+  /** Video scrubber image */
+  scrubber: VideoScrubberImage | null;
   /** List of video streams */
   video: VideoStream[];
 }
@@ -318,8 +320,6 @@ export interface Video {
   description: string;
   /** Video duration in seconds */
   duration: number;
-  /** HLS stream URL */
-  hlsUrl: string;
   /** Unique video identifier */
   id: string;
   /** Aggregated video reactions */
@@ -646,6 +646,58 @@ export interface VideoCreate {
   visibility: VideoVisibility;
 }
 
+export interface VideoFeedControllerForYouV1Params {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number;
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+}
+
+export interface VideoFeedControllerMostPopularV1Params {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number;
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+}
+
+export interface VideoFeedControllerRecentlyUploadedV1Params {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number;
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+}
+
+export interface VideoFeedControllerTrendingV1Params {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number;
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
+}
+
 /** Video reaction details */
 export interface VideoReaction {
   /** Reaction content (e.g., like, dislike) */
@@ -715,6 +767,38 @@ export interface VideoReactions {
   total: number;
 }
 
+export interface VideoScrubberImage {
+  /** Number of frames in a row */
+  columns: number;
+  /** Number of image files */
+  count: number;
+  /** Duration in seconds for one frame to be displayed */
+  frameDuration: number;
+  /** Frame height in pixels */
+  height: number;
+  /** Number of frames in a column */
+  rows: number;
+  /** List of URLs for each image file */
+  urls: string[];
+  /** Frame width in pixels */
+  width: number;
+}
+
+export interface VideoScrubberImageCreate {
+  /** Number of frames in a row */
+  columns: number;
+  /** Number of image files */
+  count: number;
+  /** Duration in seconds for one frame to be displayed */
+  frameDuration: number;
+  /** Frame height in pixels */
+  height: number;
+  /** Number of frames in a column */
+  rows: number;
+  /** Frame width in pixels */
+  width: number;
+}
+
 /** Information about video source file */
 export interface VideoSource {
   /** Name of the uploaded file */
@@ -767,6 +851,10 @@ export interface VideoStream {
 }
 
 export interface VideoStreamControllerCreateAudioStreamV1Params {
+  videoId: number;
+}
+
+export interface VideoStreamControllerCreateScrubberImageV1Params {
   videoId: number;
 }
 

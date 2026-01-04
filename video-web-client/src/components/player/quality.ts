@@ -1,11 +1,12 @@
-import { computed } from 'vue'
 import type { Level } from 'hls.js'
+import { computed } from 'vue'
 
 import { useVideoPlayerStore } from '@/store'
 
 export class QualityLevel {
   public constructor(
     public readonly name: string,
+    public readonly width: number,
     public readonly height: number,
     public readonly hlsIndex: number,
     public readonly hlsLevel: Level,
@@ -14,7 +15,7 @@ export class QualityLevel {
   public static fromHlsLevel(hlsLevel: Level, hlsIndex: number): QualityLevel {
     const namePrefix = hlsLevel.name || hlsLevel.height
     const name = namePrefix ? `${namePrefix}p` : ''
-    return new QualityLevel(name, hlsLevel.height, hlsIndex, hlsLevel)
+    return new QualityLevel(name, hlsLevel.width, hlsLevel.height, hlsIndex, hlsLevel)
   }
 
   public static fromHlsLevels(hlsLevels: Level[]): QualityLevel[] {

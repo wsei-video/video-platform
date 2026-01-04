@@ -1,0 +1,11 @@
+model VideoScrubberImage {
+  videoId       Int @id @unique
+  width         Int
+  height        Int
+  columns       Int
+  rows          Int
+  frameDuration Int
+  count         Int
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}

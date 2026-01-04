@@ -11,6 +11,9 @@ export class IdentifyService {
         duration: 0,
       },
       video: {
+        duration: 0,
+        width: 0,
+        height: 0,
         tasks: [],
         sectionCount: 0,
         formatHeights: [],
@@ -44,6 +47,9 @@ export class IdentifyService {
     const sectionCount = Math.ceil(segmentCount / StorageConstants.hlsSectionMaxSegments);
 
     specification.video.sectionCount = sectionCount;
+    specification.video.duration = duration;
+    specification.video.width = width;
+    specification.video.height = height;
 
     const aspectRatio = width / height;
     const isPortrait = aspectRatio < 1;
@@ -115,6 +121,15 @@ export interface IdentifySpecification {
   };
   /** Video specification. */
   video: {
+    /** Video duration in seconds. */
+    duration: number;
+
+    /** Video width. */
+    width: number;
+
+    /** Video height. */
+    height: number;
+
     /** List of AdaptiveVideo tasks that should be scheduled for video transcoding. */
     tasks: IdentifyVideoTaskSpecification[];
 

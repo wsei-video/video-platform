@@ -9,6 +9,8 @@ import { StorageConstants } from '@video/lib/storage';
 import {
   MediaEncoderAudioHlsOptions,
   MediaEncoderHlsOptions,
+  MediaEncoderInputOutputOptions,
+  MediaEncoderScrubberImageOptions,
   MediaEncoderVideoHlsOptions,
 } from './media-encoder.types';
 
@@ -89,7 +91,23 @@ export class MediaEncoder {
     await execFileAsync('ffmpeg', args);
   }
 
-  private getInputArguments(options: MediaEncoderHlsOptions): string[] {
+  public async encodeScrubberImage(options: MediaEncoderScrubberImageOptions): Promise<void> {
+    const args: string[] = [
+      ...this.getInputArguments(options),
+      '-an',
+      '-filter_complex',
+      `fps=1/${options.frameDuration}:round=down,scale=${options.width}x${options.height},tile=${options.columns}x${options.rows}`,
+      '-qscale:v',
+      '12',
+      `${options.output}/scrubber_%06d.jpg`,
+    ];
+
+    await fs.mkdir(options.output, { recursive: true });
+    this.logger.log(`Executing: ffmpeg ${args.join(' ')}`);
+    await execFileAsync('ffmpeg', args);
+  }
+
+  private getInputArguments(options: MediaEncoderInputOutputOptions): string[] {
     return [
       '-abort_on',
       'empty_output',

@@ -14,6 +14,7 @@ import { Task } from './tasks/task';
 import { TaskAdaptiveAudio } from './tasks/task-adaptive-audio';
 import { TaskAdaptiveVideo } from './tasks/task-adaptive-video';
 import { TaskIdentify } from './tasks/task-identify';
+import { TaskScrubberImage } from './tasks/task-scrubber-image';
 
 @Injectable()
 export class ProcessorConsumer implements OnModuleInit {
@@ -36,6 +37,7 @@ export class ProcessorConsumer implements OnModuleInit {
     await this.registerTask(QueueTask.Identify, TaskIdentify);
     await this.registerTask(QueueTask.AdaptiveAudio, TaskAdaptiveAudio);
     await this.registerTask(QueueTask.AdaptiveVideo, TaskAdaptiveVideo);
+    await this.registerTask(QueueTask.ScrubberImage, TaskScrubberImage);
   }
 
   /** Registers task and maps it to its corresponding handler. */

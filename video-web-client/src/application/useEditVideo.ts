@@ -5,6 +5,7 @@ import { useVideoUploadStore } from '@/store/video-upload.store'
 
 import { useUpdateVideo } from './commands/useUpdateVideo'
 import { useGetVideo } from './queries/video'
+import { useGetMediaStreams } from './queries/video/useGetMediaStreams'
 import { useGetVideoSource } from './queries/video/useGetVideoSource'
 
 export function useEditVideo(videoId: string) {
@@ -14,6 +15,7 @@ export function useEditVideo(videoId: string) {
   const sourceQuery = useGetVideoSource(videoId, {
     enabled: computed(() => !uploadStore.isUploadPending),
   })
+  const mediaStreams = useGetMediaStreams(videoId)
   const updateQuery = useUpdateVideo()
 
   const saveError = ref<Error>()
@@ -23,10 +25,15 @@ export function useEditVideo(videoId: string) {
       videoQuery.error.value ||
       updateQuery.error.value ||
       saveError.value ||
-      sourceQuery.error.value,
+      sourceQuery.error.value ||
+      mediaStreams.error.value,
   )
   const isLoading = computed(
-    () => videoQuery.isPending.value || updateQuery.isPending.value || sourceQuery.isPending.value,
+    () =>
+      videoQuery.isPending.value ||
+      updateQuery.isPending.value ||
+      sourceQuery.isPending.value ||
+      mediaStreams.isPending.value,
   )
 
   async function saveVideo(c: VideoUpdateCommand) {
@@ -48,6 +55,7 @@ export function useEditVideo(videoId: string) {
     initialVideoData: videoQuery.data,
     videoSourceData: sourceQuery.data,
     updateResult: updateQuery.data,
+    mediaStreamsData: mediaStreams.data,
     error,
     isLoading,
     saveVideo,

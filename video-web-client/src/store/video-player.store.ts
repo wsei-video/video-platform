@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
 
 import type { QualityLevel } from '@/components/player/quality'
+import type { VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
 import { VideoUtils } from '@/infrastructure/video-api/shared/utils/video.utils'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
@@ -23,6 +24,8 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const qualityLevels = shallowRef<QualityLevel[]>([])
   const currentQualityLevel = shallowRef<QualityLevel | null>(null)
   const preferredQualityLevel = shallowRef<QualityLevel | null>(null)
+  const error = ref<string | null>(null)
+  const scrubberImage = shallowRef<VideoScrubberImageDto | null>(null)
 
   const playbackProgress = computed(() =>
     duration.value === 0 ? 0 : currentTime.value / duration.value,
@@ -145,6 +148,14 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
    */
   const isLabeledQualityLevel = (level: QualityLevel | null) => level?.name
 
+  const setError = (updatedError: string | null) => {
+    error.value = updatedError
+  }
+
+  const setScrubberImage = (updatedScrubberImage: VideoScrubberImageDto | null) => {
+    scrubberImage.value = updatedScrubberImage
+  }
+
   return {
     source,
     setSource,
@@ -196,5 +207,9 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     preferredQualityLevel,
     setPreferredQualityLevel,
     setPreferredQualityLevelByHlsIndex,
+    error,
+    setError,
+    scrubberImage,
+    setScrubberImage,
   }
 })

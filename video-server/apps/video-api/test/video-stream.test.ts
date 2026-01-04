@@ -59,7 +59,7 @@ describe('Video', () => {
         .request()
         .get(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams`)
         .expect(HttpStatus.OK)
-        .expect({ video: [], audio: [], adaptive: [] });
+        .expect({ video: [], audio: [], adaptive: [], scrubber: null });
     });
 
     test('Create video stream not internal', () => {
@@ -133,6 +133,7 @@ describe('Video', () => {
             { format: 'hls', url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/master.m3u8' },
             { format: 'dash', url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/master.mpd' },
           ],
+          scrubber: null,
         });
     });
 
@@ -176,6 +177,46 @@ describe('Video', () => {
             },
           ],
           adaptive: [],
+          scrubber: null,
+        });
+    });
+
+    test('Create scrubber image', async () => {
+      await fixture
+        .request()
+        .post(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams/scrubber`)
+        .set(AuthConstants.InternalHeader, fixture.config.video.apiInternalKey)
+        .send({
+          columns: 8,
+          count: 2,
+          frameDuration: 2,
+          height: 135,
+          rows: 4,
+          width: 240,
+        })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .get(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams`)
+        .expect(HttpStatus.OK)
+        .expect({
+          video: [],
+          audio: [],
+          adaptive: [],
+          scrubber: {
+            columns: 8,
+            count: 2,
+            frameDuration: 2,
+            height: 135,
+            rows: 4,
+            width: 240,
+            urls: [
+              'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/scrubber/scrubber_000001.jpg',
+              'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/scrubber/scrubber_000002.jpg',
+            ],
+          },
         });
     });
   });

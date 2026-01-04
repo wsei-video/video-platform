@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 
-import { Account } from '@video/lib/database/client';
+import { Account, VideoScrubberImage } from '@video/lib/database/client';
 import { Config } from '@video/lib/config';
 import { DatabaseService } from '@video/lib/database';
 import { Id } from '@video/lib/restful';
 import { MediaAdaptiveFormat } from '@video/lib/media';
 
-import { AudioStreamCreateDto, MediaStreamsDto, VideoStreamCreateDto } from './video-stream.dto';
+import {
+  AudioStreamCreateDto,
+  MediaStreamsDto,
+  VideoScrubberImageCreateDto,
+  VideoScrubberImageDto,
+  VideoStreamCreateDto,
+} from './video-stream.dto';
 
 @Injectable()
 export class VideoStreamService {
@@ -16,7 +22,10 @@ export class VideoStreamService {
   ) {}
 
   public async list(account: Account, videoId: number): Promise<MediaStreamsDto> {
-    await this.database.video.findFirstOrThrow({ where: { id: videoId } });
+    const video = await this.database.video.findFirstOrThrow({
+      where: { id: videoId },
+      include: { videoScrubberImage: true },
+    });
 
     const encryptedVideoId = Id.clear(videoId).encrypted;
     const baseCdnUrl = `${this.config.video.cdnUrl}/media/${encryptedVideoId}`;
@@ -62,6 +71,7 @@ export class VideoStreamService {
               url: `${baseCdnUrl}/master.${format.extension}`,
             }))
           : [],
+      scrubber: this.getScrubberImage(videoId, video.videoScrubberImage),
     };
   }
 
@@ -93,5 +103,39 @@ export class VideoStreamService {
         videoId,
       },
     });
+  }
+
+  public createScrubberImage(videoId: number, body: VideoScrubberImageCreateDto) {
+    return this.database.videoScrubberImage.create({
+      data: {
+        columns: body.columns,
+        count: body.count,
+        frameDuration: body.frameDuration,
+        height: body.height,
+        rows: body.rows,
+        width: body.width,
+        videoId,
+      },
+    });
+  }
+
+  private getScrubberImage(videoId: number, scrubber: VideoScrubberImage | null): VideoScrubberImageDto | null {
+    if (!scrubber) return null;
+
+    const encryptedVideoId = Id.clear(videoId).encrypted;
+    const baseCdnUrl = `${this.config.video.cdnUrl}/media/${encryptedVideoId}/image/scrubber`;
+    const urls = Array.from({ length: scrubber.count }).map(
+      (_, index) => `${baseCdnUrl}/scrubber_${(index + 1).toString().padStart(6, '0')}.jpg`,
+    );
+
+    return {
+      columns: scrubber.columns,
+      count: scrubber.count,
+      frameDuration: scrubber.frameDuration,
+      height: scrubber.height,
+      rows: scrubber.rows,
+      urls,
+      width: scrubber.width,
+    };
   }
 }

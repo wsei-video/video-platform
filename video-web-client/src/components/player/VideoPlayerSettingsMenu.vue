@@ -53,7 +53,7 @@ watch(
 <style lang="scss" scoped>
 .video-player-settings-menu {
   position: absolute;
-  overflow: hidden;
+  overflow: auto;
   border-radius: 12px;
   background: rgba(16, 16, 16, 0.8);
   border: 1px solid rgba(160, 160, 160, 0.2);
@@ -63,6 +63,7 @@ watch(
   min-width: 250px;
   padding: 0.5rem 0;
   font-size: 0.85rem;
+  max-height: calc(100% - 70px);
 }
 
 .video-player-settings-menu-separator {
