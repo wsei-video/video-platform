@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import { useQualityOptions } from './quality'
 import { useVideoPlayerStore } from '@/store'
+
+import { useQualityOptions } from './quality'
 import VideoPlayerMenuItem from './VideoPlayerMenuItem.vue'
 
 const videoPlayerStore = useVideoPlayerStore()

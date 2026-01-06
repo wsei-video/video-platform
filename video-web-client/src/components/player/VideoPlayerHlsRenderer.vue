@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Hls from 'hls.js'
-import { onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 
 import VideoPlaceholder from '@/assets/video-placeholder.png'
 import { useVideoPlayerStore } from '@/store'
@@ -12,13 +12,28 @@ const videoPlayerStore = useVideoPlayerStore()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const hlsInstance = shallowRef<Hls | null>(null)
+const videoWidth = ref(0)
+
+const videoAspect = computed(() => {
+  const level = videoPlayerStore.currentQualityLevel
+  return level ? level.width / level.height : 16 / 9
+})
+
+const videoHeight = computed(() => Math.round(videoWidth.value / videoAspect.value))
+
+let resizeObserver: ResizeObserver
 
 const initializeVideoPlayer = () => {
   if (!videoRef.value) throw new Error('Video element ref not set')
   hlsInstance.value = new Hls()
   hlsInstance.value.on(Hls.Events.FRAG_BUFFERED, updateBufferedDuration)
   hlsInstance.value.on(Hls.Events.MANIFEST_PARSED, updateQualityLevels)
+  hlsInstance.value.on(Hls.Events.LEVEL_UPDATED, updateQualityLevels)
   hlsInstance.value.on(Hls.Events.LEVEL_SWITCHED, updateCurrentQualityLevel)
+  hlsInstance.value.on(Hls.Events.ERROR, (_, data) => {
+    if (data.fatal) videoPlayerStore.setError(data.error.message)
+    console.error(data)
+  })
   hlsInstance.value.attachMedia(videoRef.value)
 }
 
@@ -63,13 +78,27 @@ const handleVideoLoadStart = () => {
   if (videoRef.value) videoRef.value.playbackRate = videoPlayerStore.playbackSpeed
 }
 
-onMounted(() => {
+const updateVideoSize = () => {
+  if (!videoRef.value) return
+  const rect = videoRef.value.getBoundingClientRect()
+  videoWidth.value = Math.round(rect.width)
+}
+
+onMounted(async () => {
   initializeVideoPlayer()
   updateVideoSource()
+
+  await nextTick()
+
+  if (!videoRef.value) return
+  resizeObserver = new ResizeObserver(() => updateVideoSize())
+  resizeObserver.observe(videoRef.value)
+  updateVideoSize()
 })
 
 onBeforeUnmount(() => {
   destroyVideoPlayer()
+  resizeObserver.disconnect()
 })
 
 watch(
@@ -129,6 +158,8 @@ watch(
     ref="videoRef"
     class="video-player-hls-renderer"
     :poster="videoPlayerStore.source || VideoPlaceholder"
+    :width="videoWidth"
+    :height="videoHeight"
     @loadstart="handleVideoLoadStart"
     @durationchange="handleVideoDurationChange"
     @timeupdate="handleVideoTimeUpdate"
@@ -141,6 +172,7 @@ watch(
 <style lang="scss" scoped>
 .video-player-hls-renderer {
   width: 100%;
+  max-height: calc(100vh - 180px); // Arbitrary choice
   background-color: black;
   display: block;
 }

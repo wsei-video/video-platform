@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { VideoPlayer } from '@/components/player'
 import { AppIcon } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
@@ -9,7 +11,9 @@ import { CommentsSection, VideoInfo } from '@/views/VideoPages/WatchPage'
 
 const {
   video,
-  videoIsPending,
+
+  streams,
+  streamsIsPending,
 
   recommendedVideos,
   isMobile,
@@ -19,6 +23,7 @@ const {
   openCommentsSection,
 } = useWatchPage()
 
+const adaptiveHlsUrl = computed(() => streams.value?.adaptive.find(stream => stream.format === 'hls')?.url)
 const videoAspectRatio = 16 / 9
 </script>
 <template>
@@ -26,9 +31,10 @@ const videoAspectRatio = 16 / 9
     <main class="watch-page__main">
       <section class="watch-page__player">
         <VideoPlayer
-          :source="video?.hlsUrl || ''"
+          :source="adaptiveHlsUrl"
+          :scrubber="streams?.scrubber"
           class="watch-page__player__video"
-          :is-pending="videoIsPending"
+          :is-pending="streamsIsPending"
         />
         <VideoInfo class="watch-page__player__info" />
       </section>

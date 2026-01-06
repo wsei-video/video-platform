@@ -32,9 +32,12 @@ describe('IdentifyService', () => {
         included: false,
       },
       video: {
+        duration: 0,
         formatHeights: [],
+        height: 0,
         sectionCount: 0,
         tasks: [],
+        width: 0,
       },
     });
   });
@@ -77,9 +80,12 @@ describe('IdentifyService', () => {
         included: true,
       },
       video: {
+        duration: 0,
         formatHeights: [],
+        height: 0,
         sectionCount: 0,
         tasks: [],
+        width: 0,
       },
     });
   });
@@ -107,7 +113,9 @@ describe('IdentifyService', () => {
         included: false,
       },
       video: {
+        duration: 3,
         formatHeights: [144],
+        height: 144,
         sectionCount: 1,
         tasks: [
           {
@@ -132,6 +140,7 @@ describe('IdentifyService', () => {
             },
           },
         ],
+        width: 256,
       },
     });
   });
@@ -156,7 +165,9 @@ describe('IdentifyService', () => {
     expect(specification).toEqual({
       audio: { duration: 0, included: false },
       video: {
+        duration: 3,
         formatHeights: [144],
+        height: 144,
         sectionCount: 1,
         tasks: [
           {
@@ -181,6 +192,7 @@ describe('IdentifyService', () => {
             },
           },
         ],
+        width: 144,
       },
     });
   });
@@ -205,7 +217,9 @@ describe('IdentifyService', () => {
     expect(specification).toEqual({
       audio: { duration: 0, included: false },
       video: {
+        duration: 6,
         formatHeights: [256],
+        height: 256,
         sectionCount: 1,
         tasks: [
           {
@@ -230,6 +244,7 @@ describe('IdentifyService', () => {
             },
           },
         ],
+        width: 144,
       },
     });
   });
@@ -257,7 +272,9 @@ describe('IdentifyService', () => {
         included: false,
       },
       video: {
+        duration: 6,
         formatHeights: [144, 240],
+        height: 240,
         sectionCount: 1,
         tasks: [
           {
@@ -291,6 +308,7 @@ describe('IdentifyService', () => {
             split: { duration: null, segmentStartIndex: 0, from: 0 },
           },
         ],
+        width: 640,
       },
     });
   });
@@ -318,7 +336,9 @@ describe('IdentifyService', () => {
         included: false,
       },
       video: {
+        duration: 60,
         formatHeights: [144],
+        height: 144,
         sectionCount: 4,
         tasks: [
           {
@@ -382,6 +402,7 @@ describe('IdentifyService', () => {
             split: { duration: null, segmentStartIndex: 9, from: 54 },
           },
         ],
+        width: 256,
       },
     });
   });
@@ -409,7 +430,9 @@ describe('IdentifyService', () => {
         included: false,
       },
       video: {
+        duration: 18,
         formatHeights: [144, 240, 360, 480, 720, 1080, 1440, 2160],
+        height: 2160,
         sectionCount: 1,
         tasks: [
           {
@@ -533,6 +556,7 @@ describe('IdentifyService', () => {
             split: { duration: null, segmentStartIndex: 0, from: 0 },
           },
         ],
+        width: 3840,
       },
     });
   });

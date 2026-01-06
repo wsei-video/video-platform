@@ -244,6 +244,8 @@ export interface MediaStreamsDto {
   adaptive: AdaptiveStreamDto[];
   /** List of audio streams */
   audio: AudioStreamDto[];
+  /** Video scrubber image */
+  scrubber: VideoScrubberImageDto | null;
   /** List of video streams */
   video: VideoStreamDto[];
 }
@@ -500,8 +502,6 @@ export interface VideoDto {
   description: string;
   /** Video duration in seconds */
   duration: number;
-  /** HLS stream URL */
-  hlsUrl: string;
   /** Unique video identifier */
   id: string;
   /** Aggregated video reactions */
@@ -617,6 +617,38 @@ export interface VideoReactionsDto {
   next: boolean;
   /** The total number of available resources */
   total: number;
+}
+
+export interface VideoScrubberImageCreateDto {
+  /** Number of frames in a row */
+  columns: number;
+  /** Number of image files */
+  count: number;
+  /** Duration in seconds for one frame to be displayed */
+  frameDuration: number;
+  /** Frame height in pixels */
+  height: number;
+  /** Number of frames in a column */
+  rows: number;
+  /** Frame width in pixels */
+  width: number;
+}
+
+export interface VideoScrubberImageDto {
+  /** Number of frames in a row */
+  columns: number;
+  /** Number of image files */
+  count: number;
+  /** Duration in seconds for one frame to be displayed */
+  frameDuration: number;
+  /** Frame height in pixels */
+  height: number;
+  /** Number of frames in a column */
+  rows: number;
+  /** List of URLs for each image file */
+  urls: string[];
+  /** Frame width in pixels */
+  width: number;
 }
 
 /** Information about video source file */

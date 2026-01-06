@@ -19,7 +19,7 @@ const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
 const pageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
 
-const { initialVideoData, videoSourceData, updateResult, error, isLoading, saveVideo } =
+const { initialVideoData, videoSourceData, mediaStreamsData, updateResult, error, isLoading, saveVideo } =
   useEditVideo(videoId)
 
 const tempVideo = ref<VideoUpdateCommand>({
@@ -91,10 +91,11 @@ const thumbnailApproach = ref<ThumbnailApproach>('uploaded')
         <EditVideoThumbnailSection :model="thumbnailApproach" />
       </main>
       <EditVideoSidebar
-        v-if="videoSourceData"
+        v-if="videoSourceData && mediaStreamsData"
         class="edit-video__sidebar"
         :videoData="initialVideoData"
         :video-source="videoSourceData"
+        :media-streams="mediaStreamsData"
         v-model="tempVideo"
       />
       <p v-if="uplaodStore.isUploadPending">Progress: {{ uplaodStore.progress.percentage }}</p>

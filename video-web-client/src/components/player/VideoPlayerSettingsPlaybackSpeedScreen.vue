@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { usePlaybackSpeedOptions, type PlaybackSpeedOption } from './playback-speed'
 import { useVideoPlayerStore } from '@/store'
+
+import { type PlaybackSpeedOption,usePlaybackSpeedOptions } from './playback-speed'
 import VideoPlayerMenuItem from './VideoPlayerMenuItem.vue'
 
 const videoPlayerStore = useVideoPlayerStore()
@@ -15,6 +16,7 @@ const setPlaybackSpeedAndCloseMenu = (option: PlaybackSpeedOption) => {
 <template>
   <VideoPlayerMenuItem
     v-for="option of playbackSpeedOptions"
+    :key="option.value"
     :selected="videoPlayerStore.playbackSpeed === option.value"
     :label="option.label ?? option.value.toString()"
     @click="setPlaybackSpeedAndCloseMenu(option)"

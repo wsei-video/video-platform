@@ -193,6 +193,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
 
   private getCodecId(codec: VideoCodec): string {
     const profile = this.avcProfiles[codec.profile] ?? this.avcProfiles.main;
-    return `avc1.${profile?.toString(16)}00${codec.level.replace('.', '')}`;
+    const level = Number(codec.level.replace('.', '')).toString(16);
+    return `avc1.${profile?.toString(16)}00${level}`;
   }
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useVideoPlayerStore } from '@/store'
+
 import VideoPlayerFullscreenControl from './VideoPlayerFullscreenControl.vue'
 import VideoPlayerPlayControl from './VideoPlayerPlayControl.vue'
 import VideoPlayerProgressBar from './VideoPlayerProgressBar.vue'
@@ -13,6 +14,7 @@ const videoPlayerStore = useVideoPlayerStore()
   <div class="video-player-control-bar-wrapper" :class="{ shown: videoPlayerStore.showControls }">
     <VideoPlayerProgressBar
       progressColor="#ce7f00"
+      :hasScrubber="true"
       :modelValue="videoPlayerStore.playbackProgress"
       :secondaryProgress="videoPlayerStore.bufferedProgress"
       @update:modelValue="videoPlayerStore.setLastSeekProgress"

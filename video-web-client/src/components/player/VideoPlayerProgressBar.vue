@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 
+import VideoScrubberImage from './VideoScrubberImage.vue'
+
 const progress = defineModel<number>({ default: 0 })
 
 const {
   secondaryProgress = 0,
   isRounded = false,
   progressColor = '#fff',
+  hasScrubber = false,
 } = defineProps<{
   isRounded?: boolean
   secondaryProgress?: number
   progressColor?: string
+  hasScrubber?: boolean
 }>()
 
 const borderRadius = computed(() => (isRounded ? '4px' : '0'))
@@ -43,16 +47,29 @@ const stopDrag = (event?: Event) => {
   window.removeEventListener('touchend', stopDrag)
 }
 
-const updateProgressValueFromEvent = (event: MouseEvent | TouchEvent) => {
+const calculateProgressValueFromEvent = (event: MouseEvent | TouchEvent) => {
   const progressBarRect = progressBarRef.value?.getBoundingClientRect()
-  if (!progressBarRect) return
+  if (!progressBarRect) return 0
 
   const progressX = 'touches' in event ? event.touches[0].clientX : event.clientX
   const progressStart = progressBarRect.left
   const progressWidth = progressBarRect.width
 
-  progress.value = Math.max(0, Math.min(1, (progressX - progressStart) / progressWidth))
+  return Math.max(0, Math.min(1, (progressX - progressStart) / progressWidth))
 }
+
+const updateProgressValueFromEvent = (event: MouseEvent | TouchEvent) =>
+  (progress.value = calculateProgressValueFromEvent(event))
+
+const scrubberVisible = ref(false)
+const scrubberProgress = ref(0)
+
+const onMouseEnter = () => (scrubberVisible.value = true)
+
+const onMouseLeave = () => (scrubberVisible.value = false)
+
+const onMouseMove = (event: MouseEvent) =>
+  (scrubberProgress.value = calculateProgressValueFromEvent(event))
 </script>
 
 <template>
@@ -70,8 +87,12 @@ const updateProgressValueFromEvent = (event: MouseEvent | TouchEvent) => {
       class="video-player-progress-bar-touch-target"
       @mousedown="startDrag"
       @touchstart="startDrag"
+      @mouseenter="onMouseEnter"
+      @mouseleave="onMouseLeave"
+      @mousemove="onMouseMove"
     ></div>
   </div>
+  <VideoScrubberImage v-if="hasScrubber && scrubberVisible" :progress="scrubberProgress" />
 </template>
 
 <style lang="scss" scoped>
@@ -116,7 +137,7 @@ $progress-background-color: #ffffff30;
   position: absolute;
   left: 0;
   right: 0;
-  height: 16px;
+  height: 22px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;

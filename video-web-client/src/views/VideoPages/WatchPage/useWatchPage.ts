@@ -4,6 +4,7 @@ import { computed, inject, provide, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useGetRecommendedVideos, useGetVideo } from '@/application/queries/video'
+import { useGetMediaStreams } from '@/application/queries/video/useGetMediaStreams'
 
 type WatchPageContext = ReturnType<typeof useWatchPage>
 const WatchPageKey: InjectionKey<WatchPageContext> = Symbol()
@@ -22,6 +23,9 @@ export function useWatchPage() {
     ? route.params.videoId[0]
     : route.params.videoId
   const { data: video, isPending: videoIsPending, error: videoError } = useGetVideo(videoId)
+
+  const { data: streams, isPending: streamsIsPending, error: streamsError } = useGetMediaStreams(videoId)
+
   const {
     data: recommendedVideos,
     isPending: recommendedIsPending,
@@ -46,6 +50,10 @@ export function useWatchPage() {
     video,
     videoIsPending,
     videoError,
+
+    streams,
+    streamsIsPending,
+    streamsError,
 
     recommendedVideos,
     recommendedIsPending,

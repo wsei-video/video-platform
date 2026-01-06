@@ -1,6 +1,9 @@
-export interface MediaEncoderHlsOptions {
+export interface MediaEncoderInputOutputOptions {
   input: string;
   output: string;
+}
+
+export interface MediaEncoderHlsOptions extends MediaEncoderInputOutputOptions {
   codec: string;
   segmentDuration: number;
 }
@@ -23,4 +26,12 @@ export interface MediaEncoderVideoHlsOptions extends MediaEncoderHlsOptions {
 
 export interface MediaEncoderAudioHlsOptions extends MediaEncoderHlsOptions {
   bitrate: number;
+}
+
+export interface MediaEncoderScrubberImageOptions extends MediaEncoderInputOutputOptions {
+  columns: number;
+  rows: number;
+  width: number;
+  height: number;
+  frameDuration: number;
 }

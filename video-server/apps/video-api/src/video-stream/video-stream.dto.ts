@@ -4,6 +4,64 @@ import { Expose, Type } from 'class-transformer';
 import { IdTransform } from '@video/lib/restful';
 import { IsInt, IsString } from 'class-validator';
 
+@ApiSchema({ name: 'VideoScrubberImage' })
+export class VideoScrubberImageDto {
+  @ApiProperty({ description: 'Frame width in pixels' })
+  @Expose()
+  public width: number;
+
+  @ApiProperty({ description: 'Frame height in pixels' })
+  @Expose()
+  public height: number;
+
+  @ApiProperty({ description: 'Number of frames in a row' })
+  @Expose()
+  public columns: number;
+
+  @ApiProperty({ description: 'Number of frames in a column' })
+  @Expose()
+  public rows: number;
+
+  @ApiProperty({ description: 'Duration in seconds for one frame to be displayed' })
+  @Expose()
+  public frameDuration: number;
+
+  @ApiProperty({ description: 'Number of image files' })
+  @Expose()
+  public count: number;
+
+  @ApiProperty({ description: 'List of URLs for each image file', type: [String] })
+  @Expose()
+  public urls: string[];
+}
+
+@ApiSchema({ name: 'VideoScrubberImageCreate' })
+export class VideoScrubberImageCreateDto {
+  @ApiProperty({ description: 'Frame width in pixels' })
+  @IsInt()
+  public width: number;
+
+  @ApiProperty({ description: 'Frame height in pixels' })
+  @IsInt()
+  public height: number;
+
+  @ApiProperty({ description: 'Number of frames in a row' })
+  @IsInt()
+  public columns: number;
+
+  @ApiProperty({ description: 'Number of frames in a column' })
+  @IsInt()
+  public rows: number;
+
+  @ApiProperty({ description: 'Duration in seconds for one frame to be displayed' })
+  @IsInt()
+  public frameDuration: number;
+
+  @ApiProperty({ description: 'Number of image files' })
+  @IsInt()
+  public count: number;
+}
+
 @ApiSchema({ name: 'MediaCodec', description: 'Media codec information' })
 export class MediaCodecDto {
   @ApiProperty({ description: 'Codec name' })
@@ -178,4 +236,9 @@ export class MediaStreamsDto {
   @Type(() => AdaptiveStreamDto)
   @Expose()
   public adaptive: AdaptiveStreamDto[];
+
+  @ApiProperty({ description: 'Video scrubber image', type: VideoScrubberImageDto, nullable: true })
+  @Type(() => VideoScrubberImageDto)
+  @Expose()
+  public scrubber: VideoScrubberImageDto | null;
 }

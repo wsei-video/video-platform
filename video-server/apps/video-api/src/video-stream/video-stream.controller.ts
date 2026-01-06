@@ -4,7 +4,12 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestj
 import { Account } from '@video/lib/database/client';
 import { BodyValidator, IdPipe, Serialize } from '@video/lib/restful';
 
-import { AudioStreamCreateDto, MediaStreamsDto, VideoStreamCreateDto } from './video-stream.dto';
+import {
+  AudioStreamCreateDto,
+  MediaStreamsDto,
+  VideoScrubberImageCreateDto,
+  VideoStreamCreateDto,
+} from './video-stream.dto';
 import { AuthInternal } from '../auth/auth-internal.guard';
 import { ReqAccount } from '../auth/auth-request.context';
 import { VideoStreamService } from './video-stream.service';
@@ -42,5 +47,17 @@ export class VideoStreamController {
     @Body(BodyValidator) body: AudioStreamCreateDto,
   ) {
     await this.videoStreamService.createAudioStream(videoId, body);
+  }
+
+  @Post('scrubber')
+  @AuthInternal()
+  @ApiNoContentResponse()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Create scrubber image' })
+  public async createScrubberImage(
+    @Param('videoId', IdPipe) videoId: number,
+    @Body(BodyValidator) body: VideoScrubberImageCreateDto,
+  ) {
+    await this.videoStreamService.createScrubberImage(videoId, body);
   }
 }

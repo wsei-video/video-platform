@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
+import type { VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
 import { useVideoPlayerStore } from '@/store'
 
 import VideoPlayerBufferingIndicator from './VideoPlayerBufferingIndicator.vue'
 import VideoPlayerControlBar from './VideoPlayerControlBar.vue'
+import VideoPlayerError from './VideoPlayerError.vue'
 import VideoPlayerHlsRenderer from './VideoPlayerHlsRenderer.vue'
 import VideoPlayerOverlayControls from './VideoPlayerOverlayControls.vue'
 import VideoPlayerSettingsMenu from './VideoPlayerSettingsMenu.vue'
 
-const { source, isPending = false } = defineProps<{ source: string; isPending?: boolean }>()
+const {
+  source,
+  scrubber,
+  isPending = false,
+} = defineProps<{ source?: string; scrubber?: VideoScrubberImageDto | null; isPending?: boolean }>()
 
 const videoPlayerStore = useVideoPlayerStore()
 const videoPlayerRef = ref<HTMLElement | null>(null)
@@ -24,9 +30,25 @@ watch(
   { immediate: true },
 )
 
+videoPlayerStore.setScrubberImage(scrubber ?? null)
+
 watch(
-  () => source,
-  (src) => videoPlayerStore.setSource(src),
+  () => scrubber,
+  (scrubber) => {
+    videoPlayerStore.setScrubberImage(scrubber ?? null)
+  },
+)
+
+watch(
+  () => ({ source, isPending }),
+  ({ source, isPending }) => {
+    if (source) {
+      videoPlayerStore.setError(null)
+      videoPlayerStore.setSource(source)
+    } else {
+      if (!isPending) videoPlayerStore.setError('No video content')
+    }
+  },
   { immediate: true },
 )
 
@@ -45,12 +67,17 @@ watch(
     @pointerleave="videoPlayerStore.setPointerOverPlayer(false)"
     @pointermove="videoPlayerStore.handlePointerMove()"
   >
-    <template v-if="videoPlayerRef">
-      <VideoPlayerHlsRenderer />
-      <VideoPlayerBufferingIndicator />
-      <VideoPlayerOverlayControls />
-      <VideoPlayerControlBar />
-      <VideoPlayerSettingsMenu />
+    <template v-if="videoPlayerStore.error">
+      <VideoPlayerError />
+    </template>
+    <template v-else>
+      <template v-if="videoPlayerRef">
+        <VideoPlayerHlsRenderer />
+        <VideoPlayerBufferingIndicator />
+        <VideoPlayerOverlayControls />
+        <VideoPlayerControlBar />
+        <VideoPlayerSettingsMenu />
+      </template>
     </template>
   </div>
 </template>
@@ -62,7 +89,6 @@ watch(
   position: relative;
   overflow: hidden;
   display: flex;
-  aspect-ratio: 16 / 9;
 }
 
 @include media-breakpoint-up(md) {

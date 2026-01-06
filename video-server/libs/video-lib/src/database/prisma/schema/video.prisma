@@ -19,6 +19,7 @@ model Video {
   comments   Comment[]
   videoStreams VideoStream[]
   audioStreams AudioStream[]
+  videoScrubberImage VideoScrubberImage?
 
   channel    Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sourceUser Account?        @relation(fields: [sourceUserId], references: [id], onDelete: SetNull)

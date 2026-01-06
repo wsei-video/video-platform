@@ -12,8 +12,9 @@ import { Task } from './tasks/task';
 import { TaskAdaptiveAudio } from './tasks/task-adaptive-audio';
 import { TaskAdaptiveVideo } from './tasks/task-adaptive-video';
 import { TaskIdentify } from './tasks/task-identify';
+import { TaskScrubberImage } from './tasks/task-scrubber-image';
 
-const tasks: Type<Task<QueueTask>>[] = [TaskIdentify, TaskAdaptiveAudio, TaskAdaptiveVideo];
+const tasks: Type<Task<QueueTask>>[] = [TaskIdentify, TaskAdaptiveAudio, TaskAdaptiveVideo, TaskScrubberImage];
 
 @Module({
   imports: [ConfigModule, HttpModule, QueueModule, RedisModule, StorageModule],
