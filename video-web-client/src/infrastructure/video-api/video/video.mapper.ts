@@ -11,7 +11,6 @@ export class VideoMapper {
       title: model.title,
       description: model.description,
       thumbnail: model.thumbnail,
-      hlsUrl: model.hlsUrl,
       duration: model.duration,
       createdAt: model.createdAt.toISOString(),
       channel: ChannelMapper.toDto(model.channel),
@@ -28,7 +27,6 @@ export class VideoMapper {
       dto.id,
       dto.title,
       dto.description,
-      dto.hlsUrl || '',
       dto.thumbnail || '',
       dto.status,
       dto.visibility,
@@ -37,6 +35,7 @@ export class VideoMapper {
       dto.commentCount,
       ChannelMapper.toModel(dto.channel),
       new Date(dto.createdAt),
+      dto.reactions,
     )
   }
 

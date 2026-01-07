@@ -2,9 +2,7 @@
 import { computed } from 'vue'
 
 import { VideoPlayer } from '@/components/player'
-import { AppIcon } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
-import CommentItem from '@/components/video/CommentItem.vue'
 import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
 import { useWatchPage } from '@/views/VideoPages/WatchPage'
 import { CommentsSection, VideoInfo } from '@/views/VideoPages/WatchPage'
@@ -16,11 +14,8 @@ const {
   streamsIsPending,
 
   recommendedVideos,
-  isMobile,
   watchPageMode,
   isMobileCommentsSectionOpened,
-  closeCommentsSection,
-  openCommentsSection,
 } = useWatchPage()
 
 const adaptiveHlsUrl = computed(
@@ -38,31 +33,10 @@ const videoAspectRatio = 16 / 9
           class="watch-page__player__video"
           :is-pending="streamsIsPending"
         />
-        <VideoInfo class="watch-page__player__info" />
+        <VideoInfo v-if="video" :video="video" class="watch-page__player__info" />
       </section>
-      <section v-if="video && video.commentCount > 0" class="watch-page__comments">
-        <h4 class="watch-page__comments__title">
-          <AppIcon
-            v-if="isMobileCommentsSectionOpened"
-            @click="closeCommentsSection"
-            name="close"
-          />
-          Comments:
-        </h4>
-
-        <CommentsSection
-          v-if="!isMobile || isMobileCommentsSectionOpened"
-          :mode="watchPageMode"
-          :comments="[]"
-          class="watch-page__comments__list"
-        />
-
-        <div v-else @click="openCommentsSection" class="watch-page__comments__trigger">
-          <CommentItem :comment-data="video.comments[0]" class="watch-page__comments__preview" />
-        </div>
-      </section>
+      <CommentsSection class="watch-page__comments__list" />
     </main>
-
     <aside
       v-if="!isMobileCommentsSectionOpened && recommendedVideos?.pages"
       class="watch-page__sidebar"
@@ -97,10 +71,6 @@ const videoAspectRatio = 16 / 9
       gap: 0.5rem;
       padding: 0 1rem;
     }
-
-    .watch-page__comments {
-      margin: 0 1rem;
-    }
   }
 
   &--desktop {
@@ -126,25 +96,5 @@ const videoAspectRatio = 16 / 9
 .watch-page__player {
   display: grid;
   gap: 1rem;
-}
-
-.watch-page__comments__title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  font-size: $font-size-base * 1.25;
-  font-weight: $font-weight-bold;
-  margin-bottom: 1rem;
-}
-
-.watch-page__comments__trigger {
-  cursor: pointer;
-}
-
-.watch-page__comments__preview {
-  background-color: $accent;
-  border-radius: $border-radius-sm;
-  padding: 0.5rem;
 }
 </style>

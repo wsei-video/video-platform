@@ -3,7 +3,7 @@ import './styles/main.scss'
 
 import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { createPinia } from 'pinia'
-import { createApp } from 'vue'
+import { createApp, devtools } from 'vue'
 
 import { vClickGuard, vClickOutside, vMaxLines, vShowable, vTooltip } from '@/directives'
 import { router } from '@/router'
@@ -27,7 +27,7 @@ app.directive('max-lines', vMaxLines)
 app.directive('click-guard', vClickGuard)
 
 app.use(createPinia())
-app.use(VueQueryPlugin, { queryClient })
+app.use(VueQueryPlugin, { queryClient, devtools })
 app.use(router)
 
 app.mount('#app')

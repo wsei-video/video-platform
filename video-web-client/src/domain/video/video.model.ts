@@ -1,6 +1,7 @@
 import { VideoUtils } from '@/infrastructure/video-api/shared/utils'
 
 import type { Channel } from '../channel/channel.model'
+import type { ReactionAggregate } from '../reaction'
 import { BadRequest } from '../shared/error'
 import type { VideoUpdateCommand } from './video.commands'
 
@@ -16,7 +17,6 @@ export class Video {
     public id: string,
     public title: string,
     public description: string,
-    public hlsUrl: string,
     public thumbnail: string,
     public status: VideoStatus,
     public visibility: VideoVisibility,
@@ -25,6 +25,7 @@ export class Video {
     public commentCount: number,
     public channel: Channel,
     public createdAt: Date,
+    public reactions: ReactionAggregate[],
   ) {}
 
   public isPublic() {
@@ -52,8 +53,7 @@ export class Video {
   }
 
   get canBePublished(): boolean {
-    if (!this.description || !this.hlsUrl || !this.thumbnail || this.status !== 'successful')
-      return false
+    if (!this.description || !this.thumbnail || this.status !== 'successful') return false
 
     return true
   }
