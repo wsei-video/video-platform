@@ -4,6 +4,13 @@ import { computed, ref, watch } from 'vue'
 
 import { useEditVideo } from '@/application/useEditVideo'
 import { AppButton, AppIcon, AppInput } from '@/components/ui'
+import {
+  DropdownContent,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSeparator,
+  DropdownTrigger,
+} from '@/components/ui/dropdown'
 import type { VideoUpdateCommand } from '@/domain/video'
 import { useVideoUploadStore } from '@/store/video-upload.store'
 
@@ -19,8 +26,19 @@ const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
 const pageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
 
-const { initialVideoData, videoSourceData, mediaStreamsData, updateResult, error, isLoading, saveVideo } =
-  useEditVideo(videoId)
+const {
+  initialVideoData,
+  videoSourceData,
+  mediaStreamsData,
+  updateResult,
+  error,
+  isLoading,
+  saveVideo,
+  deleteVideo,
+  pauseUpload,
+  resumeUpload,
+  abortUpload,
+} = useEditVideo(videoId)
 
 const tempVideo = ref<VideoUpdateCommand>({
   videoId,
@@ -67,10 +85,37 @@ const thumbnailApproach = ref<ThumbnailApproach>('uploaded')
     <section class="edit-video__header">
       <h1 class="edit-video__title">Video details</h1>
       <div class="edit-video__header-actions">
-        <AppButton @click="handleSave">Save</AppButton>
-        <AppButton variant="secondary" class="edit-video__menu-btn">
-          <AppIcon name="more_vert" />
-        </AppButton>
+        <AppButton @click="handleSave"><AppIcon name="save" />Save</AppButton>
+        <DropdownMenu>
+          <DropdownTrigger>
+            <AppButton variant="secondary" class="edit-video__menu-btn">
+              <AppIcon name="more_vert" />
+            </AppButton>
+          </DropdownTrigger>
+          <DropdownContent>
+            <DropdownItem @click="pauseUpload">
+              <AppIcon name="pause" />
+              <p>Pause upload</p>
+            </DropdownItem>
+            <DropdownItem @click="resumeUpload">
+              <AppIcon name="resume" />
+              <p>Resume upload</p>
+            </DropdownItem>
+            <DropdownItem @click="abortUpload">
+              <AppIcon name="cancel" />
+              <p>Abort upload</p>
+            </DropdownItem>
+            <DropdownSeparator />
+            <DropdownItem disabled>
+              <AppIcon name="upload" />
+              <p>Upload new video</p>
+            </DropdownItem>
+            <DropdownItem @click="() => deleteVideo(initialVideoData?.id ?? '')">
+              <AppIcon name="delete" />
+              <p>Delete video</p>
+            </DropdownItem>
+          </DropdownContent>
+        </DropdownMenu>
       </div>
     </section>
 
@@ -91,7 +136,7 @@ const thumbnailApproach = ref<ThumbnailApproach>('uploaded')
         <EditVideoThumbnailSection :model="thumbnailApproach" />
       </main>
       <EditVideoSidebar
-        v-if="videoSourceData && mediaStreamsData"
+        v-if="mediaStreamsData"
         class="edit-video__sidebar"
         :videoData="initialVideoData"
         :video-source="videoSourceData"

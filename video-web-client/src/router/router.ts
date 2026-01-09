@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import type { SidebarLink } from '@/components/sidebar'
+import { UnexpectedError } from '@/domain/shared/error'
+import { useUiStore } from '@/store'
 import WatchPage from '@/views/VideoPages/WatchPage/WatchPage.vue'
 
 const VIDEO_PAGES_META_TAGS: SidebarLink[] = [
@@ -15,16 +17,30 @@ const STUDIO_PAGE_META_TAGS: SidebarLink[] = [
   { icon: 'video_library', to: `/${STUDIO_BASE_LINK}/:userId/your-content`, label: 'Your content' },
   { icon: 'bar_chart_4_bars', to: `/${STUDIO_BASE_LINK}/:userId/statistics`, label: 'Statistics' },
   { icon: 'group', to: `/${STUDIO_BASE_LINK}/:userId/community`, label: 'Community' },
-  { icon: 'manage_accounts', to: `/${STUDIO_BASE_LINK}/:userId/settings`, label: 'Settings' },
+  {
+    icon: 'manage_accounts',
+    to: `/${STUDIO_BASE_LINK}/:userId/account-settings`,
+    label: 'Settings',
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/:pathMatch(.*)',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+    },
+    {
       path: '/login',
-      name: 'LoginPage',
-      component: () => import('@/views/LoginPage.vue'),
+      name: 'login-page',
+      component: () => import('@/views/LoginView.vue'),
+    },
+    {
+      path: '/register',
+      name: 'register-page',
+      component: () => import('@/views/RegisterView.vue'),
     },
     {
       path: '/',
@@ -105,13 +121,30 @@ const router = createRouter({
           component: () => import('@/views/Studio/CommunityView.vue'),
         },
         {
-          path: 'settings',
-          name: 'settings',
-          component: () => import('@/views/Studio/SettingsView.vue'),
+          path: 'account-settings',
+          name: 'account-settings',
+          component: () => import('@/views/Studio/AccountSettings/AccountSettingsView.vue'),
         },
       ],
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const uiStore = useUiStore()
+  uiStore.isRouteLoading = true
+  next()
+})
+
+router.afterEach(() => {
+  const uiStore = useUiStore()
+  uiStore.isRouteLoading = false
+})
+
+router.onError(() => {
+  const uiStore = useUiStore()
+  uiStore.isRouteLoading = false
+  uiStore.routingError = new UnexpectedError('Navigation')
 })
 
 export default router

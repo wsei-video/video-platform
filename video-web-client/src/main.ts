@@ -5,7 +5,7 @@ import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 
-import { vClickOutside, vMaxLines, vShowable, vTooltip } from '@/directives'
+import { vClickGuard, vClickOutside, vMaxLines, vShowable, vTooltip } from '@/directives'
 import { router } from '@/router'
 
 const queryClient = new QueryClient({
@@ -24,6 +24,7 @@ app.directive('click-outside', vClickOutside)
 app.directive('showable', vShowable)
 app.directive('tooltip', vTooltip)
 app.directive('max-lines', vMaxLines)
+app.directive('click-guard', vClickGuard)
 
 app.use(createPinia())
 app.use(VueQueryPlugin, { queryClient })

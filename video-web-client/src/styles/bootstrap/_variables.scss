@@ -2,6 +2,8 @@ $primary: #ce7f00;
 $secondary: #1d1d21;
 $accent: #303036;
 $body-bg-dark: #111114;
+$body-bg-light: #aaaaaa;
+$body-bg-medium: #303036;
 $border-radius: 18px;
 $border-radius-md: 14px;
 $border-rasdius-sm: 10px;
@@ -28,6 +30,16 @@ $zindex-popup: 1070;
 $zindex-login-cover: 100;
 $zindex-login-content: 200;
 
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: $zindex-backdrop;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 // popups
 .popup-backdrop {
   z-index: $zindex-popup-backdrop;
@@ -35,6 +47,10 @@ $zindex-login-content: 200;
 
 .app-popup {
   z-index: $zindex-popup;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(calc(-50%), -50%);
 }
 
 // sidebar

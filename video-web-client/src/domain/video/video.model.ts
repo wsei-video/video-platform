@@ -60,7 +60,7 @@ export class Video {
 
   public validateUpdate(c: VideoUpdateCommand): Error | void {
     if (!this.description && !c.description && c.visibility === 'public')
-      return new BadRequest('You have to provide video description publish video')
-    if (c.title === '') return new BadRequest('Video has to have a title')
+      throw new BadRequest({}, 'You have to provide video description publish video')
+    if (c.title === '') throw new BadRequest({}, 'Video has to have a title')
   }
 }

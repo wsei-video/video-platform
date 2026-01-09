@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import { UploadDropZone } from '@/components/ui'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
@@ -9,7 +7,6 @@ import { useVideoUploadStore } from '@/store/video-upload.store'
 
 const uploadStore = useVideoUploadStore()
 const show = defineModel<boolean>()
-const error = ref<Error | null>(null)
 
 const emit = defineEmits<{
   'files-selected': [files: File[]]
@@ -33,7 +30,7 @@ const uploadProps = {
   <transition name="nested">
     <div v-if="show" class="backdrop popup-backdrop outer" @click="show = false">
       <div
-        class="upload-popup inner bg-secondary d-flex flex-column shadow-sm rounded-4"
+        class="app-popup upload-popup inner bg-secondary d-flex flex-column shadow-sm rounded-4"
         @click.stop
       >
         <div
@@ -69,7 +66,7 @@ const uploadProps = {
                   <AppButton variant="primary" class="upload-button px-3 py-2 fs-6 fw-semibold"
                     >Select files</AppButton
                   >
-                  <p v-if="error">{{ error.message }}</p>
+                  <p v-if="uploadStore.setupError">{{ uploadStore.setupError.message }}</p>
                   <p v-if="uploadStore.isSetupLoading">Loading...</p>
                 </div>
               </template>
@@ -85,11 +82,6 @@ const uploadProps = {
 @import '../../../styles/bootstrap/index.scss';
 
 .upload-popup {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(calc(-50%), -50%);
-
   max-width: 600px;
   width: 90vw;
 
@@ -133,43 +125,5 @@ const uploadProps = {
 
 .upload-subtext {
   color: rgba(255, 255, 255, 0.6);
-}
-
-// transitions
-// slide from bottom transition
-.nested-enter-active .inner,
-.nested-leave-active .inner {
-  transition: all 0.3s ease-in-out;
-}
-
-.nested-enter-from .inner {
-  opacity: 0;
-  transform: translate(-50%, 100vh);
-}
-
-.nested-enter-to .inner {
-  opacity: 1;
-  transform: translate(-50%, -50%);
-}
-
-.nested-leave-from .inner {
-  opacity: 1;
-  transform: translate(-50%, -50%);
-}
-
-.nested-leave-to .inner {
-  opacity: 50;
-  transform: translate(-50%, 100vh);
-}
-
-// Fade transition
-.nested-enter-active,
-.nested-leave-active {
-  transition: opacity 0.3s ease-in-out;
-}
-
-.nested-enter-from,
-.nested-leave-to {
-  opacity: 0;
 }
 </style>

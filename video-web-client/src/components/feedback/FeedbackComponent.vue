@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 
 import { AppIcon } from '@/components/ui'
-import type { Reaction } from '@/domain'
+import type { Reaction } from '@/domain/reaction'
 
 import EmojiPicker from './EmojiPicker.vue'
 import FeedbackEmoji from './FeedbackEmoji.vue'

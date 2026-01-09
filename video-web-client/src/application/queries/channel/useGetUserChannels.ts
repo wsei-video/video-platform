@@ -18,7 +18,6 @@ export function useGetUserChannels(options: appUseQueryOptions<Channel[]> = {}) 
       if (!lastPage.hasNext) return undefined
       return allPages.length + 1
     },
-    enabled: computed(() => authStore.isAuthenticated),
     ...options,
   })
 

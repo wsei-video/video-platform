@@ -1,3 +1,5 @@
+import { VideoUtils } from '@/infrastructure/video-api/shared/utils'
+
 import type { Channel } from '../channel/channel.model'
 
 export class Account {
@@ -8,4 +10,8 @@ export class Account {
     public createdAt: Date,
     public channels: Channel[] = [],
   ) {}
+
+  get formattedCreationDate(): string {
+    return VideoUtils.formatDate(this.createdAt)
+  }
 }

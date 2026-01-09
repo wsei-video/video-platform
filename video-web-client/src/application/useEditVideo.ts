@@ -1,29 +1,35 @@
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+import { DomainError, UnexpectedError } from '@/domain/shared/error'
 import type { VideoUpdateCommand } from '@/domain/video'
 import { useVideoUploadStore } from '@/store/video-upload.store'
 
-import { useUpdateVideo } from './commands/useUpdateVideo'
+import { useDeleteVideo, useUpdateVideo } from './commands/video'
 import { useGetVideo } from './queries/video'
 import { useGetMediaStreams } from './queries/video/useGetMediaStreams'
 import { useGetVideoSource } from './queries/video/useGetVideoSource'
 
 export function useEditVideo(videoId: string) {
   const uploadStore = useVideoUploadStore()
+  const router = useRouter()
 
   const videoQuery = useGetVideo(videoId)
   const sourceQuery = useGetVideoSource(videoId, {
     enabled: computed(() => !uploadStore.isUploadPending),
   })
   const mediaStreams = useGetMediaStreams(videoId)
-  const updateQuery = useUpdateVideo()
+
+  const updateVideoQuery = useUpdateVideo()
+  const deleteVideoQuery = useDeleteVideo()
 
   const saveError = ref<Error>()
 
   const error = computed(
     () =>
       videoQuery.error.value ||
-      updateQuery.error.value ||
+      updateVideoQuery.error.value ||
+      deleteVideoQuery.error.value ||
       saveError.value ||
       sourceQuery.error.value ||
       mediaStreams.error.value,
@@ -31,8 +37,9 @@ export function useEditVideo(videoId: string) {
   const isLoading = computed(
     () =>
       videoQuery.isPending.value ||
-      updateQuery.isPending.value ||
+      updateVideoQuery.isPending.value ||
       sourceQuery.isPending.value ||
+      deleteVideoQuery.isPending.value ||
       mediaStreams.isPending.value,
   )
 
@@ -41,23 +48,45 @@ export function useEditVideo(videoId: string) {
 
     if (!videoQuery.data.value) return
 
-    const updateError = videoQuery.data.value.validateUpdate(c)
-    if (updateError) {
-      saveError.value = updateError
-      return
+    try {
+      videoQuery.data.value.validateUpdate(c)
+      const video = await updateVideoQuery.mutateAsync(c)
+      return video
+    } catch (e: unknown) {
+      if (e instanceof DomainError) {
+        saveError.value = e
+      } else {
+        saveError.value = new UnexpectedError('Save video')
+      }
     }
+  }
 
-    const video = await updateQuery.mutateAsync(c)
-    return video
+  async function deleteVideo(videoId: string) {
+    try {
+      await deleteVideoQuery.mutateAsync(videoId)
+      router.go(-1)
+    } catch (e: unknown) {
+      if (e instanceof DomainError) {
+        saveError.value = e
+      } else {
+        saveError.value = new UnexpectedError('Save video')
+      }
+    }
   }
 
   return {
     initialVideoData: videoQuery.data,
     videoSourceData: sourceQuery.data,
-    updateResult: updateQuery.data,
+    updateResult: updateVideoQuery.data,
     mediaStreamsData: mediaStreams.data,
     error,
     isLoading,
     saveVideo,
+    deleteVideo,
+    uploadVideo: uploadStore.handleUpload,
+
+    pauseUpload: uploadStore.pause,
+    resumeUpload: uploadStore.resume,
+    abortUpload: uploadStore.abort,
   }
 }

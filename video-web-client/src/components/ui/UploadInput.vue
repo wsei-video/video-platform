@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useTemplateRef } from 'vue'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     dataTypes?: string[]
     multiple?: boolean
+    disabled?: boolean
   }>(),
   {
     multiple: false,
+    disabled: false,
   },
 )
 
@@ -18,6 +20,7 @@ const emit = defineEmits<{
 }>()
 
 const inputTrigger = () => {
+  if (props.disabled) return
   inputRef.value?.click()
 }
 
@@ -37,6 +40,7 @@ const onInputChange = (event: Event) => {
       @change="onInputChange"
       :accept="dataTypes?.join(', ')"
       :multiple="multiple"
+      :disabled="disabled"
       ref="file-input"
       type="file"
       class="visually-hidden"

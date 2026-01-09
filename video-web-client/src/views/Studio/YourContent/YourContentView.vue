@@ -25,13 +25,15 @@ const uploadStore = useVideoUploadStore()
 const { data: videos, isLoading: videosIsPending, error: videosError } = useGetYourContent()
 const channelVideos = computed(() => flattenPagination(videos.value))
 
-const isPageLoading = computed(() => channelStore.isLoading || videosIsPending.value)
-const pageError = computed(() => channelStore.error || videosError.value)
+const isPageLoading = computed(() => channelStore.isFetchingChannels || videosIsPending.value)
+const pageError = computed(() => channelStore.fetchChannelsError || videosError.value)
 
-const noChannelAssigned = computed(() => !channelStore.isLoading && !channelStore.selectedChannelId)
+const noChannelAssigned = computed(
+  () => !channelStore.isFetchingChannels && !channelStore.selectedChannelId && !pageError.value,
+)
 const noChannelContent = computed(
   () =>
-    !channelStore.isLoading &&
+    !channelStore.isFetchingChannels &&
     !videosIsPending.value &&
     channelStore.selectedChannelId &&
     channelVideos.value.length < 1,
@@ -53,31 +55,48 @@ const onFileUpload = async (files: File[]) => {
 </script>
 <template>
   <div class="your-content">
-    <section class="your-content__header">
+    <section v-click-guard="noChannelAssigned || !!pageError" class="your-content__header">
       <h1 class="your-content__header__title">Your Content</h1>
       <UploadInput v-if="isMobile" @file-change="onFileUpload" multiple :data-types="['video/*']">
-        <AppButton class="your-content__header__btn"><AppIcon name="add" />Upload video</AppButton>
+        <AppButton :disabled="noChannelAssigned || !!pageError" class="your-content__header__btn"
+          ><AppIcon name="add" />Upload video</AppButton
+        >
       </UploadInput>
-      <AppButton v-else @click="showUploadPopup = true" class="your-content__header__btn"
+      <AppButton
+        v-else
+        @click="showUploadPopup = true"
+        :disabled="noChannelAssigned || !!pageError"
+        class="your-content__header__btn"
         ><AppIcon name="add" />Upload video
       </AppButton>
     </section>
-    <div v-if="noChannelAssigned">You have no channel assigned :(</div>
-    <div v-else-if="noChannelContent">This channel does not have any content</div>
-    <div v-else>
-      <section v-if="!isTableLayout" class="your-content__videos">
-        <VideosGrid
-          video-item-mode="list-reactions"
-          :videos="flattenPagination(videos)"
-          redirect-to="studio"
-        />
-      </section>
-      <section v-else class="your-content__videos">
-        <div class="your-content__videos__table">
-          <VideosTable :videos="flattenPagination(videos)" redirect-to="studio" />
-        </div>
-      </section>
-    </div>
+    <section class="your-content__videos">
+      <h2 v-if="!noChannelAssigned" class="fs-4 fw-bolder">
+        Channel: <span class="text-primary">{{ channelStore.getSelectedChannel?.name }}</span>
+      </h2>
+      <div v-if="noChannelAssigned">
+        <p class="fs-4">You have no channel assigned :(</p>
+        <p class="fs-5 mb-3">Go to your setting page and create new channel</p>
+        <AppButton @click="router.push({ name: 'account-settings' })"
+          ><AppIcon name="settings_b_roll" />Account Settings</AppButton
+        >
+      </div>
+      <div v-else-if="noChannelContent">This channel does not have any content</div>
+      <div v-else>
+        <section v-if="!isTableLayout">
+          <VideosGrid
+            video-item-mode="list-reactions"
+            :videos="flattenPagination(videos)"
+            redirect-to="studio"
+          />
+        </section>
+        <section v-else>
+          <div class="your-content__videos__table">
+            <VideosTable :videos="flattenPagination(videos)" redirect-to="studio" />
+          </div>
+        </section>
+      </div>
+    </section>
     <span v-if="isPageLoading">pending...</span>
     <span v-if="pageError">{{ pageError.message }}</span>
     <UploadVideoPopup v-model="showUploadPopup" @files-selected="onFileUpload" />

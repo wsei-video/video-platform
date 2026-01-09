@@ -23,7 +23,9 @@ const {
   openCommentsSection,
 } = useWatchPage()
 
-const adaptiveHlsUrl = computed(() => streams.value?.adaptive.find(stream => stream.format === 'hls')?.url)
+const adaptiveHlsUrl = computed(
+  () => streams.value?.adaptive.find((stream) => stream.format === 'hls')?.url,
+)
 const videoAspectRatio = 16 / 9
 </script>
 <template>
@@ -77,13 +79,14 @@ const videoAspectRatio = 16 / 9
 @import '../../../styles/bootstrap/index.scss';
 
 .watch-page {
-  display: grid;
+  display: flex;
   gap: 1rem;
   padding-bottom: 1rem;
-  // width: fit-content;
   margin: 0 auto;
 
   &--mobile {
+    flex-direction: column;
+
     .watch-page__player__info {
       padding: 0 1rem;
     }
@@ -102,12 +105,9 @@ const videoAspectRatio = 16 / 9
 
   &--desktop {
     padding: 1rem;
-    grid-template-columns: 1fr clamp(200px, 30vw, 300px);
-    grid-template-rows: auto 1fr;
 
     .watch-page__sidebar {
-      grid-column: 2;
-      grid-row: 1 / 3;
+      flex: 1;
     }
   }
 }
@@ -115,7 +115,12 @@ const videoAspectRatio = 16 / 9
 .watch-page__main {
   display: grid;
   gap: 1rem;
-  max-width: calc((100vh - 190px) * v-bind(videoAspectRatio));
+  flex: 100;
+  align-items: flex-start;
+
+  @media (min-height: 480px) and (min-width: 640px) {
+    max-width: calc((100vh - 190px) * v-bind(videoAspectRatio));
+  }
 }
 
 .watch-page__player {

@@ -1,5 +1,5 @@
-import type { DirectiveBinding } from 'vue'
 import { Tooltip } from 'bootstrap'
+import type { DirectiveBinding } from 'vue'
 
 export default {
   mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
@@ -17,6 +17,7 @@ export default {
       existingTooltip.dispose()
     }
     const placement = binding.arg || 'bottom'
+    console.log('Tooltip:', binding)
     el.setAttribute('data-bs-placement', placement)
     if (binding.value) {
       el.setAttribute('data-bs-title', binding.value)

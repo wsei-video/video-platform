@@ -2,10 +2,21 @@ import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed, watch } from 'vue'
 
+import {
+  useCreateChannel,
+  useDeleteChannel,
+  useLinkChannelToAccount,
+  useUpdateChannel,
+} from '@/application/commands/channel'
 import { useGetUserChannels } from '@/application/queries/channel/useGetUserChannels'
 
 export const useChannelStore = defineStore('channel', () => {
-  const { data, isPending, error } = useGetUserChannels()
+  const {
+    data,
+    isLoading: isFetchingChannels,
+    error: fetchChannelsError,
+    refetch,
+  } = useGetUserChannels()
 
   const _selectedChannelId = useStorage<string | null>('selected-channel-id', null)
   const userChannels = computed(() => data.value?.pages.flatMap((page) => page.items) ?? [])
@@ -17,7 +28,7 @@ export const useChannelStore = defineStore('channel', () => {
     if (!userChannels.value.length) return null
     return _isSelectedChannelValid.value ? _selectedChannelId.value : null
   })
-  function setSelectedChannel(channelId: string) {
+  function setSelectedChannel(channelId: string | null) {
     _selectedChannelId.value = channelId
   }
   const getSelectedChannel = computed(() => {
@@ -35,12 +46,43 @@ export const useChannelStore = defineStore('channel', () => {
     { immediate: true },
   )
 
+  const createChannelMutation = useCreateChannel()
+  const updateChannelMutation = useUpdateChannel()
+  const deleteChannelMutation = useDeleteChannel()
+  const linkChannelToAccountMutation = useLinkChannelToAccount()
+
+  const isMutating = computed(
+    () =>
+      createChannelMutation.isPending.value ||
+      updateChannelMutation.isPending.value ||
+      deleteChannelMutation.isPending.value ||
+      linkChannelToAccountMutation.isPending.value,
+  )
+
+  const mutationError = computed(
+    () =>
+      createChannelMutation.error.value ||
+      updateChannelMutation.error.value ||
+      deleteChannelMutation.error.value ||
+      linkChannelToAccountMutation.error.value,
+  )
+
   return {
     userChannels,
     selectedChannelId,
     setSelectedChannel,
     getSelectedChannel,
-    isLoading: isPending,
-    error,
+    refetchUserChannels: refetch,
+
+    isFetchingChannels,
+    fetchChannelsError,
+
+    isMutating,
+    mutationError,
+
+    updateChannel: updateChannelMutation.mutateAsync,
+    createChannel: createChannelMutation.mutateAsync,
+    deleteChannel: deleteChannelMutation.mutateAsync,
+    linkChannelToAccount: linkChannelToAccountMutation.mutateAsync,
   }
 })
