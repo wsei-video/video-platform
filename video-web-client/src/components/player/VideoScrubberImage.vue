@@ -46,9 +46,17 @@ const frameLocation = computed(() => {
   const framesPerAtlas = scrubber.columns * scrubber.rows
   const atlas = Math.floor(frameIndex.value / framesPerAtlas)
   const frameIndexInAtlas = frameIndex.value % framesPerAtlas
-  const x = frameIndexInAtlas % scrubber.columns * scrubber.width
+  const x = (frameIndexInAtlas % scrubber.columns) * scrubber.width
   const y = Math.floor(frameIndexInAtlas / scrubber.columns) * scrubber.height
   return { atlas, x, y }
+})
+
+const maxImageWidth = computed(() => {
+  return `${videoPlayerStore.playbackWidth / 3}px`
+})
+
+const maxImageHeight = computed(() => {
+  return `${videoPlayerStore.playbackHeight / 3}px`
 })
 </script>
 
@@ -95,6 +103,8 @@ const frameLocation = computed(() => {
 .video-player-scrubber-image-renderer {
   background-color: #000a;
   border-radius: 8px;
+  max-width: v-bind(maxImageWidth);
+  max-height: v-bind(maxImageHeight);
 }
 
 .video-player-scrubber-image-time {

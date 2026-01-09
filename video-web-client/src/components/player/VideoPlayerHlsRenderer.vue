@@ -151,6 +151,16 @@ watch(
     if (videoRef.value) videoRef.value.playbackRate = playbackSpeed
   },
 )
+
+watch(
+  () => videoWidth.value,
+  (width) => videoPlayerStore.setPlaybackWidth(width),
+)
+
+watch(
+  () => videoHeight.value,
+  (width) => videoPlayerStore.setPlaybackHeight(width),
+)
 </script>
 
 <template>
@@ -172,7 +182,6 @@ watch(
 <style lang="scss" scoped>
 .video-player-hls-renderer {
   width: 100%;
-  max-height: calc(100vh - 180px); // Arbitrary choice
   background-color: black;
   display: block;
 }

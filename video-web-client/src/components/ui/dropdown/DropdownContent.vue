@@ -23,13 +23,15 @@ const { isOpen } = context
   position: absolute;
   top: 100%;
   right: 0;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   min-width: 220px;
   font-family: sans-serif;
   font-size: 0.875rem;
   background-color: $accent;
   border: 1px solid $secondary;
   z-index: $zindex-popup;
+  padding: 0.5rem 0;
+  border-radius: 0.75rem;
 }
 
 /* Simple Fade Animation */

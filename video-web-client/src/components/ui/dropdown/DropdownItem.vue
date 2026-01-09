@@ -31,7 +31,7 @@ const handleClick = () => {
   transition: background-color 0.1s;
   align-items: center;
   gap: 1rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 1rem;
 
   &:hover {
     background-color: $secondary;

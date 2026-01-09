@@ -25,6 +25,8 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const currentQualityLevel = shallowRef<QualityLevel | null>(null)
   const preferredQualityLevel = shallowRef<QualityLevel | null>(null)
   const error = ref<string | null>(null)
+  const playbackWidth = ref(0)
+  const playbackHeight = ref(0)
   const scrubberImage = shallowRef<VideoScrubberImageDto | null>(null)
 
   const playbackProgress = computed(() =>
@@ -156,6 +158,14 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     scrubberImage.value = updatedScrubberImage
   }
 
+  const setPlaybackWidth = (updatedPlaybackWidth: number) => {
+    playbackWidth.value = updatedPlaybackWidth
+  }
+
+  const setPlaybackHeight = (updatedPlaybackHeight: number) => {
+    playbackHeight.value = updatedPlaybackHeight
+  }
+
   return {
     source,
     setSource,
@@ -211,5 +221,9 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     setError,
     scrubberImage,
     setScrubberImage,
+    playbackWidth,
+    setPlaybackWidth,
+    playbackHeight,
+    setPlaybackHeight,
   }
 })

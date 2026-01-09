@@ -37,7 +37,7 @@ export function getVideoPagesProps(
   switch (pageType) {
     case 'trending':
       return {
-        title: 'trending',
+        title: 'Trending',
         icon: 'mode_heat',
         videoItemMode: 'auto' as const,
         getVideosQuery: () => getTrending(),
