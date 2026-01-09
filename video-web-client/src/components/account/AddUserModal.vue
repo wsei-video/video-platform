@@ -33,7 +33,8 @@ async function handleAdd() {
         <div class="modal-header">Add User to {{ channel.name }}</div>
         <p style="color: #aaa; margin-bottom: 0.9375rem; font-size: 0.9rem">
           Enter the account ID of the user you want to add to the channel
-          <strong>Daily Vlogs</strong>.
+          <strong>{{ props.channel?.id }}</strong
+          >.
         </p>
         <AppInput
           id="u-id"
