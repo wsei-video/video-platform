@@ -9,6 +9,7 @@ import {
   SidebarProfileInfo,
 } from '@/components/sidebar'
 import AppSpinner from '@/components/ui/AppSpinner.vue'
+import AppToast from '@/components/ui/AppToast.vue'
 import { useUiStore } from '@/store'
 
 defineProps<{
@@ -40,15 +41,30 @@ const processLinkPath = (to: string): string => {
         </SidebarLinkItem>
       </template>
     </AppSidebar>
-    <div id="app-content" class="w-100">
+    <div id="app-content" class="flex-grow-1 d-flex flex-column min-width-0">
       <AppHeader />
-      <router-view :key="$route.fullPath" />
+      <div class="flex-grow-1">
+        <router-view :key="$route.fullPath" />
+      </div>
     </div>
   </div>
-  <AppSpinner v-if="uiStore.isRouteLoading" />
+  <AppSpinner v-if="uiStore.isRouteLoading || uiStore.isGlobalLoading" />
+  <div class="position-fixed bottom-0 end-0 p-3">
+    <transition name="fade">
+      <AppToast
+        v-if="uiStore.isToastVisible"
+        :variant="uiStore.toastVariant"
+        :title="uiStore.toastTitle"
+        :message="uiStore.toastMessage"
+        @close="uiStore.hideToast()"
+      />
+    </transition>
+  </div>
 </template>
 
 <style scoped lang="scss">
+@import '../styles/bootstrap/index.scss';
+
 #app-content {
   width: 100%;
   height: 100vh;

@@ -8,6 +8,8 @@ import type {
 import { DomainError, UnexpectedError } from '@/domain/shared/error'
 import { useAuthStore, useChannelStore } from '@/store'
 
+import { useErrorNotifier } from './useErrorNotifier'
+
 export function useGetAccountSettingsPage() {
   const authStore = useAuthStore()
   const channelStore = useChannelStore()
@@ -24,6 +26,7 @@ export function useGetAccountSettingsPage() {
       channelStore.mutationError ||
       saveError.value,
   )
+  useErrorNotifier(error)
 
   async function saveChannelInfo(c: ChannelUpdateCommand) {
     saveError.value = undefined

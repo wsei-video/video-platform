@@ -22,7 +22,7 @@ videoClient.interceptors.response.use(
     await new Promise((resolve) => {
       setTimeout(() => {
         resolve('test')
-      }, 100)
+      }, 500)
     })
     console.log('Response:', config)
     return config

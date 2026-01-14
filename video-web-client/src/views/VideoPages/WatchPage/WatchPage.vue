@@ -73,6 +73,7 @@ const videoAspectRatio = 16 / 9
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 0.5rem;
       padding: 0 1rem;
+      width: 100%;
     }
   }
 

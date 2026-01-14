@@ -23,12 +23,15 @@ $input-border-width: 0px;
 $inactive-link: #b7b7b7;
 
 $zindex-header: 1000;
+$zindex-searchbar: 1040;
 $zindex-sidebar: 1050;
 $zindex-backdrop: 1040;
 $zindex-popup-backdrop: 1060;
 $zindex-popup: 1070;
 $zindex-login-cover: 100;
 $zindex-login-content: 200;
+$zindex-spinner: 1500;
+$zindex-toast: 1510;
 
 .backdrop {
   position: fixed;
@@ -43,6 +46,11 @@ $zindex-login-content: 200;
 // popups
 .popup-backdrop {
   z-index: $zindex-popup-backdrop;
+}
+
+.app-toast {
+  z-index: $zindex-toast;
+  min-width: 300px;
 }
 
 .app-popup {

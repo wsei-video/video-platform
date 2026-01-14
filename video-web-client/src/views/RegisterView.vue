@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import WatchMeLogo from '@/assets/watch-me-logo.svg'
-import AppButton from '@/components/ui/AppButton.vue'
-import AppInput from '@/components/ui/AppInput.vue'
+import { AppButton, AppInput, AppSpinner, AppToast } from '@/components/ui'
 import type { AccountCreateCommand } from '@/domain/account'
-import { getReason } from '@/domain/shared/error'
-import { useAuthStore } from '@/store'
+import { useAuthStore, useUiStore } from '@/store'
 
 const authStore = useAuthStore()
+const uiStore = useUiStore()
 const router = useRouter()
 
 const tempRegisterData = ref<AccountCreateCommand>({
@@ -18,15 +17,9 @@ const tempRegisterData = ref<AccountCreateCommand>({
   name: '',
 })
 const repeatedPassword = ref('')
-const registerViewError = ref<string | null>()
 
 async function register() {
   try {
-    if (tempRegisterData.value.password !== repeatedPassword.value) {
-      registerViewError.value = "Passwords don't match"
-      return
-    }
-
     await authStore.handleRegister(tempRegisterData.value)
     router.push({
       name: 'trending',
@@ -35,18 +28,6 @@ async function register() {
     console.log(e)
   }
 }
-
-watch(
-  () => authStore.authError,
-  () => {
-    const reason = getReason(authStore.authError)
-    if (reason && reason.name === 'InvalidCredentials') {
-      registerViewError.value = 'Invalid Credentials'
-      return
-    }
-    registerViewError.value = authStore.authError?.message
-  },
-)
 </script>
 
 <template>
@@ -92,9 +73,19 @@ watch(
           </div>
         </div>
       </div>
-      <p v-if="authStore.isAuthPending">Loading...</p>
-      <p v-if="registerViewError">{{ registerViewError }}</p>
+      <AppSpinner v-if="authStore.isAuthPending" />
     </div>
+  </div>
+  <div class="position-fixed bottom-0 end-0 p-3">
+    <transition name="fade">
+      <AppToast
+        v-if="uiStore.isToastVisible"
+        :variant="uiStore.toastVariant"
+        :title="uiStore.toastTitle"
+        :message="uiStore.toastMessage"
+        @close="uiStore.hideToast()"
+      />
+    </transition>
   </div>
 </template>
 

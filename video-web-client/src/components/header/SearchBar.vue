@@ -119,7 +119,7 @@ const selectRecent = (term: string) => {
   width: 100%;
   height: 100%;
   background-color: $secondary;
-  z-index: 100;
+  z-index: $zindex-searchbar;
 }
 
 .search-interface {
@@ -185,7 +185,7 @@ const selectRecent = (term: string) => {
   border-radius: $border-radius-sm;
   padding: 0.5rem 0;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  z-index: 101;
+  z-index: $zindex-searchbar;
   border: 1px solid $accent;
   max-height: 300px;
   overflow-y: auto;
