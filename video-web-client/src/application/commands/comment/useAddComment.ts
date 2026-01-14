@@ -10,7 +10,6 @@ export function useAddComment(videoId: string) {
     mutationFn: (c: CommentCreateCommand) => commentRepository.createComment(c),
     retry: false,
     onSuccess: (newComment: Comment) => {
-      // TODO: pretty usefull - can be generic to apply for all paginated responses
       queryClient.setQueryData(
         ['comments', videoId],
         (oldData: InfiniteData<PaginatedList<Comment>> | undefined) => {

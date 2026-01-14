@@ -61,8 +61,6 @@ videoClient.interceptors.request.use(async (config) => {
   const authStore = useAuthStore()
   if (authStore.authToken) {
     config.headers.Authorization = `Bearer ${authStore.authToken}`
-  } else {
-    console.log('not authenticated')
   }
   return config
 })

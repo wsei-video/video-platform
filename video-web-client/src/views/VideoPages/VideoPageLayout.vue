@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useGetVideoPagesProps, type VideoPageTypes } from '@/application'
@@ -7,16 +8,24 @@ import { VideosGrid } from '@/components/video'
 import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
 
 const route = useRoute()
+console.log(route.query)
 const props = useGetVideoPagesProps({
   pageType: route.name as VideoPageTypes,
 })
 const { data: videosData, isPending: isVideosPending, error: videosError } = props.getVideosQuery()
+
+const title = computed(() => {
+  const searchQuery = route.query.search
+  if (searchQuery && route.name === 'search') return `${props.title} "${searchQuery}"`
+
+  return props.title
+})
 </script>
 <template>
   <div class="video-page">
     <h1 class="video-page__title">
       <AppIcon class="video-page__title__icon" :name="props.icon" />
-      {{ props.title }}
+      {{ title }}
     </h1>
     <section class="video-page__content">
       <div v-if="videosData?.pages">

@@ -11,7 +11,12 @@ import type { VideoItemModes } from '@/components/video/VideoItem.vue'
 import type { PaginatedList } from '@/domain/shared/types'
 import type { Video } from '@/domain/video'
 
-export type VideoPageTypes = 'trending' | 'most-popular' | 'for-you' | 'recently-uploaded'
+export type VideoPageTypes =
+  | 'trending'
+  | 'most-popular'
+  | 'for-you'
+  | 'recently-uploaded'
+  | 'search'
 export interface VideoPageProps {
   title: string
   icon: IconName
@@ -61,6 +66,14 @@ export function getVideoPagesProps(
         title: 'Recently Uploaded',
         icon: 'schedule',
         videoItemMode: 'tile' as const,
+        getVideosQuery: () => getRecentlyUploaded(),
+      }
+    case 'search':
+      return {
+        title: 'You serched for: ',
+        icon: 'search',
+        videoItemMode: 'list' as const,
+        // searching not implemented on backend
         getVideosQuery: () => getRecentlyUploaded(),
       }
     default:

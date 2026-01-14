@@ -81,6 +81,11 @@ const router = createRouter({
           component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
         },
         {
+          path: '/search',
+          name: 'search',
+          component: () => import('@/views/VideoPages/VideoPageLayout.vue'),
+        },
+        {
           path: 'dev',
           component: () => import('@/views/DevPage.vue'),
         },

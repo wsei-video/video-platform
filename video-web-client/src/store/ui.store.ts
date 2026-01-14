@@ -6,6 +6,7 @@ export const useUiStore = defineStore('ui', () => {
   const isSidebarOpen = readonly(_isSidebarOpen)
   const isRouteLoading = ref(false)
   const routingError = ref<Error | undefined>()
+  const isSearchBarActive = ref(false)
 
   function toggleSidebar() {
     _isSidebarOpen.value = !_isSidebarOpen.value
@@ -13,6 +14,7 @@ export const useUiStore = defineStore('ui', () => {
 
   return {
     isSidebarOpen,
+    isSearchBarActive,
     isRouteLoading,
     routingError,
     toggleSidebar,

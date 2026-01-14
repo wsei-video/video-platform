@@ -3,10 +3,21 @@ import { provide, ref } from 'vue'
 
 import { DropdownKey } from './index'
 
+const { toggleAction, closeAction } = defineProps<{
+  toggleAction?: () => void
+  closeAction?: () => void
+}>()
+
 const isOpen = ref(false)
 
-const toggle = () => (isOpen.value = !isOpen.value)
-const close = () => (isOpen.value = false)
+const toggle = () => {
+  isOpen.value = !isOpen.value
+  toggleAction?.()
+}
+const close = () => {
+  isOpen.value = false
+  closeAction?.()
+}
 
 provide(DropdownKey, { isOpen, toggle, close })
 </script>
