@@ -57,6 +57,8 @@ const videoAspectRatio = 16 / 9
   gap: 1rem;
   padding-bottom: 1rem;
   margin: 0 auto;
+  align-items: flex-start;
+  width: 100%;
 
   &--mobile {
     flex-direction: column;
@@ -87,6 +89,7 @@ const videoAspectRatio = 16 / 9
   gap: 1rem;
   flex: 100;
   align-items: flex-start;
+  width: 100%;
 
   @media (min-height: 480px) and (min-width: 640px) {
     max-width: calc((100vh - 190px) * v-bind(videoAspectRatio));
