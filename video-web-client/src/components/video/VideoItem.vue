@@ -44,8 +44,7 @@ const computedMode = computed(() => {
     >
       <VideoThumbnail
         class="video-item__thumbnail"
-        :duration="videoData.duration"
-        :image-props="{ src: videoData.thumbnail }"
+        :video="videoData"
       />
       <span class="video-item__title" v-tooltip:top="videoData.title">{{ videoData.title }}</span>
       <span class="video-item__additional-info"

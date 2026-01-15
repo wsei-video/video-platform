@@ -8,6 +8,8 @@ import { AuthInternal } from '../auth/auth-internal.guard';
 import { AuthRequired } from '../auth/auth-required';
 import { ReqAccount, ReqInternal } from '../auth/auth-request.context';
 import {
+  ImageDto,
+  ImagesDto,
   VideoCreateDto,
   VideoDto,
   VideosDto,
@@ -102,6 +104,43 @@ export class VideoController {
     @Body(BodyValidator) body: VideoSourceUpdateDto,
   ) {
     await this.videoService.updateSource(videoId, body);
+  }
+
+  @Get(':videoId/thumbnails')
+  @AuthRequired()
+  @Serialize(ImagesDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List of available video thumbnails' })
+  public listThumbnails(
+    @ReqAccount() account: Account,
+    @Param('videoId', IdPipe) videoId: number,
+    @Query(QueryValidator) query: ListQuery,
+  ) {
+    return this.videoService.listThumbnails(account, videoId, query);
+  }
+
+  @Get(':videoId/thumbnails/:thumbnailId')
+  @AuthRequired()
+  @Serialize(ImageDto, ApiOkResponse)
+  @ApiOperation({ summary: 'List of available video thumbnails' })
+  public findThumbnail(
+    @ReqAccount() account: Account,
+    @Param('videoId', IdPipe) videoId: number,
+    @Param('thumbnailId', IdPipe) thumbnailId: number,
+  ) {
+    return this.videoService.findThumbnail(account, videoId, thumbnailId);
+  }
+
+  @Delete(':videoId/thumbnails/:thumbnailId')
+  @AuthRequired()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  @ApiOperation({ summary: 'Delete the specific video thumbnail' })
+  public deleteThumbnail(
+    @ReqAccount() account: Account,
+    @Param('videoId', IdPipe) videoId: number,
+    @Param('thumbnailId', IdPipe) thumbnailId: number,
+  ) {
+    return this.videoService.deleteThumbnail(account, videoId, thumbnailId);
   }
 
   private ensureNoInternalFields(body: VideoUpdateDto): void {

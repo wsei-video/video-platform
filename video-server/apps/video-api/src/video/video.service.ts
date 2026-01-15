@@ -28,7 +28,11 @@ export class VideoService {
 
   public async updateVideo(account: Account | null, videoId: number, body: VideoUpdateDto) {
     await this.verifyAccountVideoPermission(account, videoId);
-    await this.database.video.update({ where: { id: videoId }, data: body, include: { channel: true } });
+    await this.database.video.update({
+      where: { id: videoId },
+      data: { ...body, thumbnailId: body.thumbnailId === null ? null : body.thumbnailId?.clear },
+      include: { channel: true },
+    });
     return await this.findById(account, videoId);
   }
 
@@ -37,12 +41,20 @@ export class VideoService {
       skip: (query.page - 1) * query.count,
       take: query.count,
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
-      include: { channel: true },
+      include: { channel: true, thumbnail: true },
     });
 
     const total = await this.database.video.count();
     const next = total > (query.page - 1) * query.count + videos.length;
-    return { items: videos, total, next };
+
+    return {
+      items: videos.map(video => ({
+        ...video,
+        thumbnail: this.videoCommonService.serializeThumbnailToImage(video.thumbnail),
+      })),
+      total,
+      next,
+    };
   }
 
   public async deleteVideo(account: Account, videoId: number) {
@@ -56,6 +68,7 @@ export class VideoService {
       where: { id: videoId },
       include: {
         channel: true,
+        thumbnail: true,
         _count: { select: { comments: true } },
         reactions: account
           ? {
@@ -72,6 +85,7 @@ export class VideoService {
       commentCount: video._count.comments,
       reactions: reactions.get(video.id) ?? [],
       userReaction: video.reactions?.[0] ?? null,
+      thumbnail: this.videoCommonService.serializeThumbnailToImage(video.thumbnail),
     };
   }
 
@@ -94,6 +108,7 @@ export class VideoService {
       commentCount: 0,
       reactions: [],
       userReaction: null,
+      thumbnail: null,
     };
   }
 
@@ -147,5 +162,36 @@ export class VideoService {
     const video = await this.database.video.findFirstOrThrow({ where: { id: videoId } });
     if (account) await this.channelService.verifyAccountChannelPermissions(account, video.channelId);
     return video;
+  }
+
+  public async listThumbnails(account: Account, videoId: number, query: ListQuery) {
+    await this.verifyAccountVideoPermission(account, videoId);
+
+    const thumbnails = await this.database.videoThumbnail.findMany({
+      where: { videoId },
+      skip: (query.page - 1) * query.count,
+      take: query.count,
+      orderBy: [{ id: 'asc' }],
+    });
+
+    const total = await this.database.videoThumbnail.count({ where: { videoId } });
+    const next = total > (query.page - 1) * query.count + thumbnails.length;
+
+    return {
+      items: thumbnails.map(thumbnail => this.videoCommonService.serializeThumbnailToImage(thumbnail)),
+      total,
+      next,
+    };
+  }
+
+  public async findThumbnail(account: Account, videoId: number, thumbnailId: number) {
+    await this.verifyAccountVideoPermission(account, videoId);
+    const thumbnail = await this.database.videoThumbnail.findFirstOrThrow({ where: { videoId, id: thumbnailId } });
+    return this.videoCommonService.serializeThumbnailToImage(thumbnail);
+  }
+
+  public async deleteThumbnail(account: Account, videoId: number, thumbnailId: number) {
+    await this.verifyAccountVideoPermission(account, videoId);
+    await this.database.videoThumbnail.delete({ where: { videoId, id: thumbnailId } });
   }
 }

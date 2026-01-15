@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AppImage } from '@/components/ui'
+import AppResponsiveImage from '@/components/ui/AppResponsiveImage.vue';
 import { useVideoRedirect, type VideoRedirect } from '@/composables'
 import type { Video } from '@/domain/video'
 import { StringUtils, VideoUtils } from '@/infrastructure/video-api/shared/utils'
@@ -31,10 +31,9 @@ defineProps<{
       >
         <tr :href="href" @click="navigate">
           <td>
-            <AppImage
+            <AppResponsiveImage
               class="videos-table__thumbnail"
-              :src="video.thumbnail"
-              :aspect-ratio="16 / 9"
+              :image="video.thumbnail"
             />
           </td>
           <td class="videos-table__title">

@@ -230,6 +230,30 @@ export interface ChannelsDto {
   total: number
 }
 
+export interface ImageDto {
+  /** Unique image identifier */
+  id: string
+  /** List of available image variants */
+  variants: ImageVariantDto[]
+}
+
+export interface ImageVariantDto {
+  /** Height in pixels */
+  height: number
+  /** Download URL */
+  url: string
+  /** Width in pixels */
+  width: number
+}
+
+export interface ImagesDto {
+  items: ImageDto[]
+  /** Whether the next page is available */
+  next: boolean
+  /** The total number of available resources */
+  total: number
+}
+
 /** Media codec information */
 export interface MediaCodecDto {
   /** Codec identification in RFC 6381 format */
@@ -477,6 +501,8 @@ export interface VideoCreateDto {
   duration?: number
   /** [Internal] Processing status */
   status?: VideoStatusDto
+  /** Unique thumbnail identifier */
+  thumbnailId?: string | null
   /** Video title */
   title: string
   /** [Internal] View count */
@@ -508,8 +534,8 @@ export interface VideoDto {
   reactions: ReactionAggregateDto[]
   /** Processing status */
   status: VideoStatusDto
-  /** Thumbnail URL */
-  thumbnail: string
+  /** Video thumbnail */
+  thumbnail: ImageDto | null
   /** Video title */
   title: string
   /** Video reaction of the current user */
@@ -724,6 +750,15 @@ export interface VideoStreamDto {
   width: number
 }
 
+export interface VideoThumbnailCreateDto {
+  /** Thumbnail name */
+  name: string
+  /** Whether to select this thumbnail for the video */
+  select: boolean
+  /** Thumbnail variants */
+  variants: string
+}
+
 /** Video update request schema */
 export interface VideoUpdateDto {
   /**
@@ -735,6 +770,8 @@ export interface VideoUpdateDto {
   duration?: number
   /** [Internal] Processing status */
   status?: VideoStatusDto
+  /** Unique thumbnail identifier */
+  thumbnailId?: string | null
   /** Video title */
   title?: string
   /** [Internal] View count */

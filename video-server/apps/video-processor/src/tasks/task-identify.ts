@@ -58,6 +58,16 @@ export class TaskIdentify extends Task<QueueTask.Identify> {
     );
 
     if (specification.video.duration) {
+      await this.queueService.publish(QueueTask.Thumbnail, {
+        key: message.key,
+        videoId: uploadToken.videoId.encrypted,
+        input: {
+          duration: specification.video.duration,
+          width: specification.video.width,
+          height: specification.video.height,
+        },
+      });
+
       await this.queueService.publish(QueueTask.ScrubberImage, {
         key: message.key,
         videoId: uploadToken.videoId.encrypted,

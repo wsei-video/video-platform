@@ -6,10 +6,10 @@ import { IsString } from 'class-validator';
 
 @ApiSchema({ name: 'VideoReaction', description: 'Video reaction details' })
 export class VideoReactionDto {
-  @ApiProperty({ description: 'Unique video reaction identifier' })
+  @ApiProperty({ description: 'Unique video reaction identifier', type: 'string' })
   @Expose()
   @IdTransform()
-  public id: string;
+  public id: number;
 
   @ApiProperty({ description: 'Reaction content (e.g., like, dislike)' })
   @Expose()
@@ -19,15 +19,15 @@ export class VideoReactionDto {
   @Expose()
   public createdAt: Date;
 
-  @ApiProperty({ description: 'User who created the reaction' })
+  @ApiProperty({ description: 'User who created the reaction', type: 'string' })
   @Expose()
   @IdTransform()
-  public userId: string;
+  public userId: number;
 
-  @ApiProperty({ description: 'Video the reaction belongs to' })
+  @ApiProperty({ description: 'Video the reaction belongs to', type: 'string' })
   @Expose()
   @IdTransform()
-  public videoId: string;
+  public videoId: number;
 }
 
 @ApiSchema({ name: 'VideoReactionCreate', description: 'Video reaction create schema' })

@@ -1,0 +1,10 @@
+model VideoThumbnail {
+  id       Int    @id @default(autoincrement())
+  videoId  Int
+  name     String
+  variants String
+
+  videos Video[]
+
+  video Video @relation("VideoThumbnails", fields: [videoId], references: [id], onDelete: Cascade)
+}

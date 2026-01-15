@@ -6,10 +6,10 @@ import { Id, IdTransform, IsId, PagedResponse, ToId } from '@video/lib/restful';
 
 @ApiSchema({ name: 'Channel', description: 'Channel details' })
 export class ChannelDto {
-  @ApiProperty({ description: 'Unique channel identifier' })
+  @ApiProperty({ description: 'Unique channel identifier', type: 'string' })
   @IdTransform()
   @Expose()
-  public id: string;
+  public id: number;
 
   @ApiProperty({ description: 'Channel display name' })
   @Expose()

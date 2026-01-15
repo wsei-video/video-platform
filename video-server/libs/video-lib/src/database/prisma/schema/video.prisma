@@ -8,21 +8,22 @@ model Video {
   visibility   VideoVisibility @default(public)
   channelId    Int
   createdAt    DateTime        @default(now())
-  hlsUrl       String?
-  thumbnail    String?
   sourceName   String?
   sourceSize   Int?
   sourceKey    String?
   sourceUserId Int?
+  thumbnailId  Int?
 
-  reactions  VideoReaction[]
-  comments   Comment[]
-  videoStreams VideoStream[]
-  audioStreams AudioStream[]
+  reactions          VideoReaction[]
+  comments           Comment[]
+  videoStreams       VideoStream[]
+  audioStreams       AudioStream[]
+  videoThumbnails    VideoThumbnail[]    @relation("VideoThumbnails")
   videoScrubberImage VideoScrubberImage?
 
   channel    Channel         @relation(fields: [channelId], references: [id], onDelete: Cascade)
   sourceUser Account?        @relation(fields: [sourceUserId], references: [id], onDelete: SetNull)
+  thumbnail  VideoThumbnail? @relation(fields: [thumbnailId], references: [id], onDelete: SetNull)
 }
 
 enum VideoVisibility {

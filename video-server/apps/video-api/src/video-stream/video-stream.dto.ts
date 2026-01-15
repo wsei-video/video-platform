@@ -2,7 +2,7 @@ import { ApiProperty, ApiSchema } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 
 import { IdTransform } from '@video/lib/restful';
-import { IsInt, IsString } from 'class-validator';
+import { IsBoolean, IsInt, IsString } from 'class-validator';
 
 @ApiSchema({ name: 'VideoScrubberImage' })
 export class VideoScrubberImageDto {
@@ -60,6 +60,21 @@ export class VideoScrubberImageCreateDto {
   @ApiProperty({ description: 'Number of image files' })
   @IsInt()
   public count: number;
+}
+
+@ApiSchema({ name: 'VideoThumbnailCreate' })
+export class VideoThumbnailCreateDto {
+  @ApiProperty({ description: 'Thumbnail name' })
+  @IsString()
+  public name: string;
+
+  @ApiProperty({ description: 'Thumbnail variants' })
+  @IsString()
+  public variants: string;
+
+  @ApiProperty({ description: 'Whether to select this thumbnail for the video' })
+  @IsBoolean()
+  public select: boolean;
 }
 
 @ApiSchema({ name: 'MediaCodec', description: 'Media codec information' })

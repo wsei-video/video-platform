@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
 
 import type { QualityLevel } from '@/components/player/quality'
-import type { VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
+import type { ImageDto, VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
 import { VideoUtils } from '@/infrastructure/video-api/shared/utils/video.utils'
 
 export const useVideoPlayerStore = defineStore('video-player', () => {
@@ -28,6 +28,8 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
   const playbackWidth = ref(0)
   const playbackHeight = ref(0)
   const scrubberImage = shallowRef<VideoScrubberImageDto | null>(null)
+  const thumbnail = shallowRef<ImageDto | null>(null)
+  const posterVisible = ref(true)
 
   const playbackProgress = computed(() =>
     duration.value === 0 ? 0 : currentTime.value / duration.value,
@@ -158,12 +160,20 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     scrubberImage.value = updatedScrubberImage
   }
 
+  const setThumbnail = (updatedThumbnail: ImageDto | null) => {
+    thumbnail.value = updatedThumbnail
+  }
+
   const setPlaybackWidth = (updatedPlaybackWidth: number) => {
     playbackWidth.value = updatedPlaybackWidth
   }
 
   const setPlaybackHeight = (updatedPlaybackHeight: number) => {
     playbackHeight.value = updatedPlaybackHeight
+  }
+
+  const setPosterVisible = (updatedPosterVisible: boolean) => {
+    posterVisible.value = updatedPosterVisible;
   }
 
   return {
@@ -221,9 +231,13 @@ export const useVideoPlayerStore = defineStore('video-player', () => {
     setError,
     scrubberImage,
     setScrubberImage,
+    thumbnail,
+    setThumbnail,
     playbackWidth,
     setPlaybackWidth,
     playbackHeight,
     setPlaybackHeight,
+    posterVisible,
+    setPosterVisible,
   }
 })

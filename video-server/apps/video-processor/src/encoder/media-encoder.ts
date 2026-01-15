@@ -11,6 +11,8 @@ import {
   MediaEncoderHlsOptions,
   MediaEncoderInputOutputOptions,
   MediaEncoderScrubberImageOptions,
+  MediaEncoderThumbnailOptions,
+  MediaEncoderThumbnailVariant,
   MediaEncoderVideoHlsOptions,
 } from './media-encoder.types';
 
@@ -84,6 +86,41 @@ export class MediaEncoder {
       '-profile:a',
       'aac_low',
       ...this.getHlsArguments(options),
+    ];
+
+    await fs.mkdir(options.output, { recursive: true });
+    this.logger.log(`Executing: ffmpeg ${args.join(' ')}`);
+    await execFileAsync('ffmpeg', args);
+  }
+
+  public async encodeThumbnail(options: MediaEncoderThumbnailOptions): Promise<void> {
+    const variantInputLabel = (variant: MediaEncoderThumbnailVariant) => `[v${variant.height}]`;
+    const variantOutputLabel = (variant: MediaEncoderThumbnailVariant) => `[v${variant.height}o]`;
+
+    const variantInputLabels = options.variants.map(variant => variantInputLabel(variant)).join('');
+
+    const variantFilters = options.variants
+      .map(variant => {
+        const input = variantInputLabel(variant);
+        const output = variantOutputLabel(variant);
+        const scale = `scale=${variant.width}:${variant.height}`;
+        return `${input}${scale}${output}`;
+      })
+      .join('; ');
+
+    const variantMappings = options.variants
+      .map(variant => {
+        const output = variantOutputLabel(variant);
+        return ['-map', output, `${options.output}/thumbnail_%01d_${variant.height}p.jpg`];
+      })
+      .flat();
+
+    const args: string[] = [
+      ...this.getInputArguments(options),
+      '-an',
+      '-filter_complex',
+      `fps=${options.fps},split=${options.variants.length}${variantInputLabels}; ${variantFilters}`,
+      ...variantMappings,
     ];
 
     await fs.mkdir(options.output, { recursive: true });

@@ -9,6 +9,7 @@ import {
   MediaStreamsDto,
   VideoScrubberImageCreateDto,
   VideoStreamCreateDto,
+  VideoThumbnailCreateDto,
 } from './video-stream.dto';
 import { AuthInternal } from '../auth/auth-internal.guard';
 import { ReqAccount } from '../auth/auth-request.context';
@@ -47,6 +48,18 @@ export class VideoStreamController {
     @Body(BodyValidator) body: AudioStreamCreateDto,
   ) {
     await this.videoStreamService.createAudioStream(videoId, body);
+  }
+
+  @Post('thumbnail')
+  @AuthInternal()
+  @ApiNoContentResponse()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Create thumbnail' })
+  public async createThumbnail(
+    @Param('videoId', IdPipe) videoId: number,
+    @Body(BodyValidator) body: VideoThumbnailCreateDto,
+  ) {
+    await this.videoStreamService.createThumbnail(videoId, body);
   }
 
   @Post('scrubber')

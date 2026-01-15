@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import type { VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
+import type { ImageDto, VideoScrubberImageDto } from '@/infrastructure/video-api/shared'
 import { useVideoPlayerStore } from '@/store'
 
 import VideoPlayerBufferingIndicator from './VideoPlayerBufferingIndicator.vue'
@@ -9,13 +9,20 @@ import VideoPlayerControlBar from './VideoPlayerControlBar.vue'
 import VideoPlayerError from './VideoPlayerError.vue'
 import VideoPlayerHlsRenderer from './VideoPlayerHlsRenderer.vue'
 import VideoPlayerOverlayControls from './VideoPlayerOverlayControls.vue'
+import VideoPlayerPoster from './VideoPlayerPoster.vue'
 import VideoPlayerSettingsMenu from './VideoPlayerSettingsMenu.vue'
 
 const {
   source,
   scrubber,
   isPending = false,
-} = defineProps<{ source?: string; scrubber?: VideoScrubberImageDto | null; isPending?: boolean }>()
+  thumbnail,
+} = defineProps<{
+  source?: string
+  scrubber?: VideoScrubberImageDto | null
+  isPending?: boolean
+  thumbnail?: ImageDto | null
+}>()
 
 const videoPlayerStore = useVideoPlayerStore()
 const videoPlayerRef = ref<HTMLElement | null>(null)
@@ -39,12 +46,23 @@ watch(
   },
 )
 
+videoPlayerStore.setThumbnail(thumbnail ?? null)
+
+watch(
+  () => thumbnail,
+  (thumbnail) => {
+    videoPlayerStore.setThumbnail(thumbnail ?? null)
+  },
+)
+
 watch(
   () => ({ source, isPending }),
   ({ source, isPending }) => {
     if (source) {
       videoPlayerStore.setError(null)
       videoPlayerStore.setSource(source)
+      videoPlayerStore.setPlaying(false)
+      videoPlayerStore.setPosterVisible(true)
     } else {
       if (!isPending) videoPlayerStore.setError('No video content')
     }
@@ -78,6 +96,7 @@ watch(
         <VideoPlayerControlBar />
         <VideoPlayerSettingsMenu />
       </template>
+      <VideoPlayerPoster v-if="videoPlayerStore.posterVisible" />
     </template>
   </div>
 </template>

@@ -219,5 +219,122 @@ describe('Video', () => {
           },
         });
     });
+
+    test('Create thumbnails', async () => {
+      await fixture
+        .request()
+        .post(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams/thumbnail`)
+        .set(AuthConstants.InternalHeader, fixture.config.video.apiInternalKey)
+        .send({
+          name: 'thumbnail_1',
+          variants: '256x144',
+          select: false,
+        })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .post(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams/thumbnail`)
+        .set(AuthConstants.InternalHeader, fixture.config.video.apiInternalKey)
+        .send({
+          name: 'thumbnail_2',
+          variants: '640x360',
+          select: true,
+        })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .post(`/v1/videos/${Id.clear(myVideo.id).encrypted}/streams/thumbnail`)
+        .set(AuthConstants.InternalHeader, fixture.config.video.apiInternalKey)
+        .send({
+          name: 'thumbnail_3',
+          variants: '256x144,426x240',
+          select: false,
+        })
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .get(`/v1/videos/${Id.clear(myVideo.id).encrypted}/thumbnails`)
+        .set('Authorization', `Bearer ${auth.accessToken}`)
+        .expect(HttpStatus.OK)
+        .expect({
+          total: 3,
+          next: false,
+          items: [
+            {
+              id: '-Y5OWS2exwnMaKM-RWHDVg',
+              variants: [
+                {
+                  url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/thumbnail/thumbnail_1_144p.jpg',
+                  width: 256,
+                  height: 144,
+                },
+              ],
+            },
+            {
+              id: '1F7QtAWVDfuRrA54Fs_6Nw',
+              variants: [
+                {
+                  url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/thumbnail/thumbnail_2_360p.jpg',
+                  width: 640,
+                  height: 360,
+                },
+              ],
+            },
+            {
+              id: 'qlgbfa88WMVNug8OWMR-9w',
+              variants: [
+                {
+                  url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/thumbnail/thumbnail_3_144p.jpg',
+                  width: 256,
+                  height: 144,
+                },
+                {
+                  url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/thumbnail/thumbnail_3_240p.jpg',
+                  width: 426,
+                  height: 240,
+                },
+              ],
+            },
+          ],
+        });
+
+      await fixture
+        .request()
+        .get(`/v1/videos/${Id.clear(myVideo.id).encrypted}`)
+        .expect(HttpStatus.OK)
+        .expect(response => {
+          expect(response.body.thumbnail).toEqual({
+            id: '1F7QtAWVDfuRrA54Fs_6Nw',
+            variants: [
+              {
+                height: 360,
+                url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/image/thumbnail/thumbnail_2_360p.jpg',
+                width: 640,
+              },
+            ],
+          });
+        });
+
+      await fixture
+        .request()
+        .delete(`/v1/videos/${Id.clear(myVideo.id).encrypted}/thumbnails/1F7QtAWVDfuRrA54Fs_6Nw`)
+        .set('Authorization', `Bearer ${auth.accessToken}`)
+        .expect(HttpStatus.NO_CONTENT)
+        .expect('');
+
+      await fixture
+        .request()
+        .get(`/v1/videos/${Id.clear(myVideo.id).encrypted}`)
+        .expect(HttpStatus.OK)
+        .expect(response => {
+          expect(response.body.thumbnail).toBeNull();
+        });
+    });
   });
 });

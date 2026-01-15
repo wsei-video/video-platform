@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { AppImage, type AppImageProps } from '@/components/ui'
 
+import type { Video } from '@/domain/video';
+
+import AppResponsiveImage from '../ui/AppResponsiveImage.vue';
 import { VideoDuration } from '.'
 
-defineProps<{
-  duration: number
-  imageProps: AppImageProps
-}>()
+const props = defineProps<{ video: Video }>()
 </script>
 <template>
   <div class="thumbnail-container">
-    <AppImage v-bind="imageProps" class="thumbnail" />
-    <VideoDuration :duration="duration" />
+    <AppResponsiveImage :image="props.video.thumbnail" :alt="props.video.title" class="thumbnail" />
+    <VideoDuration :duration="props.video.duration" />
   </div>
 </template>
 

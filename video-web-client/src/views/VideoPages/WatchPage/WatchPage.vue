@@ -28,10 +28,11 @@ const videoAspectRatio = 16 / 9
     <main class="watch-page__main">
       <section class="watch-page__player">
         <VideoPlayer
+          class="watch-page__player__video"
           :source="adaptiveHlsUrl"
           :scrubber="streams?.scrubber"
-          class="watch-page__player__video"
           :is-pending="streamsIsPending"
+          :thumbnail="video?.thumbnail"
         />
         <VideoInfo v-if="video" :video="video" class="watch-page__player__info" />
       </section>

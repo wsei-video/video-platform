@@ -27,7 +27,7 @@ export class VideoMapper {
       dto.id,
       dto.title,
       dto.description,
-      dto.thumbnail || '',
+      dto.thumbnail,
       dto.status,
       dto.visibility,
       dto.views,

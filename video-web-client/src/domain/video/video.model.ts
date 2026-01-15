@@ -1,3 +1,4 @@
+import type { ImageDto } from '@/infrastructure/video-api/shared'
 import { VideoUtils } from '@/infrastructure/video-api/shared/utils'
 
 import type { Channel } from '../channel/channel.model'
@@ -17,7 +18,7 @@ export class Video {
     public id: string,
     public title: string,
     public description: string,
-    public thumbnail: string,
+    public thumbnail: ImageDto | null,
     public status: VideoStatus,
     public visibility: VideoVisibility,
     public views: number,
