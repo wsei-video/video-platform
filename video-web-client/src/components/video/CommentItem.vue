@@ -107,7 +107,6 @@ onMounted(() => {
     </div>
     <div v-if="!isEditing" class="video-comment__actions">
       <FeedbackComponent
-        v-if="actions"
         @emoji-selected="(reaction: string) => handleReaction(commentData.id, reaction)"
         :selected-reaction="userReaction?.content"
         :reactions="commentData.reactions"
@@ -115,7 +114,7 @@ onMounted(() => {
         class="fs-7"
       />
       <button
-        v-if="authStore.isAuthenticated && actions"
+        v-if="authStore.isAuthenticated"
         class="btn-action"
         @click="isReplying = !isReplying"
       >
