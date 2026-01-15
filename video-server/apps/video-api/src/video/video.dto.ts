@@ -1,4 +1,4 @@
-import { ApiProperty, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
@@ -21,12 +21,48 @@ export enum VideoStatus {
   Failed = 'failed',
 }
 
-@ApiSchema({ name: 'Video' })
-export class VideoDto {
-  @ApiProperty({ description: 'Unique video identifier' })
+@ApiSchema({ name: 'ImageVariant' })
+export class ImageVariantDto {
+  @ApiProperty({ description: 'Download URL' })
+  @Expose()
+  public url: string;
+
+  @ApiProperty({ description: 'Width in pixels' })
+  @Expose()
+  public width: number;
+
+  @ApiProperty({ description: 'Height in pixels' })
+  @Expose()
+  public height: number;
+}
+
+@ApiSchema({ name: 'Image' })
+export class ImageDto {
+  @ApiProperty({ description: 'Unique image identifier', type: 'string' })
   @IdTransform()
   @Expose()
-  public id: string;
+  public id: number;
+
+  @ApiProperty({ description: 'List of available image variants', type: [ImageVariantDto] })
+  @Type(() => ImageVariantDto)
+  @Expose()
+  public variants!: ImageVariantDto[];
+}
+
+@ApiSchema({ name: 'Images' })
+export class ImagesDto extends PagedResponse<ImageDto> {
+  @ApiProperty({ type: [ImageDto] })
+  @Type(() => ImageDto)
+  @Expose()
+  public items!: ImageDto[];
+}
+
+@ApiSchema({ name: 'Video' })
+export class VideoDto {
+  @ApiProperty({ description: 'Unique video identifier', type: 'string' })
+  @IdTransform()
+  @Expose()
+  public id: number;
 
   @ApiProperty({ description: 'Video title' })
   @Expose()
@@ -36,9 +72,10 @@ export class VideoDto {
   @Expose()
   public description: string;
 
-  @ApiProperty({ description: 'Thumbnail URL' })
+  @ApiProperty({ type: ImageDto, description: 'Video thumbnail', nullable: true })
+  @Type(() => ImageDto)
   @Expose()
-  public thumbnail: string;
+  public thumbnail: ImageDto | null;
 
   @ApiProperty({ description: 'Video duration in seconds' })
   @Expose()
@@ -106,20 +143,26 @@ export class VideoCreateDto {
   @IsOptional()
   public visibility: VideoVisibility = VideoVisibility.Public;
 
-  @ApiProperty({ description: '[Internal] View count' })
+  @ApiPropertyOptional({ description: 'Unique thumbnail identifier', type: 'string', nullable: true })
+  @IsOptional()
+  @IsId()
+  @ToId()
+  public thumbnailId?: Id | null;
+
+  @ApiPropertyOptional({ description: '[Internal] View count' })
   @IsInt()
   @IsOptional()
-  public views: number;
+  public views?: number;
 
-  @ApiProperty({ enum: VideoStatus, enumName: 'VideoStatus', description: '[Internal] Processing status' })
+  @ApiPropertyOptional({ enum: VideoStatus, enumName: 'VideoStatus', description: '[Internal] Processing status' })
   @IsEnum(VideoStatus)
   @IsOptional()
-  public status: VideoStatus;
+  public status?: VideoStatus;
 
-  @ApiProperty({ description: '[Internal] Video duration in seconds' })
+  @ApiPropertyOptional({ description: '[Internal] Video duration in seconds' })
   @IsNumber()
   @IsOptional()
-  public duration: number;
+  public duration?: number;
 }
 
 @ApiSchema({ name: 'VideoUpdate', description: 'Video update request schema' })

@@ -12,6 +12,7 @@ import {
   VideoScrubberImageCreateDto,
   VideoScrubberImageDto,
   VideoStreamCreateDto,
+  VideoThumbnailCreateDto,
 } from './video-stream.dto';
 
 @Injectable()
@@ -103,6 +104,18 @@ export class VideoStreamService {
         videoId,
       },
     });
+  }
+
+  public async createThumbnail(videoId: number, body: VideoThumbnailCreateDto) {
+    const thumbnail = await this.database.videoThumbnail.create({
+      data: {
+        name: body.name,
+        variants: body.variants,
+        videoId,
+      },
+    });
+
+    if (body.select) await this.database.video.update({ where: { id: videoId }, data: { thumbnailId: thumbnail.id } });
   }
 
   public createScrubberImage(videoId: number, body: VideoScrubberImageCreateDto) {

@@ -72,8 +72,6 @@ const handleVideoDurationChange = () => {
 }
 
 const handleVideoLoadStart = () => {
-  videoPlayerStore.setPlaying(false)
-
   // Playback rate is not persisted between video source changes
   if (videoRef.value) videoRef.value.playbackRate = videoPlayerStore.playbackSpeed
 }
@@ -89,6 +87,7 @@ onMounted(async () => {
   updateVideoSource()
 
   await nextTick()
+  await updatePlaying()
 
   if (!videoRef.value) return
   resizeObserver = new ResizeObserver(() => updateVideoSize())
@@ -108,17 +107,20 @@ watch(
 
 watch(
   () => videoPlayerStore.isPlaying,
-  async (isPlaying) => {
-    if (isPlaying) {
-      try {
-        await videoRef.value?.play()
-      } catch (error) {
-        if (error instanceof DOMException) return
-        throw error
-      }
-    } else videoRef.value?.pause()
-  },
+  () => updatePlaying(),
 )
+
+const updatePlaying = async () => {
+  console.log(videoPlayerStore.isPlaying)
+  if (videoPlayerStore.isPlaying) {
+    try {
+      await videoRef.value?.play()
+    } catch (error) {
+      if (error instanceof DOMException) return console.error(error)
+      throw error
+    }
+  } else videoRef.value?.pause()
+}
 
 watch(
   () => videoPlayerStore.lastSeekTime,

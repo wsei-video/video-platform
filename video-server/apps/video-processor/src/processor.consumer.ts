@@ -15,6 +15,7 @@ import { TaskAdaptiveAudio } from './tasks/task-adaptive-audio';
 import { TaskAdaptiveVideo } from './tasks/task-adaptive-video';
 import { TaskIdentify } from './tasks/task-identify';
 import { TaskScrubberImage } from './tasks/task-scrubber-image';
+import { TaskThumbnail } from './tasks/task-thumbnail';
 
 @Injectable()
 export class ProcessorConsumer implements OnModuleInit {
@@ -37,6 +38,7 @@ export class ProcessorConsumer implements OnModuleInit {
     await this.registerTask(QueueTask.Identify, TaskIdentify);
     await this.registerTask(QueueTask.AdaptiveAudio, TaskAdaptiveAudio);
     await this.registerTask(QueueTask.AdaptiveVideo, TaskAdaptiveVideo);
+    await this.registerTask(QueueTask.Thumbnail, TaskThumbnail);
     await this.registerTask(QueueTask.ScrubberImage, TaskScrubberImage);
   }
 

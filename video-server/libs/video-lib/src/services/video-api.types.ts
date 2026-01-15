@@ -263,6 +263,30 @@ export interface Channels {
   total: number;
 }
 
+export interface Image {
+  /** Unique image identifier */
+  id: string;
+  /** List of available image variants */
+  variants: ImageVariant[];
+}
+
+export interface ImageVariant {
+  /** Height in pixels */
+  height: number;
+  /** Download URL */
+  url: string;
+  /** Width in pixels */
+  width: number;
+}
+
+export interface Images {
+  items: Image[];
+  /** Whether the next page is available */
+  next: boolean;
+  /** The total number of available resources */
+  total: number;
+}
+
 /** Media codec information */
 export interface MediaCodec {
   /** Codec identification in RFC 6381 format */
@@ -326,8 +350,8 @@ export interface Video {
   reactions: ReactionAggregate[];
   /** Processing status */
   status: VideoStatus;
-  /** Thumbnail URL */
-  thumbnail: string;
+  /** Video thumbnail */
+  thumbnail: Image | null;
   /** Video title */
   title: string;
   /** Video reaction of the current user */
@@ -588,6 +612,11 @@ export interface VideoControllerCreateSourceV1Params {
   videoId: number;
 }
 
+export interface VideoControllerDeleteThumbnailV1Params {
+  thumbnailId: number;
+  videoId: number;
+}
+
 export interface VideoControllerDeleteV1Params {
   videoId: number;
 }
@@ -596,7 +625,16 @@ export interface VideoControllerFindSourceV1Params {
   videoId: number;
 }
 
+export interface VideoControllerFindThumbnailV1Params {
+  thumbnailId: number;
+  videoId: number;
+}
+
 export interface VideoControllerFindV1Params {
+  videoId: number;
+}
+
+export interface VideoControllerListThumbnailsV1Params {
   videoId: number;
 }
 
@@ -632,13 +670,15 @@ export interface VideoCreate {
    */
   description: string;
   /** [Internal] Video duration in seconds */
-  duration: number;
+  duration?: number;
   /** [Internal] Processing status */
-  status: VideoStatus;
+  status?: VideoStatus;
+  /** Unique thumbnail identifier */
+  thumbnailId?: string | null;
   /** Video title */
   title: string;
   /** [Internal] View count */
-  views: number;
+  views?: number;
   /**
    * Video visibility
    * @default "public"
@@ -858,6 +898,10 @@ export interface VideoStreamControllerCreateScrubberImageV1Params {
   videoId: number;
 }
 
+export interface VideoStreamControllerCreateThumbnailV1Params {
+  videoId: number;
+}
+
 export interface VideoStreamControllerCreateVideoStreamV1Params {
   videoId: number;
 }
@@ -888,6 +932,15 @@ export interface VideoStreamCreate {
   width: number;
 }
 
+export interface VideoThumbnailCreate {
+  /** Thumbnail name */
+  name: string;
+  /** Whether to select this thumbnail for the video */
+  select: boolean;
+  /** Thumbnail variants */
+  variants: string;
+}
+
 /** Video update request schema */
 export interface VideoUpdate {
   /**
@@ -899,6 +952,8 @@ export interface VideoUpdate {
   duration?: number;
   /** [Internal] Processing status */
   status?: VideoStatus;
+  /** Unique thumbnail identifier */
+  thumbnailId?: string | null;
   /** Video title */
   title?: string;
   /** [Internal] View count */

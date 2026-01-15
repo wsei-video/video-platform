@@ -28,6 +28,16 @@ export interface MediaEncoderAudioHlsOptions extends MediaEncoderHlsOptions {
   bitrate: number;
 }
 
+export interface MediaEncoderThumbnailVariant {
+  width: number;
+  height: number;
+}
+
+export interface MediaEncoderThumbnailOptions extends MediaEncoderInputOutputOptions {
+  fps: string;
+  variants: MediaEncoderThumbnailVariant[];
+}
+
 export interface MediaEncoderScrubberImageOptions extends MediaEncoderInputOutputOptions {
   columns: number;
   rows: number;

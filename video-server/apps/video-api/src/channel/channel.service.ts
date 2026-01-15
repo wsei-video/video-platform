@@ -67,6 +67,7 @@ export class ChannelService {
       orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
       include: {
         channel: true,
+        thumbnail: true,
         _count: {
           select: {
             comments: true,
@@ -91,6 +92,7 @@ export class ChannelService {
         commentCount: video._count.comments,
         reactions: reactions.get(video.id) ?? [],
         userReaction: video.reactions?.[0] ?? null,
+        thumbnail: this.videoCommonService.serializeThumbnailToImage(video.thumbnail),
       })),
       total,
       next,
