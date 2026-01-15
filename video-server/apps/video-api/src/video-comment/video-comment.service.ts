@@ -29,6 +29,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 
@@ -58,6 +59,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 
@@ -78,6 +80,9 @@ export class VideoCommentService {
         videoId,
         userId: account.id,
         createdAt: DateUtils.now(),
+      },
+      include: {
+        user: true,
       },
     });
 
@@ -105,6 +110,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 
@@ -149,6 +155,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 
@@ -178,6 +185,9 @@ export class VideoCommentService {
         parentId: commentId,
         createdAt: DateUtils.now(),
       },
+      include: {
+        user: true,
+      },
     });
 
     return {
@@ -197,6 +207,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 
@@ -222,6 +233,7 @@ export class VideoCommentService {
               where: { userId: account.id },
             }
           : undefined,
+        user: true,
       },
     });
 

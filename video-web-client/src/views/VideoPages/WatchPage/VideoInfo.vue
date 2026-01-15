@@ -1,15 +1,26 @@
 <script setup lang="ts">
+import { useVideoReaction } from '@/application/useVideoReaction'
 import { FeedbackComponent } from '@/components/feedback'
 import { AppButton, AppIcon, ProfileBadge } from '@/components/ui'
+import type { Video } from '@/domain/video'
 
-import { useWatchPageContext } from '.'
+const { video } = defineProps<{
+  video: Video
+}>()
 
-const { video, updateReaction } = useWatchPageContext()
+const { error, userReaction, handleReaction } = useVideoReaction(video.id)
 </script>
 <template>
   <div v-if="video" class="video-info">
-    <div class="video__reactions">
-      <FeedbackComponent :reactions="[]" mode="picker" @emoji-selected="updateReaction" />
+    <div>
+      <FeedbackComponent
+        :reactions="video.reactions"
+        :selectedReaction="userReaction?.content"
+        mode="picker"
+        to="video"
+        @emoji-selected="handleReaction"
+      />
+      <p v-if="error">{{ error.message }}</p>
     </div>
     <h1 class="video-info__title">
       {{ video.title }}

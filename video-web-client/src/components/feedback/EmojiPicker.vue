@@ -27,7 +27,7 @@ const emit = defineEmits<{
   position: absolute;
   top: calc(100% + 1rem);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-25%);
   z-index: 10;
 
   border-radius: $border-radius-md;

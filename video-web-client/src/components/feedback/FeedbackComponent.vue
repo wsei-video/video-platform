@@ -2,19 +2,23 @@
 import { computed, ref } from 'vue'
 
 import { AppIcon } from '@/components/ui'
-import type { Reaction } from '@/domain/reaction'
+import type { ReactionAggregate } from '@/domain/reaction'
+import { useAuthStore } from '@/store'
 
 import EmojiPicker from './EmojiPicker.vue'
 import FeedbackEmoji from './FeedbackEmoji.vue'
 
-const { reactions, mode } = defineProps<{
-  reactions: Reaction[]
+const { reactions, mode, selectedReaction } = defineProps<{
+  reactions: ReactionAggregate[]
   mode: 'picker' | 'info'
+  selectedReaction?: string
 }>()
 
 const emit = defineEmits<{
   'emoji-selected': [emoji: string]
 }>()
+
+const authStore = useAuthStore()
 
 const isEmojiPickerOpened = ref(false)
 const toggleEmojiPicker = () => (isEmojiPickerOpened.value = !isEmojiPickerOpened.value)
@@ -22,8 +26,10 @@ const closeEmojiPicker = () => (isEmojiPickerOpened.value = false)
 
 const sortedReactions = computed(() => [...reactions].sort((x, y) => y.count - x.count))
 
+const isUserReaction = (emojiContent: string) => emojiContent === selectedReaction
+
 const handleEmojiClick = (emoji: string) => {
-  if (mode != 'picker') return
+  if (mode != 'picker' || !authStore.isAuthenticated) return
   emit('emoji-selected', emoji)
   closeEmojiPicker()
 }
@@ -31,14 +37,18 @@ const handleEmojiClick = (emoji: string) => {
 <template>
   <div class="video-feedback">
     <FeedbackEmoji
-      @click="handleEmojiClick(reaction.emoji)"
+      @click="handleEmojiClick(reaction.content)"
       v-for="reaction in sortedReactions"
-      :key="reaction.emoji"
+      :class="{ selected: isUserReaction(reaction.content) }"
+      :key="reaction.content"
     >
-      {{ reaction.emoji }} {{ reaction.count }}
+      {{ reaction.content }} {{ reaction.count }}
     </FeedbackEmoji>
-    <FeedbackEmoji v-if="mode === 'picker'">
-      <AppIcon name="add_reaction" @click.stop="toggleEmojiPicker" />
+    <FeedbackEmoji
+      v-if="mode === 'picker' && authStore.isAuthenticated"
+      @click.stop="toggleEmojiPicker"
+    >
+      <AppIcon name="add_reaction" style="font-size: inherit" />
       <EmojiPicker
         v-showable="isEmojiPickerOpened"
         v-click-outside="closeEmojiPicker"
@@ -52,12 +62,12 @@ const handleEmojiClick = (emoji: string) => {
 @import '../../styles/bootstrap/index.scss';
 
 .video-feedback {
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+}
 
-  background-color: $accent;
-  padding: 0.25rem 0.5rem;
-  border-radius: $border-radius;
+.selected {
+  border: 2px solid $primary;
 }
 </style>

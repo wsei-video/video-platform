@@ -1,7 +1,7 @@
 import { Auth } from '@/domain/auth/auth.model'
 
-import { AccountMapper } from './account.mapper'
 import type { AuthDto } from '../shared'
+import { AccountMapper } from './account.mapper'
 import { SessionMapper } from './session.mapper'
 
 export class AuthMapper {

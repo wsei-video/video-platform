@@ -17,7 +17,6 @@ export default {
       existingTooltip.dispose()
     }
     const placement = binding.arg || 'bottom'
-    console.log('Tooltip:', binding)
     el.setAttribute('data-bs-placement', placement)
     if (binding.value) {
       el.setAttribute('data-bs-title', binding.value)
