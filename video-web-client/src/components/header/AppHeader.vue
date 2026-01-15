@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 
-import { AppIcon, AppInput } from '@/components/ui'
+import { AppIcon } from '@/components/ui'
 import { useUiStore } from '@/store'
 
 import ProfileDropdown from './ProfileDropdown.vue'
+import SearchBar from './SearchBar.vue'
+
 const uiStore = useUiStore()
 
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
@@ -14,13 +16,11 @@ const isMobile = breakpoints.smaller('md')
 <template>
   <header :class="{ mobile: isMobile }">
     <AppIcon id="menu-button" name="menu" @click="uiStore.toggleSidebar()" />
-    <div class="search-bar">
-      <AppInput v-if="!isMobile" variant="dark" placeholder="Search..." />
-      <AppIcon name="search" />
-    </div>
+    <SearchBar />
     <ProfileDropdown />
   </header>
 </template>
+
 <style lang="scss">
 @import '../../styles/bootstrap/index.scss';
 
@@ -41,41 +41,11 @@ header {
   #menu-button {
     font-size: 2rem;
     cursor: pointer;
+    color: $white;
   }
 
   &.mobile #menu-button {
     margin-right: auto;
-  }
-
-  .search-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    input {
-      padding-right: 3rem;
-    }
-
-    span {
-      font-size: 2rem;
-    }
-  }
-
-  &:not(.mobile) .search-bar {
-    position: relative;
-  }
-
-  &:not(.mobile) .search-bar span {
-    margin: 0;
-    font-size: 1.5rem;
-    display: inline-block;
-    transform: scaleX(-1) translateY(-50%);
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    color: $input-placeholder-color;
-    padding-right: 10px;
-    border-right: 1px solid $input-placeholder-color;
   }
 }
 </style>
