@@ -17,6 +17,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      meilisearch:
+        condition: service_healthy
     networks:
       - video-network
     volumes:
@@ -119,7 +121,7 @@ services:
       retries: 10
 
   minio:
-    image: quay.io/minio/minio:latest
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
     ports:
       - ${MINIO_PORT}:9000   # S3 API
       - 9001:9001   # Web console
@@ -150,6 +152,22 @@ services:
       - video-network
     healthcheck:
       test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.30.0
+    ports:
+      - ${MEILISEARCH_PORT}:7700
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+    networks:
+      - video-network
+    volumes:
+      - ./volumes/meili_data:/meili_data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:${MEILISEARCH_PORT}/health']
       interval: 1s
       timeout: 2s
       retries: 10

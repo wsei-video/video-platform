@@ -70,3 +70,18 @@ services:
       timeout: 2s
       retries: 10
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.30.0
+    ports:
+      - ${MEILISEARCH_PORT}:7700
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+    networks:
+      - video-network
+    volumes:
+      - /tmp/volumes/meili_data:/meili_data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:${MEILISEARCH_PORT}/health']
+      interval: 1s
+      timeout: 2s
+      retries: 10

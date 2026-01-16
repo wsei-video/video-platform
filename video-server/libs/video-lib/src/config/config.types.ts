@@ -26,6 +26,12 @@ export interface MinioConfig {
   secretKey: string;
 }
 
+export interface MeiliSearchConfig {
+  host: string;
+  port: number;
+  apiKey: string;
+}
+
 export interface VideoConfig {
   webClientUrl: string;
   apiUrl: string;
@@ -40,5 +46,6 @@ export interface AppConfig {
   rabbitmq: RabbitMQConfig;
   redis: RedisConfig;
   minio: MinioConfig;
+  meiliSearch: MeiliSearchConfig;
   video: VideoConfig;
 }

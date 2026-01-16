@@ -25,6 +25,11 @@ export default (): AppConfig => ({
     accessKey: process.env.MINIO_ACCESS_KEY ?? '',
     secretKey: process.env.MINIO_SECRET_KEY ?? '',
   },
+  meiliSearch: {
+    host: process.env.MEILISEARCH_HOST ?? '',
+    port: parseInt(process.env.MEILISEARCH_PORT ?? '', 10),
+    apiKey: process.env.MEILISEARCH_KEY ?? '',
+  },
   video: {
     apiUrl: process.env.VIDEO_API_URL ?? '',
     apiUrlInternal: process.env.VIDEO_API_URL_INTERNAL ?? '',

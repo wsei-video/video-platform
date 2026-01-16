@@ -14,7 +14,12 @@ const uiStore = useUiStore()
 const props = useGetVideoPagesProps({
   pageType: route.name as VideoPageTypes,
 })
-const { data: videosData, isPending: isVideosPending, error: videosError } = props.getVideosQuery()
+
+const {
+  data: videosData,
+  isPending: isVideosPending,
+  error: videosError,
+} = props.getVideosQuery(route.name === 'search' ? { phrase: `${route.query.search}` } : undefined)
 
 const title = computed(() => {
   const searchQuery = route.query.search

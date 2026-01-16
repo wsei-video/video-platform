@@ -4,6 +4,7 @@ import {
   useGetForYouVideos,
   useGetMostPopularVideos,
   useGetRecentlyUplaoded,
+  useGetSearchVideos,
   useGetTrendingVideos,
 } from '@/application/queries/video'
 import type { IconName } from '@/components/ui/AppIcon.vue'
@@ -21,7 +22,9 @@ export interface VideoPageProps {
   title: string
   icon: IconName
   videoItemMode: VideoItemModes
-  getVideosQuery: () => UseInfiniteQueryReturnType<InfiniteData<PaginatedList<Video>>, Error>
+  getVideosQuery: (options?: {
+    phrase?: string
+  }) => UseInfiniteQueryReturnType<InfiniteData<PaginatedList<Video>>, Error>
 }
 
 interface getVideoPagesPropsInput {
@@ -33,11 +36,18 @@ interface getVideoPagesPropsDependencies {
   getMostPopular: () => ReturnType<typeof useGetMostPopularVideos>
   getRecentlyUploaded: () => ReturnType<typeof useGetRecentlyUplaoded>
   getForYou: () => ReturnType<typeof useGetForYouVideos>
+  searchVideos: (options: { phrase: string }) => ReturnType<typeof useGetSearchVideos>
 }
 
 export function getVideoPagesProps(
   { pageType }: getVideoPagesPropsInput,
-  { getTrending, getForYou, getMostPopular, getRecentlyUploaded }: getVideoPagesPropsDependencies,
+  {
+    getTrending,
+    getForYou,
+    getMostPopular,
+    getRecentlyUploaded,
+    searchVideos,
+  }: getVideoPagesPropsDependencies,
 ): VideoPageProps {
   switch (pageType) {
     case 'trending':
@@ -74,7 +84,7 @@ export function getVideoPagesProps(
         icon: 'search',
         videoItemMode: 'list' as const,
         // searching not implemented on backend
-        getVideosQuery: () => getRecentlyUploaded(),
+        getVideosQuery: ({ phrase } = { phrase: '' }) => searchVideos({ phrase: phrase ?? '' }),
       }
     default:
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,6 +101,7 @@ export function useGetVideoPagesProps({ pageType }: getVideoPagesPropsInput): Vi
       getMostPopular: useGetMostPopularVideos,
       getRecentlyUploaded: useGetRecentlyUplaoded,
       getTrending: useGetTrendingVideos,
+      searchVideos: useGetSearchVideos,
     },
   )
 }
