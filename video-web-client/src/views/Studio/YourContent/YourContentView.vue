@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useGetYourContent } from '@/application/queries/video/useGetYourContent'
-import { AppButton, AppIcon, UploadInput } from '@/components/ui'
+import { AppButton, AppIcon, AppSpinner, UploadInput } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
 import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
 import { useChannelStore } from '@/store'
@@ -97,7 +97,7 @@ const onFileUpload = async (files: File[]) => {
         </section>
       </div>
     </section>
-    <span v-if="isPageLoading">pending...</span>
+    <AppSpinner v-if="isPageLoading" />
     <span v-if="pageError">{{ pageError.message }}</span>
     <UploadVideoPopup v-model="showUploadPopup" @files-selected="onFileUpload" />
   </div>

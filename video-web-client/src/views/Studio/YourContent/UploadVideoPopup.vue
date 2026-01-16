@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UploadDropZone } from '@/components/ui'
+import { AppSpinner, UploadDropZone } from '@/components/ui'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import UploadInput from '@/components/ui/UploadInput.vue'
@@ -30,7 +30,7 @@ const uploadProps = {
   <transition name="nested">
     <div v-if="show" class="backdrop popup-backdrop outer" @click="show = false">
       <div
-        class="app-popup upload-popup inner bg-secondary d-flex flex-column shadow-sm rounded-4"
+        class="app-popup position-relative upload-popup inner bg-secondary d-flex flex-column shadow-sm rounded-4"
         @click.stop
       >
         <div
@@ -67,12 +67,12 @@ const uploadProps = {
                     >Select files</AppButton
                   >
                   <p v-if="uploadStore.setupError">{{ uploadStore.setupError.message }}</p>
-                  <p v-if="uploadStore.isSetupLoading">Loading...</p>
                 </div>
               </template>
             </UploadDropZone>
           </UploadInput>
         </div>
+        <AppSpinner mode="overlay" v-if="uploadStore.isSetupLoading" />
       </div>
     </div>
   </transition>

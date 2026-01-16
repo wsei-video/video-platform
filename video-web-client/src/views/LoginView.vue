@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import WatchMeLogo from '@/assets/watch-me-logo.svg'
+import { AppSpinner, AppToast } from '@/components/ui'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppInput from '@/components/ui/AppInput.vue'
 import type { AccountLoginCommand } from '@/domain/account'
-import { getReason } from '@/domain/shared/error'
-import { useAuthStore } from '@/store'
+import { useAuthStore, useUiStore } from '@/store'
 
 const authStore = useAuthStore()
+const uiStore = useUiStore()
 const router = useRouter()
 
 const tempLoginData = ref<AccountLoginCommand>({
@@ -33,14 +34,6 @@ function redirectToRegister() {
     name: 'register-page',
   })
 }
-
-const errorMessage = computed(() => {
-  const reason = getReason(authStore.authError)
-  if (reason && reason.name === 'InvalidCredentials') {
-    return 'Invalid credentials'
-  }
-  return authStore.authError?.message
-})
 </script>
 
 <template>
@@ -78,9 +71,19 @@ const errorMessage = computed(() => {
           </div>
         </div>
       </div>
-      <p v-if="authStore.isAuthPending">Loading...</p>
-      <p v-if="errorMessage">{{ errorMessage }}</p>
+      <AppSpinner v-if="authStore.isAuthPending" />
     </div>
+  </div>
+  <div class="position-fixed bottom-0 end-0 p-3">
+    <transition name="fade">
+      <AppToast
+        v-if="uiStore.isToastVisible"
+        :variant="uiStore.toastVariant"
+        :title="uiStore.toastTitle"
+        :message="uiStore.toastMessage"
+        @close="uiStore.hideToast()"
+      />
+    </transition>
   </div>
 </template>
 

@@ -113,11 +113,7 @@ onMounted(() => {
         mode="picker"
         class="fs-7"
       />
-      <button
-        v-if="authStore.isAuthenticated"
-        class="btn-action"
-        @click="isReplying = !isReplying"
-      >
+      <button v-if="authStore.isAuthenticated" class="btn-action" @click="isReplying = !isReplying">
         Reply
       </button>
       <p v-if="error">{{ error.message }}</p>

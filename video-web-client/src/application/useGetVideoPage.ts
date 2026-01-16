@@ -70,7 +70,7 @@ export function getVideoPagesProps(
       }
     case 'search':
       return {
-        title: 'You serched for: ',
+        title: 'You searched for: ',
         icon: 'search',
         videoItemMode: 'list' as const,
         // searching not implemented on backend

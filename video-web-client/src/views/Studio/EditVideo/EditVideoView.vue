@@ -3,7 +3,7 @@ import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
 import { useEditVideo } from '@/application/useEditVideo'
-import { AppButton, AppIcon, AppInput } from '@/components/ui'
+import { AppButton, AppIcon, AppInput, AppSpinner } from '@/components/ui'
 import {
   DropdownContent,
   DropdownItem,
@@ -12,7 +12,6 @@ import {
   DropdownTrigger,
 } from '@/components/ui/dropdown'
 import type { VideoUpdateCommand } from '@/domain/video'
-import { useVideoUploadStore } from '@/store/video-upload.store'
 
 import EditVideoSidebar from './EditVideoSidebar.vue'
 import EditVideoThumbnailSection, { type ThumbnailApproach } from './EditVideoThumbnailSection.vue'
@@ -21,7 +20,6 @@ const { videoId } = defineProps<{
   videoId: string
 }>()
 
-const uplaodStore = useVideoUploadStore()
 const breakpoints = useBreakpoints(breakpointsBootstrapV5)
 const isMobile = breakpoints.smaller('md')
 const pageMode = computed(() => (isMobile.value ? 'mobile' : 'desktop'))
@@ -136,17 +134,14 @@ const thumbnailApproach = ref<ThumbnailApproach>('uploaded')
         <EditVideoThumbnailSection :model="thumbnailApproach" />
       </main>
       <EditVideoSidebar
-        v-if="mediaStreamsData"
         class="edit-video__sidebar"
         :videoData="initialVideoData"
         :video-source="videoSourceData"
         :media-streams="mediaStreamsData"
         v-model="tempVideo"
       />
-      <p v-if="uplaodStore.isUploadPending">Progress: {{ uplaodStore.progress.percentage }}</p>
     </div>
-    <p v-if="error">{{ error.message }}</p>
-    <p v-if="isLoading">Loading...</p>
+    <AppSpinner v-if="isLoading" />
   </div>
 </template>
 

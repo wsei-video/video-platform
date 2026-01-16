@@ -6,10 +6,16 @@ import { useRouter } from 'vue-router'
 import { useLogout, useRegister } from '@/application/commands/auth'
 import { useLogin } from '@/application/commands/auth/useLogin'
 import { useGetMe } from '@/application/queries/video'
+import { useErrorNotifier } from '@/application/useErrorNotifier'
 import type { AccountCreateCommand, AccountLoginCommand } from '@/domain/account'
 import type { Auth } from '@/domain/auth'
 
 import { useChannelStore } from './channel.store'
+
+const authErrorMap: Record<string, string> = {
+  InvalidCredentials: 'Invalid credentials',
+  EmailAlreadyExists: 'User with this email already exists',
+}
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
@@ -84,6 +90,8 @@ export const useAuthStore = defineStore('auth', () => {
   const authError = computed(
     () => getUserError.value || loginError.value || registerError.value || logoutError.value,
   )
+  useErrorNotifier(authError, authErrorMap)
+
   const isAuthPending = computed(
     () =>
       isGetUserPending.value ||

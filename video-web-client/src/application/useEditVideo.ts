@@ -9,6 +9,7 @@ import { useDeleteVideo, useUpdateVideo } from './commands/video'
 import { useGetVideo } from './queries/video'
 import { useGetMediaStreams } from './queries/video/useGetMediaStreams'
 import { useGetVideoSource } from './queries/video/useGetVideoSource'
+import { useErrorNotifier } from './useErrorNotifier'
 
 export function useEditVideo(videoId: string) {
   const uploadStore = useVideoUploadStore()
@@ -34,13 +35,14 @@ export function useEditVideo(videoId: string) {
       sourceQuery.error.value ||
       mediaStreams.error.value,
   )
+
   const isLoading = computed(
     () =>
-      videoQuery.isPending.value ||
+      videoQuery.isLoading.value ||
       updateVideoQuery.isPending.value ||
-      sourceQuery.isPending.value ||
+      sourceQuery.isLoading.value ||
       deleteVideoQuery.isPending.value ||
-      mediaStreams.isPending.value,
+      mediaStreams.isLoading.value,
   )
 
   async function saveVideo(c: VideoUpdateCommand) {
@@ -73,6 +75,8 @@ export function useEditVideo(videoId: string) {
       }
     }
   }
+
+  useErrorNotifier(error)
 
   return {
     initialVideoData: videoQuery.data,

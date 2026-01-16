@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import { VideoPlayer } from '@/components/player'
-import { AppButton, AppIcon } from '@/components/ui'
+import { AppButton, AppIcon, AppProgressBar, AppSpinner } from '@/components/ui'
 import { useVideoRedirect } from '@/composables'
 import type { Video, VideoSource, VideoUpdateCommand } from '@/domain/video'
 import type { MediaStreamsDto } from '@/infrastructure/video-api/shared'
+import { useVideoUploadStore } from '@/store/video-upload.store'
 
 import EditVideoSidebarElement from './EditVideoSidebarElement.vue'
 
 const { videoData, videoSource, mediaStreams } = defineProps<{
   videoData: Video
   videoSource?: VideoSource
-  mediaStreams: MediaStreamsDto
+  mediaStreams?: MediaStreamsDto
 }>()
 const tempVideo = defineModel<VideoUpdateCommand>({ required: true })
-const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'hls')?.url
+const adaptiveHlsUrl = mediaStreams?.adaptive.find((stream) => stream.format === 'hls')?.url
+const uploadStore = useVideoUploadStore()
 </script>
 
 <template>
   <aside class="edit-video__sidebar">
     <!-- Video Preview Card -->
-    <div v-if="videoSource" class="edit-video__preview-card">
-      <VideoPlayer class="edit-video__player" :source="adaptiveHlsUrl" :scrubber="mediaStreams.scrubber" />
+    <div class="edit-video__preview-card position-relative">
+      <VideoPlayer
+        class="edit-video__player"
+        :source="adaptiveHlsUrl"
+        :scrubber="mediaStreams?.scrubber"
+      />
 
       <div class="edit-video__preview-info">
         <!-- Video Link -->
@@ -41,9 +47,9 @@ const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'h
         <!-- Filename -->
         <div class="edit-video__info-row">
           <span class="edit-video__info-label">Filename</span>
-          <span class="edit-video__info-value">{{ videoSource.name }}</span>
+          <span class="edit-video__info-value">{{ videoSource?.name ?? '---' }}</span>
           <span class="edit-video__info-label">Size</span>
-          <span class="edit-video__info-value">{{ videoSource.size }}</span>
+          <span class="edit-video__info-value">{{ videoSource?.size ?? '---' }}</span>
         </div>
 
         <!-- Video Quality -->
@@ -55,6 +61,7 @@ const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'h
           </div>
         </div>
       </div>
+      <AppSpinner mode="overlay" v-if="uploadStore.isUploadPending" />
     </div>
 
     <!-- Visibility -->
@@ -76,6 +83,11 @@ const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'h
         <AppIcon name="edit" class="edit-video__sidebar-item-action" />
       </template>
     </EditVideoSidebarElement>
+    <AppProgressBar
+      v-if="uploadStore.isUploadPending"
+      show-label
+      :value="uploadStore.progress.percentage"
+    />
   </aside>
 </template>
 
@@ -91,6 +103,7 @@ const adaptiveHlsUrl = mediaStreams.adaptive.find(stream => stream.format === 'h
 
 .edit-video__sidebar {
   display: flex;
+  background-color: transparent;
   flex-direction: column;
   gap: 0.5rem;
 }

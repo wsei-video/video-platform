@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useGetVideoPagesProps, type VideoPageTypes } from '@/application'
-import { AppIcon } from '@/components/ui'
+import { AppIcon, AppSpinner } from '@/components/ui'
 import { VideosGrid } from '@/components/video'
 import { flattenPagination } from '@/infrastructure/video-api/shared/utils'
+import { useUiStore } from '@/store'
 
 const route = useRoute()
-console.log(route.query)
+const uiStore = useUiStore()
+
 const props = useGetVideoPagesProps({
   pageType: route.name as VideoPageTypes,
 })
@@ -20,9 +22,20 @@ const title = computed(() => {
 
   return props.title
 })
+
+watch(
+  () => videosError.value,
+  (error) => {
+    if (!error) return
+    uiStore.showToast({
+      variant: 'danger',
+      message: error.message,
+    })
+  },
+)
 </script>
 <template>
-  <div class="video-page">
+  <div class="video-page h-100 start position-relative">
     <h1 class="video-page__title">
       <AppIcon class="video-page__title__icon" :name="props.icon" />
       {{ title }}
@@ -35,9 +48,8 @@ const title = computed(() => {
           redirect-to="watch-page"
         />
       </div>
-      <div v-if="isVideosPending">Pending</div>
-      <div v-if="videosError">Error: {{ videosError.message }}</div>
     </section>
+    <AppSpinner mode="overlay" v-if="isVideosPending" />
   </div>
 </template>
 
@@ -48,6 +60,7 @@ const title = computed(() => {
   padding: 1.25rem;
   display: grid;
   gap: 1.5rem;
+  grid-auto-rows: min-content;
 }
 
 .video-page__title {
@@ -56,6 +69,7 @@ const title = computed(() => {
   gap: 0.75rem;
   font-size: 42px;
   font-weight: bold;
+  align-self: start;
 }
 
 .video-page__title__icon {
@@ -63,5 +77,11 @@ const title = computed(() => {
   padding: 0.25rem;
   background-color: $primary;
   border-radius: 50%;
+}
+
+@include media-breakpoint-down(md) {
+  .video-page__title {
+    font-size: 1.75rem;
+  }
 }
 </style>

@@ -23,7 +23,7 @@
   transform: translate(-50%, 100vh);
 }
 
-// Fade transition
+// nested fade transition
 .nested-enter-active,
 .nested-leave-active {
   transition: opacity 0.3s ease-in-out;
@@ -31,5 +31,16 @@
 
 .nested-enter-from,
 .nested-leave-to {
+  opacity: 0;
+}
+
+// not nested fade transition
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
   opacity: 0;
 }
