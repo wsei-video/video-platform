@@ -1,0 +1,160 @@
+name: video-platform-e2e
+
+networks:
+  video-network:
+    driver: bridge
+
+services:
+  video-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-api
+    command: node dist/apps/video-api/main
+    ports:
+      - 3000:3000
+    environment:
+      VIDEO_WEB_CLIENT_URL: ${VIDEO_WEB_CLIENT_URL}
+      VIDEO_API_URL: ${VIDEO_API_URL}
+      VIDEO_UPLOAD_URL: ${VIDEO_UPLOAD_URL}
+      VIDEO_CDN_URL: ${VIDEO_CDN_URL}
+      CRYPTO_KEY: ${CRYPTO_KEY}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      MINIO_HOST: minio
+      MINIO_PORT: 9000
+      REDIS_HOST: valkey
+      REDIS_PORT: 6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - video-network
+
+  video-upload:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-upload
+    command: node dist/apps/video-upload/main
+    ports:
+      - 3001:3000
+    environment:
+      VIDEO_API_URL_INTERNAL: ${VIDEO_API_URL_INTERNAL}
+      VIDEO_API_INTERNAL_KEY: ${VIDEO_API_INTERNAL_KEY:-default_secret_for_e2e}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MINIO_HOST: minio
+      MINIO_PORT: 9000
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - video-network
+
+  video-cdn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: video-cdn
+    command: node dist/apps/video-cdn/main
+    ports:
+      - 3002:3000
+    environment:
+      VIDEO_API_URL_INTERNAL: ${VIDEO_API_URL_INTERNAL}
+      VIDEO_API_INTERNAL_KEY: ${VIDEO_API_INTERNAL_KEY:-default_secret_for_e2e}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      MINIO_HOST: minio
+      MINIO_PORT: 9000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - video-network
+
+  postgres:
+    image: postgres:17.7
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    shm_size: 128mb
+    networks:
+      - video-network
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-d', '${POSTGRES_DB}', '-U', '${POSTGRES_USER}']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  valkey:
+    image: valkey/valkey:8.1.5
+    ports:
+      - ${REDIS_PORT}:6379
+    networks:
+      - video-network
+    healthcheck:
+      test: ['CMD', 'valkey-cli', 'ping']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  minio:
+    image: quay.io/minio/minio:latest
+    ports:
+      - ${MINIO_PORT}:9000
+      - 9021:9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    command: server /data --console-address ':9001'
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 1s
+      timeout: 2s
+      retries: 10
+    networks:
+      - video-network
+
+  rabbitmq:
+    image: rabbitmq:4.2.1
+    ports:
+      - ${RABBITMQ_PORT}:5672
+      - 15692:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    networks:
+      - video-network
+    healthcheck:
+      test: ['CMD', 'rabbitmqctl', 'status']
+      interval: 1s
+      timeout: 2s
+      retries: 10

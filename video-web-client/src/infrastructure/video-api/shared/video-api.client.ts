@@ -19,12 +19,6 @@ export const videoClient = axios.create({
 
 videoClient.interceptors.response.use(
   async (config) => {
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('test')
-      }, 500)
-    })
-    console.log('Response:', config)
     return config
   },
   (error) => {

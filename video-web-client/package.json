@@ -9,6 +9,8 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:dev": "(npm run --prefix ../video-server docker:e2e:up && npm run --prefix ../video-server db:e2e:push) && playwright test --ui; npm run --prefix ../video-server docker:e2e:down",
+    "test:e2e:full": "npm run --prefix ../video-server docker:e2e:up && npm run --prefix ../video-server db:e2e:push && playwright test --project=chromium && npm run --prefix ../video-server docker:e2e:down",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",

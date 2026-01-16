@@ -1,0 +1,47 @@
+name: Test Web Client E2E
+
+on:
+  push:
+    branches:
+      - '**'
+    paths:
+      - 'video-web-client/**'
+      - 'video-server/**'
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.14'
+          cache: 'npm'
+          cache-dependency-path: |
+            video-server/package-lock.json
+            video-web-client/package-lock.json
+
+      - name: Install Server Dependencies
+        working-directory: ./video-server
+        run: npm ci
+
+      - name: Install Client Dependencies
+        working-directory: ./video-web-client
+        run: npm ci
+
+      - name: Generate client
+        working-directory: ./video-server
+        run: npx prisma generate
+
+      - name: Install Playwright Browsers
+        working-directory: ./video-web-client
+        run: npx playwright install chromium --with-deps
+
+      - name: Run E2E Tests (Full Stack)
+        working-directory: ./video-web-client
+        run: npm run test:e2e:full
+        env:
+          CI: true
