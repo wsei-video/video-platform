@@ -1,3 +1,4 @@
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { ConfigModule } from '@video/lib/config';
@@ -26,6 +27,7 @@ import { VideoStreamModule } from './video-stream/video-stream.module';
     ChannelModule,
     ConfigModule,
     DatabaseModule,
+    EventEmitterModule.forRoot({ wildcard: true, delimiter: '.' }),
     HelloModule.forRoot({ serviceName: 'Video API Service' }),
     ReactionModule,
     SearchModule,

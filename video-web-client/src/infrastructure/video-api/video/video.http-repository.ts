@@ -108,6 +108,17 @@ export default class HttpVideoRepository implements VideoRepository {
     return VideoMapper.toPaginatedModel(res.data)
   }
 
+  async searchVideos(
+    phrase: string,
+    page: number = 1,
+    count: number = 20,
+  ): Promise<PaginatedList<Video>> {
+    const res = await this.httpClient.get<VideosDto>('/v1/search', {
+      params: { phrase, page, count },
+    })
+    return VideoMapper.toPaginatedModel(res.data)
+  }
+
   async getMediaStreams(videoId: string): Promise<MediaStreamsDto> {
     const res = await this.httpClient.get<MediaStreamsDto>(`/v1/videos/${videoId}/streams`)
     return res.data

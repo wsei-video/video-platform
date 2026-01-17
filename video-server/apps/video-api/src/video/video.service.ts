@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Injectable } from '@nestjs/common';
 
 import { Account } from '@video/lib/database/client';
@@ -16,23 +17,26 @@ import {
   VideoUpdateDto,
   VideoUploadSourceDto,
 } from './video.dto';
+import { VideoCreatedEvent, VideoDeletedEvent, VideoUpdatedEvent } from './video.events';
 
 @Injectable()
 export class VideoService {
   public constructor(
     private readonly config: Config,
     private readonly database: DatabaseService,
+    private readonly eventEmitter: EventEmitter2,
     private readonly channelService: ChannelService,
     private readonly videoCommonService: VideoCommonService,
   ) {}
 
   public async updateVideo(account: Account | null, videoId: number, body: VideoUpdateDto) {
     await this.verifyAccountVideoPermission(account, videoId);
-    await this.database.video.update({
+    const video = await this.database.video.update({
       where: { id: videoId },
       data: { ...body, thumbnailId: body.thumbnailId === null ? null : body.thumbnailId?.clear },
       include: { channel: true },
     });
+    await this.eventEmitter.emitAsync(VideoUpdatedEvent.key, new VideoUpdatedEvent(video));
     return await this.findById(account, videoId);
   }
 
@@ -60,7 +64,8 @@ export class VideoService {
   public async deleteVideo(account: Account, videoId: number) {
     await this.verifyAccountVideoPermission(account, videoId);
 
-    await this.database.video.delete({ where: { id: videoId } });
+    const video = await this.database.video.delete({ where: { id: videoId } });
+    await this.eventEmitter.emitAsync(VideoDeletedEvent.key, new VideoDeletedEvent(video));
   }
 
   public async findById(account: Account | null, videoId: number) {
@@ -95,6 +100,7 @@ export class VideoService {
     const video = await this.database.video.create({
       data: {
         title: body.title,
+        description: body.description,
         channelId: body.channelId.clear,
         createdAt: DateUtils.now(),
       },
@@ -102,6 +108,8 @@ export class VideoService {
         channel: true,
       },
     });
+
+    await this.eventEmitter.emitAsync(VideoCreatedEvent.key, new VideoCreatedEvent(video));
 
     return {
       ...video,
