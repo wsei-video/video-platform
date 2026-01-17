@@ -454,6 +454,7 @@ describe('Channel', () => {
                 createdAt: '2025-10-01T10:00:00.000Z',
                 views: 0,
                 commentCount: 1,
+                progress: 0,
                 visibility: 'public',
                 status: 'none',
                 reactions: [

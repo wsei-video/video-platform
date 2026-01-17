@@ -92,6 +92,7 @@ describe('Video', () => {
         createdAt: '2025-10-01T10:00:00.000Z',
         views: 0,
         commentCount: 0,
+        progress: 0,
         visibility: VideoVisibility.public,
         status: VideoStatus.none,
         reactions: [],
@@ -175,6 +176,7 @@ describe('Video', () => {
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
           commentCount: 0,
+          progress: 0,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {
@@ -230,6 +232,7 @@ describe('Video', () => {
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
           commentCount: 1,
+          progress: 0,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {
@@ -312,6 +315,7 @@ describe('Video', () => {
           createdAt: '2025-10-01T10:00:00.000Z',
           views: 0,
           commentCount: 0,
+          progress: 0,
           visibility: VideoVisibility.public,
           status: VideoStatus.none,
           channel: {

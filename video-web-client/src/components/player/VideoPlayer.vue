@@ -110,7 +110,6 @@ watch(
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 60vh;
 }
 
 @include media-breakpoint-up(md) {

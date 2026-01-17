@@ -73,6 +73,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
     const files = await FileUtils.listFiles(output);
     const streamName = `avc1_${message.output.height}p${message.output.fps}`;
     const mediaBucketPath = path.join(message.videoId, 'video', streamName);
+    const key = `${QueueTask.AdaptiveVideo}:${message.videoId}`;
 
     let totalSize = 0;
 
@@ -94,13 +95,13 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
         path.join(output, file.name),
       );
 
-      const sizesKey = `${QueueTask.AdaptiveVideo}:${message.videoId}:split:${message.output.height}:segment_sizes`;
+      const sizesKey = `${key}:split:${message.output.height}:segment_sizes`;
       await this.redisService.zadd(sizesKey, file.size, adjustedSegmentIndex);
 
       totalSize += file.size;
     }
 
-    const sizeKey = `${QueueTask.AdaptiveVideo}:${message.videoId}:split:${message.output.height}:byte_size`;
+    const sizeKey = `${key}:split:${message.output.height}:byte_size`;
     const formatSize = await this.redisService.incrby(sizeKey, totalSize);
 
     if (message.split.segmentStartIndex === 0) {
@@ -119,7 +120,21 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
 
     await fs.rm(output, { recursive: true, force: true });
 
-    const remainingSectionsKey = `${QueueTask.AdaptiveVideo}:${message.videoId}:split:${message.output.height}:remaining`;
+    const totalTasks = Number(await this.redisService.get(`${key}:tasks:total`));
+    const completedTasks = await this.redisService.incr(`${key}:tasks:completed`);
+    const progress = Math.floor((completedTasks / totalTasks) * 100);
+
+    this.logger.log(`${message.videoId} progress: ${progress}%`);
+
+    await firstValueFrom(
+      this.httpService.patch<void, VideoUpdate>(
+        `${this.config.video.apiUrlInternal}/v1/videos/${message.videoId}`,
+        { progress },
+        { headers: { [AuthConstants.InternalHeader]: this.config.video.apiInternalKey } },
+      ),
+    );
+
+    const remainingSectionsKey = `${key}:split:${message.output.height}:remaining`;
     const remainingSections = await this.redisService.decr(remainingSectionsKey);
 
     if (remainingSections !== 0) {
@@ -130,7 +145,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
     this.logger.log(`${message.videoId} ${message.output.height}: format completed.`);
 
     const averageBitrate = Math.floor(message.input.duration ? (formatSize * 8) / message.input.duration : 0);
-    const sizesKey = `${QueueTask.AdaptiveVideo}:${message.videoId}:split:${message.output.height}:segment_sizes`;
+    const sizesKey = `${key}:split:${message.output.height}:segment_sizes`;
     const peakSegment = await this.redisService.zrevrange(sizesKey, 0, 0, 'WITHSCORES');
     const peakSegmentSize = peakSegment[1] ? Number(peakSegment[1]) : 0;
     const peakBitrate = Math.floor((peakSegmentSize * 8) / StorageConstants.hlsSegmentDuration);
@@ -157,7 +172,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
       ),
     );
 
-    const remainingFormatsKey = `${QueueTask.AdaptiveVideo}:${message.videoId}:formats:remaining`;
+    const remainingFormatsKey = `${key}:formats:remaining`;
     const remainingFormats = await this.redisService.decr(remainingFormatsKey);
 
     if (remainingFormats !== 0) {
@@ -181,7 +196,7 @@ export class TaskAdaptiveVideo extends Task<QueueTask.AdaptiveVideo> {
       ),
     );
 
-    await this.redisService.del(`${QueueTask.AdaptiveVideo}:${message.videoId}:*`);
+    await this.redisService.del(`${key}:*`);
   }
 
   private extractSegmentIndex(filename: string): number | null {

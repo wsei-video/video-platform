@@ -49,6 +49,8 @@ export class TaskIdentify extends Task<QueueTask.Identify> {
     const key = `${QueueTask.AdaptiveVideo}:${uploadToken.videoId.encrypted}`;
     await this.redisService.set(`${key}:processing`, 1);
     await this.redisService.set(`${key}:formats:remaining`, specification.video.formatHeights.length);
+    await this.redisService.set(`${key}:tasks:total`, specification.video.tasks.length);
+    await this.redisService.set(`${key}:tasks:completed`, 0);
 
     await Promise.all(
       specification.video.formatHeights.map(height => {
