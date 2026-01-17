@@ -114,6 +114,7 @@ describe('Video', () => {
               peakBitrate: 821936,
               size: 6847474589,
               url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/video/avc1_360p30/playlist.m3u8',
+              name: 'avc1_360p30',
             },
             {
               id: '-Y5OWS2exwnMaKM-RWHDVg',
@@ -126,6 +127,7 @@ describe('Video', () => {
               peakBitrate: 821936,
               size: 6847474589,
               url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/video/avc1_360p30/playlist.mpd',
+              name: 'avc1_360p30',
             },
           ],
           audio: [],
@@ -166,6 +168,7 @@ describe('Video', () => {
               channels: 2,
               size: 132864,
               url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/audio/mp4a/playlist.m3u8',
+              name: 'mp4a',
             },
             {
               id: '-Y5OWS2exwnMaKM-RWHDVg',
@@ -174,6 +177,7 @@ describe('Video', () => {
               channels: 2,
               size: 132864,
               url: 'http://cdn.video.local/media/-Y5OWS2exwnMaKM-RWHDVg/audio/mp4a/playlist.mpd',
+              name: 'mp4a',
             },
           ],
           adaptive: [],
