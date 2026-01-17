@@ -4,6 +4,7 @@ model Video {
   description  String          @default("")
   duration     Int             @default(0)
   views        Int             @default(0)
+  progress     Int             @default(0)
   status       VideoStatus     @default(none)
   visibility   VideoVisibility @default(public)
   channelId    Int

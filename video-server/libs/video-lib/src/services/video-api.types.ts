@@ -346,6 +346,8 @@ export interface Video {
   duration: number;
   /** Unique video identifier */
   id: string;
+  /** Video processing progress */
+  progress: number;
   /** Aggregated video reactions */
   reactions: ReactionAggregate[];
   /** Processing status */
@@ -635,6 +637,16 @@ export interface VideoControllerFindV1Params {
 }
 
 export interface VideoControllerListThumbnailsV1Params {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number;
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number;
   videoId: number;
 }
 
@@ -671,6 +683,8 @@ export interface VideoCreate {
   description: string;
   /** [Internal] Video duration in seconds */
   duration?: number;
+  /** [Internal] Video processing progress [0-100] */
+  progress?: number;
   /** [Internal] Processing status */
   status?: VideoStatus;
   /** Unique thumbnail identifier */
@@ -950,6 +964,8 @@ export interface VideoUpdate {
   description?: string;
   /** [Internal] Video duration in seconds */
   duration?: number;
+  /** [Internal] Video processing progress [0-100] */
+  progress?: number;
   /** [Internal] Processing status */
   status?: VideoStatus;
   /** Unique thumbnail identifier */

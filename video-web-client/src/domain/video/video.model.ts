@@ -24,6 +24,7 @@ export class Video {
     public views: number,
     public duration: number,
     public commentCount: number,
+    public progress: number,
     public channel: Channel,
     public createdAt: Date,
     public reactions: ReactionAggregate[],

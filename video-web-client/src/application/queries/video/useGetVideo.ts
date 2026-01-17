@@ -7,5 +7,6 @@ export function useGetVideo(videoId: string) {
     queryKey: ['video', videoId],
     queryFn: () => videoRepository.fetchVideo(videoId),
     enabled: !!videoId,
+    refetchInterval: 5000,
   })
 }

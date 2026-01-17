@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional, ApiSchema, OmitType, PartialType } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 import { Id, IdTransform, IsId, PagedResponse, ToId } from '@video/lib/restful';
 
@@ -98,6 +98,10 @@ export class VideoDto {
   @Expose()
   public commentCount: number;
 
+  @ApiProperty({ description: 'Video processing progress' })
+  @Expose()
+  public progress: number;
+
   @ApiProperty({ enum: VideoVisibility, enumName: 'VideoVisibility', description: 'Video visibility' })
   @Expose()
   public visibility: VideoVisibility;
@@ -163,6 +167,13 @@ export class VideoCreateDto {
   @IsNumber()
   @IsOptional()
   public duration?: number;
+
+  @ApiPropertyOptional({ description: '[Internal] Video processing progress [0-100]' })
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  @Max(100)
+  public progress?: number;
 }
 
 @ApiSchema({ name: 'VideoUpdate', description: 'Video update request schema' })

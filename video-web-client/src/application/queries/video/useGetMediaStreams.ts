@@ -11,6 +11,7 @@ export function useGetMediaStreams(
   return useQuery({
     queryKey: ['media-streams', videoId],
     queryFn: () => videoRepository.getMediaStreams(videoId),
+    refetchInterval: 5000,
     ...options,
   })
 }

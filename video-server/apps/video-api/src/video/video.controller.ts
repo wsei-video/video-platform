@@ -144,7 +144,7 @@ export class VideoController {
   }
 
   private ensureNoInternalFields(body: VideoUpdateDto): void {
-    const internalFields = ['duration', 'views', 'status'] as const;
+    const internalFields = ['duration', 'views', 'status', 'progress'] as const;
     internalFields.forEach(field => {
       if (field in body && body[field] !== undefined) throw new ForbiddenError({ field });
     });

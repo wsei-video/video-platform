@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { VideoPlayer } from '@/components/player'
 import { AppButton, AppIcon, AppProgressBar, AppSpinner } from '@/components/ui'
 import { useVideoRedirect } from '@/composables'
@@ -16,6 +18,22 @@ const { videoData, videoSource, mediaStreams } = defineProps<{
 const tempVideo = defineModel<VideoUpdateCommand>({ required: true })
 const adaptiveHlsUrl = mediaStreams?.adaptive.find((stream) => stream.format === 'hls')?.url
 const uploadStore = useVideoUploadStore()
+
+const availableHeights = computed(() => [
+  ...new Set(mediaStreams?.video.map((videoStream) => videoStream.height)),
+])
+const availableQualities = computed(() =>
+  availableHeights.value
+    .map((height) => {
+      if (height === 480) return 'SD'
+      if (height === 720) return 'HD'
+      if (height === 1080) return 'FHD'
+      if (height === 1440) return '2K'
+      if (height === 2160) return '4K'
+      if (height === 4320) return '8K'
+    })
+    .filter(Boolean),
+)
 </script>
 
 <template>
@@ -26,9 +44,20 @@ const uploadStore = useVideoUploadStore()
         class="edit-video__player"
         :source="adaptiveHlsUrl"
         :scrubber="mediaStreams?.scrubber"
+        :thumbnail="videoData?.thumbnail"
       />
 
       <div class="edit-video__preview-info">
+        <!-- Video status -->
+        <div v-if="videoData.status === 'processing'" class="edit-video__info-row">
+          <span class="edit-video__info-label">Video processing in progress...</span>
+          <AppProgressBar :value="videoData.progress" :show-label="true" :animated="true" />
+        </div>
+
+        <div v-if="videoData.status === 'failed'" class="edit-video__info-row">
+          <span class="edit-video__info-label">Video processing failed!</span>
+        </div>
+
         <!-- Video Link -->
         <div class="edit-video__info-row">
           <span class="edit-video__info-label">Video link</span>
@@ -53,11 +82,12 @@ const uploadStore = useVideoUploadStore()
         </div>
 
         <!-- Video Quality -->
-        <div class="edit-video__info-row">
+        <div v-if="availableQualities.length" class="edit-video__info-row">
           <span class="edit-video__info-label">Video quality</span>
           <div class="edit-video__quality-badges">
-            <span class="edit-video__quality-badge">SD</span>
-            <span class="edit-video__quality-badge">HD</span>
+            <template v-for="quality in availableQualities" :key="quality">
+              <span class="edit-video__quality-badge">{{ quality }}</span>
+            </template>
           </div>
         </div>
       </div>

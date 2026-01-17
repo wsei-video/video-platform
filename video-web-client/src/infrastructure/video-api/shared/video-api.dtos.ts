@@ -474,6 +474,20 @@ export interface VideoCommentsDto {
   total: number
 }
 
+export interface VideoControllerListThumbnailsV1ParamsDto {
+  /**
+   * Maximum number of resources per page
+   * @default 20
+   */
+  count?: number
+  /**
+   * Page number
+   * @default 1
+   */
+  page?: number
+  videoId: number
+}
+
 export interface VideoControllerRecommendedV1ParamsDto {
   /**
    * Maximum number of resources per page
@@ -499,6 +513,8 @@ export interface VideoCreateDto {
   description: string
   /** [Internal] Video duration in seconds */
   duration?: number
+  /** [Internal] Video processing progress [0-100] */
+  progress?: number
   /** [Internal] Processing status */
   status?: VideoStatusDto
   /** Unique thumbnail identifier */
@@ -530,6 +546,8 @@ export interface VideoDto {
   duration: number
   /** Unique video identifier */
   id: string
+  /** Video processing progress */
+  progress: number
   /** Aggregated video reactions */
   reactions: ReactionAggregateDto[]
   /** Processing status */
@@ -768,6 +786,8 @@ export interface VideoUpdateDto {
   description?: string
   /** [Internal] Video duration in seconds */
   duration?: number
+  /** [Internal] Video processing progress [0-100] */
+  progress?: number
   /** [Internal] Processing status */
   status?: VideoStatusDto
   /** Unique thumbnail identifier */
