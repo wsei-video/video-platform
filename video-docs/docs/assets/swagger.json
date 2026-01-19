@@ -1,0 +1,2844 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/account": {
+      "get": {
+        "operationId": "AccountController_auth_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Account" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Get currently signed in account",
+        "tags": ["Account"]
+      },
+      "post": {
+        "operationId": "AccountController_register_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AccountCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Auth" }
+              }
+            }
+          }
+        },
+        "summary": "Create a new account",
+        "tags": ["Account"]
+      }
+    },
+    "/v1/auth": {
+      "get": {
+        "operationId": "AuthController_auth_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Auth" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Get currently signed in account and session",
+        "tags": ["Auth"]
+      }
+    },
+    "/v1/auth/session": {
+      "delete": {
+        "operationId": "AuthController_logout_v1",
+        "parameters": [],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Sign out from current session",
+        "tags": ["Auth"]
+      }
+    },
+    "/v1/auth/sessions": {
+      "get": {
+        "operationId": "AuthSessionController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthSessions" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "List active sessions associated with the account",
+        "tags": ["AuthSession"]
+      },
+      "post": {
+        "operationId": "AuthSessionController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthSessionCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Auth" }
+              }
+            }
+          }
+        },
+        "summary": "Sign in to an account and create a session",
+        "tags": ["AuthSession"]
+      }
+    },
+    "/v1/auth/sessions/{sessionId}": {
+      "get": {
+        "operationId": "AuthSessionController_find_v1",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthSession" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Get an active session associated with the account",
+        "tags": ["AuthSession"]
+      },
+      "delete": {
+        "operationId": "AuthSessionController_delete_v1",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Sign out from the specific session",
+        "tags": ["AuthSession"]
+      }
+    },
+    "/v1/channels": {
+      "get": {
+        "operationId": "ChannelController_list_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Channels" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "List channels available for the account",
+        "tags": ["Channel"]
+      },
+      "post": {
+        "operationId": "ChannelController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChannelCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Channel" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create a new channel",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/channels/{channelId}": {
+      "get": {
+        "operationId": "ChannelController_find_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Channel" }
+              }
+            }
+          }
+        },
+        "summary": "Get channel details",
+        "tags": ["Channel"]
+      },
+      "patch": {
+        "operationId": "ChannelController_update_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChannelUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Channel" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Update channel details",
+        "tags": ["Channel"]
+      },
+      "delete": {
+        "operationId": "ChannelController_delete_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete the specific channel",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/channels/{channelId}/accounts": {
+      "get": {
+        "operationId": "ChannelController_accounts_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Accounts" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "List of accounts that have access to the channel",
+        "tags": ["Channel"]
+      },
+      "post": {
+        "operationId": "ChannelController_linkChannelAccount_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChannelAccountCreate" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Link the account with the channel",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/channels/{channelId}/accounts/{accountId}": {
+      "delete": {
+        "operationId": "ChannelController_revokeAccountAccess_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "accountId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Unlink the account from the channel",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/channels/{channelId}/videos": {
+      "get": {
+        "operationId": "ChannelController_videos_v1",
+        "parameters": [
+          {
+            "name": "channelId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "List of videos on the channel",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/channel/slug/{channelSlug}": {
+      "get": {
+        "operationId": "ChannelController_findBySlug_v1",
+        "parameters": [
+          {
+            "name": "channelSlug",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Channel" }
+              }
+            }
+          }
+        },
+        "summary": "Get channel details by URL slug",
+        "tags": ["Channel"]
+      }
+    },
+    "/v1/videos/{videoId}": {
+      "get": {
+        "operationId": "VideoController_find_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Video" }
+              }
+            }
+          }
+        },
+        "summary": "Get specific video",
+        "tags": ["Video"]
+      },
+      "patch": {
+        "operationId": "VideoController_update_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Video" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Update video details",
+        "tags": ["Video"]
+      },
+      "delete": {
+        "operationId": "VideoController_delete_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete the specific video",
+        "tags": ["Video"]
+      }
+    },
+    "/v1/videos/{videoId}/recommended": {
+      "get": {
+        "operationId": "VideoController_recommended_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "Get recommended videos for the specific video",
+        "tags": ["Video"]
+      }
+    },
+    "/v1/videos": {
+      "post": {
+        "operationId": "VideoController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Video" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create a new video",
+        "tags": ["Video"]
+      }
+    },
+    "/v1/videos/{videoId}/source": {
+      "get": {
+        "operationId": "VideoController_findSource_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoSource" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Details about the uploaded video source file",
+        "tags": ["Video"]
+      },
+      "put": {
+        "operationId": "VideoController_createSource_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoUploadSource" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Retrieve video upload URL",
+        "tags": ["Video"]
+      },
+      "patch": {
+        "operationId": "VideoController_updateSource_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoSourceUpdate" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "summary": "Update details about the uploaded video source file",
+        "tags": ["Video"]
+      }
+    },
+    "/v1/videos/{videoId}/thumbnails": {
+      "get": {
+        "operationId": "VideoController_listThumbnails_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Images" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "List of available video thumbnails",
+        "tags": ["Video"]
+      }
+    },
+    "/v1/videos/{videoId}/thumbnails/{thumbnailId}": {
+      "get": {
+        "operationId": "VideoController_findThumbnail_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "thumbnailId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Image" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "List of available video thumbnails",
+        "tags": ["Video"]
+      },
+      "delete": {
+        "operationId": "VideoController_deleteThumbnail_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "thumbnailId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete the specific video thumbnail",
+        "tags": ["Video"]
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "HelloController_hello",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "summary": "Get service information",
+        "tags": ["Hello"]
+      }
+    },
+    "/v1/videos/{videoId}/reactions": {
+      "get": {
+        "operationId": "VideoReactionController_list_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoReactions" }
+              }
+            }
+          }
+        },
+        "summary": "List video reactions",
+        "tags": ["VideoReaction"]
+      }
+    },
+    "/v1/videos/{videoId}/reactions/{reactionId}": {
+      "get": {
+        "operationId": "VideoReactionController_find_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "reactionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoReaction" }
+              }
+            }
+          }
+        },
+        "summary": "Get a specific video reaction",
+        "tags": ["VideoReaction"]
+      },
+      "delete": {
+        "operationId": "VideoReactionController_delete_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "reactionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete a specific video reaction",
+        "tags": ["VideoReaction"]
+      }
+    },
+    "/v1/videos/{videoId}/reaction": {
+      "get": {
+        "operationId": "VideoReactionController_reaction_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoReaction" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Get current user video reaction",
+        "tags": ["VideoReaction"]
+      },
+      "put": {
+        "operationId": "VideoReactionController_react_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoReactionCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoReaction" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create of update video reaction as current user",
+        "tags": ["VideoReaction"]
+      },
+      "delete": {
+        "operationId": "VideoReactionController_removeReaction_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete current user video reaction",
+        "tags": ["VideoReaction"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}/reactions": {
+      "get": {
+        "operationId": "VideoCommentReactionController_list_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoCommentReactions"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List comment reactions",
+        "tags": ["VideoCommentReaction"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}/reactions/{reactionId}": {
+      "get": {
+        "operationId": "VideoCommentReactionController_find_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "reactionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoCommentReaction"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a specific comment reaction",
+        "tags": ["VideoCommentReaction"]
+      },
+      "delete": {
+        "operationId": "VideoCommentReactionController_delete_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "reactionId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete a specific comment reaction",
+        "tags": ["VideoCommentReaction"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}/reaction": {
+      "get": {
+        "operationId": "VideoCommentReactionController_me_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoCommentReaction"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Get current user reaction on comment",
+        "tags": ["VideoCommentReaction"]
+      },
+      "put": {
+        "operationId": "VideoCommentReactionController_react_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoCommentReactionCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoCommentReaction"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create or update comment reaction as current user",
+        "tags": ["VideoCommentReaction"]
+      },
+      "delete": {
+        "operationId": "VideoCommentReactionController_removeReaction_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Remove current user comment reaction",
+        "tags": ["VideoCommentReaction"]
+      }
+    },
+    "/v1/search": {
+      "get": {
+        "operationId": "SearchController_search_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          },
+          {
+            "name": "phrase",
+            "required": true,
+            "in": "query",
+            "description": "Content search phrase",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "Search content on the platform",
+        "tags": ["Search"]
+      }
+    },
+    "/v1/videos/{videoId}/comments": {
+      "get": {
+        "operationId": "VideoCommentController_list_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoComments" }
+              }
+            }
+          }
+        },
+        "summary": "List video comments",
+        "tags": ["VideoComment"]
+      },
+      "post": {
+        "operationId": "VideoCommentController_create_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoCommentCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoComment" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create a new video comment",
+        "tags": ["VideoComment"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}": {
+      "get": {
+        "operationId": "VideoCommentController_find_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoComment" }
+              }
+            }
+          }
+        },
+        "summary": "Get a specific video comment",
+        "tags": ["VideoComment"]
+      },
+      "patch": {
+        "operationId": "VideoCommentController_update_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoCommentUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoComment" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Update video comment details",
+        "tags": ["VideoComment"]
+      },
+      "delete": {
+        "operationId": "VideoCommentController_delete_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete a specific video comment",
+        "tags": ["VideoComment"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}/replies": {
+      "get": {
+        "operationId": "VideoCommentReplyController_list_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoCommentReplies" }
+              }
+            }
+          }
+        },
+        "summary": "List video comment replies",
+        "tags": ["VideoCommentReply"]
+      },
+      "post": {
+        "operationId": "VideoCommentReplyController_comment_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoCommentReplyCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoCommentReply" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Create a new video comment reply",
+        "tags": ["VideoCommentReply"]
+      }
+    },
+    "/v1/videos/{videoId}/comments/{commentId}/replies/{replyId}": {
+      "get": {
+        "operationId": "VideoCommentReplyController_find_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "replyId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoCommentReply" }
+              }
+            }
+          }
+        },
+        "summary": "Get a specific video comment reply",
+        "tags": ["VideoCommentReply"]
+      },
+      "patch": {
+        "operationId": "VideoCommentReplyController_update_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "replyId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoCommentReplyUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VideoCommentReply" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "summary": "Update video comment reply",
+        "tags": ["VideoCommentReply"]
+      },
+      "delete": {
+        "operationId": "VideoCommentReplyController_delete_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "replyId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "204": { "description": "" } },
+        "security": [{ "bearer": [] }],
+        "summary": "Delete a specific video comment reply",
+        "tags": ["VideoCommentReply"]
+      }
+    },
+    "/v1/video/feed/trending": {
+      "get": {
+        "operationId": "VideoFeedController_trending_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "List trending videos on the platform",
+        "tags": ["VideoFeed"]
+      }
+    },
+    "/v1/video/feed/most-popular": {
+      "get": {
+        "operationId": "VideoFeedController_mostPopular_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "List the most popular videos on the platform",
+        "tags": ["VideoFeed"]
+      }
+    },
+    "/v1/video/feed/recently-uploaded": {
+      "get": {
+        "operationId": "VideoFeedController_recentlyUploaded_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "List the recently uploaded videos on the platform",
+        "tags": ["VideoFeed"]
+      }
+    },
+    "/v1/video/feed/for-you": {
+      "get": {
+        "operationId": "VideoFeedController_forYou_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number",
+            "schema": { "default": 1, "type": "number" }
+          },
+          {
+            "name": "count",
+            "required": false,
+            "in": "query",
+            "description": "Maximum number of resources per page",
+            "schema": { "default": 20, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Videos" }
+              }
+            }
+          }
+        },
+        "summary": "List recommended videos for the signed in user",
+        "tags": ["VideoFeed"]
+      }
+    },
+    "/v1/videos/{videoId}/streams": {
+      "get": {
+        "operationId": "VideoStreamController_list_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MediaStreams" }
+              }
+            }
+          }
+        },
+        "summary": "List media streams",
+        "tags": ["VideoStream"]
+      }
+    },
+    "/v1/videos/{videoId}/streams/video": {
+      "post": {
+        "operationId": "VideoStreamController_createVideoStream_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoStreamCreate" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "summary": "Create video stream",
+        "tags": ["VideoStream"]
+      }
+    },
+    "/v1/videos/{videoId}/streams/audio": {
+      "post": {
+        "operationId": "VideoStreamController_createAudioStream_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AudioStreamCreate" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "summary": "Create audio stream",
+        "tags": ["VideoStream"]
+      }
+    },
+    "/v1/videos/{videoId}/streams/thumbnail": {
+      "post": {
+        "operationId": "VideoStreamController_createThumbnail_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VideoThumbnailCreate" }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "summary": "Create thumbnail",
+        "tags": ["VideoStream"]
+      }
+    },
+    "/v1/videos/{videoId}/streams/scrubber": {
+      "post": {
+        "operationId": "VideoStreamController_createScrubberImage_v1",
+        "parameters": [
+          {
+            "name": "videoId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoScrubberImageCreate"
+              }
+            }
+          }
+        },
+        "responses": { "204": { "description": "" } },
+        "summary": "Create scrubber image",
+        "tags": ["VideoStream"]
+      }
+    }
+  },
+  "info": {
+    "title": "Video platform API",
+    "description": "",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique account identifier"
+          },
+          "email": {
+            "type": "string",
+            "description": "Unique account email address"
+          },
+          "name": { "type": "string", "description": "Account display name" },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Account creation date"
+          }
+        },
+        "description": "User account details",
+        "required": ["id", "email", "name", "createdAt"]
+      },
+      "AccountCreate": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Unique account email address"
+          },
+          "password": { "type": "string", "description": "Account password" },
+          "name": { "type": "string", "description": "Account display name" }
+        },
+        "description": "Account create request schema",
+        "required": ["email", "password", "name"]
+      },
+      "AuthSession": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique session identifier"
+          },
+          "device": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name and/or version of the device of system used for sign in"
+          },
+          "browser": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of the browser used for sign in"
+          },
+          "lastAccessAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Last time that the session was used to access the API endpoints"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Session creation date"
+          }
+        },
+        "description": "Account authentication session details",
+        "required": ["id", "device", "browser", "lastAccessAt", "createdAt"]
+      },
+      "Auth": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "description": "Current authenticated account",
+            "allOf": [{ "$ref": "#/components/schemas/Account" }]
+          },
+          "session": {
+            "description": "Current authenticated user session",
+            "allOf": [{ "$ref": "#/components/schemas/AuthSession" }]
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "Access token for API endpoints"
+          }
+        },
+        "description": "Currently signed in account session",
+        "required": ["account", "session", "accessToken"]
+      },
+      "AuthSessions": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "description": "Account authentication session list",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AuthSession" }
+          }
+        },
+        "description": "Paged account authentication session list",
+        "required": ["total", "next", "items"]
+      },
+      "AuthSessionCreate": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "description": "Account email address" },
+          "password": { "type": "string", "description": "Account password" }
+        },
+        "description": "Sign in schema",
+        "required": ["email", "password"]
+      },
+      "Channel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique channel identifier"
+          },
+          "name": { "type": "string", "description": "Channel display name" },
+          "slug": {
+            "type": "string",
+            "description": "Unique channel URL slug"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Account creation date"
+          }
+        },
+        "description": "Channel details",
+        "required": ["id", "name", "slug", "createdAt"]
+      },
+      "Channels": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Channel" }
+          }
+        },
+        "description": "Paged channel list",
+        "required": ["total", "next", "items"]
+      },
+      "Accounts": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Account" }
+          }
+        },
+        "description": "Paged account list",
+        "required": ["total", "next", "items"]
+      },
+      "ChannelAccountCreate": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "Unique channel identifier"
+          }
+        },
+        "description": "Link the account with the channel",
+        "required": ["accountId"]
+      },
+      "ImageVariant": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "description": "Download URL" },
+          "width": { "type": "number", "description": "Width in pixels" },
+          "height": { "type": "number", "description": "Height in pixels" }
+        },
+        "required": ["url", "width", "height"]
+      },
+      "Image": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique image identifier" },
+          "variants": {
+            "description": "List of available image variants",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ImageVariant" }
+          }
+        },
+        "required": ["id", "variants"]
+      },
+      "VideoVisibility": {
+        "type": "string",
+        "enum": ["public", "private", "unlisted"],
+        "description": "Video visibility"
+      },
+      "VideoStatus": {
+        "type": "string",
+        "enum": ["none", "processing", "successful", "failed"],
+        "description": "Processing status"
+      },
+      "ReactionAggregate": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Reaction content (e.g., like, dislike)"
+          },
+          "count": {
+            "type": "number",
+            "description": "Number of reactions of this type on the resource"
+          }
+        },
+        "description": "Aggregated reaction details ",
+        "required": ["content", "count"]
+      },
+      "VideoReaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique video reaction identifier"
+          },
+          "content": {
+            "type": "string",
+            "description": "Reaction content (e.g., like, dislike)"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Reaction creation date"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User who created the reaction"
+          },
+          "videoId": {
+            "type": "string",
+            "description": "Video the reaction belongs to"
+          }
+        },
+        "description": "Video reaction details",
+        "required": ["id", "content", "createdAt", "userId", "videoId"]
+      },
+      "Video": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Unique video identifier" },
+          "title": { "type": "string", "description": "Video title" },
+          "description": {
+            "type": "string",
+            "description": "Video description"
+          },
+          "thumbnail": {
+            "description": "Video thumbnail",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/Image" }]
+          },
+          "duration": {
+            "type": "number",
+            "description": "Video duration in seconds"
+          },
+          "channel": {
+            "description": "Channel that owns this video",
+            "allOf": [{ "$ref": "#/components/schemas/Channel" }]
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Video upload date"
+          },
+          "views": { "type": "number", "description": "View count" },
+          "commentCount": { "type": "number", "description": "Comment count" },
+          "progress": {
+            "type": "number",
+            "description": "Video processing progress"
+          },
+          "visibility": {
+            "description": "Video visibility",
+            "allOf": [{ "$ref": "#/components/schemas/VideoVisibility" }]
+          },
+          "status": {
+            "description": "Processing status",
+            "allOf": [{ "$ref": "#/components/schemas/VideoStatus" }]
+          },
+          "reactions": {
+            "description": "Aggregated video reactions",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReactionAggregate" }
+          },
+          "userReaction": {
+            "description": "Video reaction of the current user",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/VideoReaction" }]
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "thumbnail",
+          "duration",
+          "channel",
+          "createdAt",
+          "views",
+          "commentCount",
+          "progress",
+          "visibility",
+          "status",
+          "reactions",
+          "userReaction"
+        ]
+      },
+      "Videos": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Video" }
+          }
+        },
+        "required": ["total", "next", "items"]
+      },
+      "ChannelCreate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Channel display name" },
+          "slug": { "type": "string", "description": "Unique channel URL slug" }
+        },
+        "description": "Channel create request schema",
+        "required": ["name", "slug"]
+      },
+      "ChannelUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Channel display name" },
+          "slug": { "type": "string", "description": "Unique channel URL slug" }
+        },
+        "description": "Channel update request schema"
+      },
+      "VideoCreate": {
+        "type": "object",
+        "properties": {
+          "channelId": {
+            "type": "string",
+            "description": "Channel that video is on"
+          },
+          "title": { "type": "string", "description": "Video title" },
+          "description": {
+            "type": "string",
+            "description": "Video description",
+            "default": ""
+          },
+          "visibility": {
+            "description": "Video visibility",
+            "default": "public",
+            "allOf": [{ "$ref": "#/components/schemas/VideoVisibility" }]
+          },
+          "thumbnailId": {
+            "type": "string",
+            "description": "Unique thumbnail identifier",
+            "nullable": true
+          },
+          "views": { "type": "number", "description": "[Internal] View count" },
+          "status": {
+            "description": "[Internal] Processing status",
+            "allOf": [{ "$ref": "#/components/schemas/VideoStatus" }]
+          },
+          "duration": {
+            "type": "number",
+            "description": "[Internal] Video duration in seconds"
+          },
+          "progress": {
+            "type": "number",
+            "description": "[Internal] Video processing progress [0-100]"
+          }
+        },
+        "description": "Video create request schema",
+        "required": ["channelId", "title", "description", "visibility"]
+      },
+      "VideoUpdate": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "description": "Video title" },
+          "description": {
+            "type": "string",
+            "description": "Video description",
+            "default": ""
+          },
+          "visibility": {
+            "description": "Video visibility",
+            "default": "public",
+            "allOf": [{ "$ref": "#/components/schemas/VideoVisibility" }]
+          },
+          "thumbnailId": {
+            "type": "string",
+            "description": "Unique thumbnail identifier",
+            "nullable": true
+          },
+          "views": { "type": "number", "description": "[Internal] View count" },
+          "status": {
+            "description": "[Internal] Processing status",
+            "allOf": [{ "$ref": "#/components/schemas/VideoStatus" }]
+          },
+          "duration": {
+            "type": "number",
+            "description": "[Internal] Video duration in seconds"
+          },
+          "progress": {
+            "type": "number",
+            "description": "[Internal] Video processing progress [0-100]"
+          }
+        },
+        "description": "Video update request schema"
+      },
+      "VideoSource": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the uploaded file"
+          },
+          "size": {
+            "type": "number",
+            "description": "Size of the uploaded file in bytes"
+          },
+          "user": {
+            "description": "User that uploaded the file",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/Account" }]
+          },
+          "url": {
+            "type": "string",
+            "description": "Uploaded file download URL"
+          }
+        },
+        "description": "Information about video source file",
+        "required": ["name", "size", "user", "url"]
+      },
+      "VideoUploadSource": {
+        "type": "object",
+        "properties": {
+          "simpleUploadUrl": {
+            "type": "string",
+            "description": "Resumable video upload URL via multipart"
+          },
+          "resumableUploadUrl": {
+            "type": "string",
+            "description": "Resumable video upload URL via TUS"
+          }
+        },
+        "description": "Object containing video upload URL",
+        "required": ["simpleUploadUrl", "resumableUploadUrl"]
+      },
+      "VideoSourceUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the uploaded file"
+          },
+          "size": {
+            "type": "number",
+            "description": "Size of the uploaded file in bytes"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Id of user that uploaded the file"
+          },
+          "key": { "type": "string", "description": "Uploaded file key" }
+        },
+        "description": "Update information about video source file",
+        "required": ["name", "size", "userId", "key"]
+      },
+      "Images": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Image" }
+          }
+        },
+        "required": ["total", "next", "items"]
+      },
+      "VideoReactions": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "description": "Video reactions",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VideoReaction" }
+          }
+        },
+        "description": "Paged video reaction list",
+        "required": ["total", "next", "items"]
+      },
+      "VideoReactionCreate": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Reaction content (e.g., like, dislike)"
+          }
+        },
+        "description": "Video reaction create schema",
+        "required": ["content"]
+      },
+      "VideoCommentReaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique comment reaction identifier"
+          },
+          "content": {
+            "type": "string",
+            "description": "Reaction content (e.g., like, dislike)"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Reaction creation date"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User who created the reaction"
+          },
+          "commentId": {
+            "type": "string",
+            "description": "Comment the reaction belongs to"
+          }
+        },
+        "description": "Video comment reaction details",
+        "required": ["id", "content", "createdAt", "userId", "commentId"]
+      },
+      "VideoCommentReactions": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "description": "Comment reactions",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VideoCommentReaction" }
+          }
+        },
+        "description": "Paged comment reaction list",
+        "required": ["total", "next", "items"]
+      },
+      "VideoCommentReactionCreate": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Reaction content (e.g., like, dislike)"
+          }
+        },
+        "description": "Video comment reaction create schema",
+        "required": ["content"]
+      },
+      "VideoComment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique comment identifier"
+          },
+          "content": { "type": "string", "description": "Comment content" },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Comment updated date",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Comment creation date"
+          },
+          "videoId": {
+            "type": "string",
+            "description": "Comment video id",
+            "nullable": true
+          },
+          "user": {
+            "description": "Comment author",
+            "allOf": [{ "$ref": "#/components/schemas/Account" }]
+          },
+          "reactions": {
+            "description": "Aggregated comment reactions",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReactionAggregate" }
+          },
+          "userReaction": {
+            "description": "Video comment reaction of the current user",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/VideoCommentReaction" }]
+          },
+          "replyCount": {
+            "type": "number",
+            "description": "Number of replies to the comment"
+          }
+        },
+        "description": "Video comment details",
+        "required": [
+          "id",
+          "content",
+          "updatedAt",
+          "createdAt",
+          "videoId",
+          "user",
+          "reactions",
+          "userReaction",
+          "replyCount"
+        ]
+      },
+      "VideoComments": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "description": "Video comments",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VideoComment" }
+          }
+        },
+        "description": "Paged video comment list",
+        "required": ["total", "next", "items"]
+      },
+      "VideoCommentCreate": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string", "description": "Comment content" }
+        },
+        "description": "VideoComment create schema",
+        "required": ["content"]
+      },
+      "VideoCommentUpdate": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string", "description": "Comment content" }
+        },
+        "description": "VideoComment update schema"
+      },
+      "VideoCommentReply": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique comment identifier"
+          },
+          "content": { "type": "string", "description": "Comment content" },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Comment updated date",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Comment creation date"
+          },
+          "videoId": {
+            "type": "string",
+            "description": "Comment video id",
+            "nullable": true
+          },
+          "user": {
+            "description": "Comment author",
+            "allOf": [{ "$ref": "#/components/schemas/Account" }]
+          },
+          "reactions": {
+            "description": "Aggregated comment reactions",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReactionAggregate" }
+          },
+          "userReaction": {
+            "description": "Video comment reaction of the current user",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/VideoCommentReaction" }]
+          },
+          "commentId": {
+            "type": "string",
+            "description": "Video comment parent id",
+            "nullable": true
+          }
+        },
+        "description": "Video comment reply details",
+        "required": [
+          "id",
+          "content",
+          "updatedAt",
+          "createdAt",
+          "videoId",
+          "user",
+          "reactions",
+          "userReaction",
+          "commentId"
+        ]
+      },
+      "VideoCommentReplies": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "The total number of available resources"
+          },
+          "next": {
+            "type": "boolean",
+            "description": "Whether the next page is available"
+          },
+          "items": {
+            "description": "Video comment replies",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VideoCommentReply" }
+          }
+        },
+        "description": "Paged video comment reply list",
+        "required": ["total", "next", "items"]
+      },
+      "VideoCommentReplyCreate": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string", "description": "Comment content" }
+        },
+        "description": "Video comment reply create schema",
+        "required": ["content"]
+      },
+      "VideoCommentReplyUpdate": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string", "description": "Comment content" }
+        },
+        "description": "Video comment reply update schema"
+      },
+      "MediaCodec": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Codec name" },
+          "id": {
+            "type": "string",
+            "description": "Codec identification in RFC 6381 format"
+          }
+        },
+        "description": "Media codec information",
+        "required": ["name", "id"]
+      },
+      "VideoStream": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique id of the video stream"
+          },
+          "format": { "type": "string", "description": "Video stream format" },
+          "codec": {
+            "description": "Video stream codec",
+            "allOf": [{ "$ref": "#/components/schemas/MediaCodec" }]
+          },
+          "width": {
+            "type": "number",
+            "description": "Video stream width in pixels"
+          },
+          "height": {
+            "type": "number",
+            "description": "Video stream height in pixels"
+          },
+          "framerate": {
+            "type": "number",
+            "description": "Video stream frames per second"
+          },
+          "size": {
+            "type": "number",
+            "description": "Video stream size in bytes"
+          },
+          "averageBitrate": {
+            "type": "number",
+            "description": "Average video stream bits per second"
+          },
+          "peakBitrate": {
+            "type": "number",
+            "description": "Maximum instantaneous video stream bits per second"
+          },
+          "url": {
+            "type": "string",
+            "description": "Video stream manifest download URL"
+          }
+        },
+        "description": "Video stream",
+        "required": [
+          "id",
+          "format",
+          "codec",
+          "width",
+          "height",
+          "framerate",
+          "size",
+          "averageBitrate",
+          "peakBitrate",
+          "url"
+        ]
+      },
+      "AudioStream": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique id of the audio stream"
+          },
+          "format": { "type": "string", "description": "Audio stream format" },
+          "codec": {
+            "description": "Audio stream codec",
+            "allOf": [{ "$ref": "#/components/schemas/MediaCodec" }]
+          },
+          "channels": {
+            "type": "number",
+            "description": "Audio stream channel count"
+          },
+          "size": {
+            "type": "number",
+            "description": "Audio stream size in bytes"
+          },
+          "url": {
+            "type": "string",
+            "description": "Audio stream manifest download URL"
+          }
+        },
+        "description": "Audio stream",
+        "required": ["id", "format", "codec", "channels", "size", "url"]
+      },
+      "AdaptiveStream": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "Adaptive stream format"
+          },
+          "url": {
+            "type": "string",
+            "description": "Adaptive stream manifest download URL"
+          }
+        },
+        "description": "Adaptive stream with video and audio combined",
+        "required": ["format", "url"]
+      },
+      "VideoScrubberImage": {
+        "type": "object",
+        "properties": {
+          "width": { "type": "number", "description": "Frame width in pixels" },
+          "height": {
+            "type": "number",
+            "description": "Frame height in pixels"
+          },
+          "columns": {
+            "type": "number",
+            "description": "Number of frames in a row"
+          },
+          "rows": {
+            "type": "number",
+            "description": "Number of frames in a column"
+          },
+          "frameDuration": {
+            "type": "number",
+            "description": "Duration in seconds for one frame to be displayed"
+          },
+          "count": { "type": "number", "description": "Number of image files" },
+          "urls": {
+            "description": "List of URLs for each image file",
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": [
+          "width",
+          "height",
+          "columns",
+          "rows",
+          "frameDuration",
+          "count",
+          "urls"
+        ]
+      },
+      "MediaStreams": {
+        "type": "object",
+        "properties": {
+          "video": {
+            "description": "List of video streams",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VideoStream" }
+          },
+          "audio": {
+            "description": "List of audio streams",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AudioStream" }
+          },
+          "adaptive": {
+            "description": "List of adaptive streams",
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AdaptiveStream" }
+          },
+          "scrubber": {
+            "description": "Video scrubber image",
+            "nullable": true,
+            "allOf": [{ "$ref": "#/components/schemas/VideoScrubberImage" }]
+          }
+        },
+        "description": "Available media streams",
+        "required": ["video", "audio", "adaptive", "scrubber"]
+      },
+      "VideoStreamCreate": {
+        "type": "object",
+        "properties": {
+          "codecName": {
+            "type": "string",
+            "description": "Video stream codec name"
+          },
+          "codecId": {
+            "type": "string",
+            "description": "Video stream codec identification in RFC 6381 format"
+          },
+          "stream": { "type": "string", "description": "Video stream name" },
+          "width": { "type": "number", "description": "Video stream width" },
+          "height": { "type": "number", "description": "Video stream height" },
+          "framerate": {
+            "type": "number",
+            "description": "Video stream frames per second"
+          },
+          "size": {
+            "type": "number",
+            "description": "Video stream size in bytes"
+          },
+          "averageBitrate": {
+            "type": "number",
+            "description": "Average video stream bits per second"
+          },
+          "peakBitrate": {
+            "type": "number",
+            "description": "Maximum instantaneous video stream bits per second"
+          }
+        },
+        "description": "Video stream create request schema",
+        "required": [
+          "codecName",
+          "codecId",
+          "stream",
+          "width",
+          "height",
+          "framerate",
+          "size",
+          "averageBitrate",
+          "peakBitrate"
+        ]
+      },
+      "AudioStreamCreate": {
+        "type": "object",
+        "properties": {
+          "codecName": {
+            "type": "string",
+            "description": "Audio stream codec name"
+          },
+          "codecId": {
+            "type": "string",
+            "description": "Audio stream codec identification in RFC 6381 format"
+          },
+          "stream": { "type": "string", "description": "Audio stream name" },
+          "channels": {
+            "type": "number",
+            "description": "Audio stream channel count"
+          },
+          "size": {
+            "type": "number",
+            "description": "Audio stream size in bytes"
+          }
+        },
+        "description": "Audio stream create request schema",
+        "required": ["codecName", "codecId", "stream", "channels", "size"]
+      },
+      "VideoThumbnailCreate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Thumbnail name" },
+          "variants": { "type": "string", "description": "Thumbnail variants" },
+          "select": {
+            "type": "boolean",
+            "description": "Whether to select this thumbnail for the video"
+          }
+        },
+        "required": ["name", "variants", "select"]
+      },
+      "VideoScrubberImageCreate": {
+        "type": "object",
+        "properties": {
+          "width": { "type": "number", "description": "Frame width in pixels" },
+          "height": {
+            "type": "number",
+            "description": "Frame height in pixels"
+          },
+          "columns": {
+            "type": "number",
+            "description": "Number of frames in a row"
+          },
+          "rows": {
+            "type": "number",
+            "description": "Number of frames in a column"
+          },
+          "frameDuration": {
+            "type": "number",
+            "description": "Duration in seconds for one frame to be displayed"
+          },
+          "count": { "type": "number", "description": "Number of image files" }
+        },
+        "required": [
+          "width",
+          "height",
+          "columns",
+          "rows",
+          "frameDuration",
+          "count"
+        ]
+      }
+    }
+  }
+}

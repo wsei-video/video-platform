@@ -3,3 +3,4 @@
 - [Viewer](viewer.md)
 - [Player](player.md)
 - [Creator](creator.md)
+- [Video platform API](video-platform-api.md)
