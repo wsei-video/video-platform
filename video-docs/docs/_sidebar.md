@@ -1,4 +1,5 @@
 - [Home](/)
-- [Viewer](viewer.md)
-- [Creator](creator.md)
 - [Authentication](authenticaton.md)
+- [Viewer](viewer.md)
+- [Player](player.md)
+- [Creator](creator.md)
