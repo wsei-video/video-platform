@@ -27,6 +27,10 @@ const goToYourContent = () => {
 const goToLogin = () => {
   router.push({ name: 'login-page' })
 }
+
+const openHelp = () => {
+  window.open('https://wsei-video.github.io/video-platform/#/', '_blank')
+}
 </script>
 
 <template>
@@ -41,6 +45,10 @@ const goToLogin = () => {
       <AppIcon v-else class="fs-1" name="account_circle" />
     </DropdownTrigger>
     <DropdownContent class="profile-dropdown__content">
+      <DropdownItem @click="openHelp">
+        <AppIcon name="help" />
+        <p>Help</p>
+      </DropdownItem>
       <div v-if="authStore.isAuthenticated">
         <DropdownItem @click="goToYourContent">
           <AppIcon name="settings_video_camera" />
