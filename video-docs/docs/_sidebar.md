@@ -1,2 +1,4 @@
-* [Home](/)
-* [Getting started](getting-started.md)
+- [Home](/)
+- [Viewer](viewer.md)
+- [Creator](creator.md)
+- [Authentication](authenticaton.md)
