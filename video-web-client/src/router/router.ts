@@ -32,11 +32,6 @@ const router = createRouter({
   },
   routes: [
     {
-      path: '/:pathMatch(.*)',
-      name: 'not-found',
-      component: () => import('@/views/NotFoundView.vue'),
-    },
-    {
       path: '/login',
       name: 'login-page',
       component: () => import('@/views/LoginView.vue'),
@@ -135,6 +130,11 @@ const router = createRouter({
           component: () => import('@/views/Studio/AccountSettings/AccountSettingsView.vue'),
         },
       ],
+    },
+    {
+      path: '/:pathMatch(.*)',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
     },
   ],
 })
