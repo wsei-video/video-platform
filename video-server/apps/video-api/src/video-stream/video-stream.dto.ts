@@ -131,6 +131,10 @@ export class VideoStreamDto {
   @ApiProperty({ description: 'Video stream manifest download URL' })
   @Expose()
   public url: string;
+
+  @ApiProperty({ description: 'Video stream name' })
+  @Expose()
+  public name: string;
 }
 
 @ApiSchema({ name: 'AudioStream', description: 'Audio stream' })
@@ -160,6 +164,10 @@ export class AudioStreamDto {
   @ApiProperty({ description: 'Audio stream manifest download URL' })
   @Expose()
   public url: string;
+
+  @ApiProperty({ description: 'Audio stream name' })
+  @Expose()
+  public name: string;
 }
 
 @ApiSchema({ name: 'AdaptiveStream', description: 'Adaptive stream with video and audio combined' })

@@ -50,6 +50,7 @@ export class VideoStreamService {
           id: videoStream.id,
           url: `${baseCdnUrl}/video/${videoStream.stream}/playlist.${format.extension}`,
           width: videoStream.width,
+          name: videoStream.stream,
         })),
       ),
       audio: audioStreams.flatMap(audioStream =>
@@ -63,6 +64,7 @@ export class VideoStreamService {
           format: format.name,
           id: audioStream.id,
           url: `${baseCdnUrl}/audio/${audioStream.stream}/playlist.${format.extension}`,
+          name: audioStream.stream,
         })),
       ),
       adaptive:

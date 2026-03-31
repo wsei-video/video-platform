@@ -62,6 +62,8 @@ export interface AudioStream {
   format: string;
   /** Unique id of the audio stream */
   id: string;
+  /** Audio stream name */
+  name: string;
   /** Audio stream size in bytes */
   size: number;
   /** Audio stream manifest download URL */
@@ -894,6 +896,8 @@ export interface VideoStream {
   height: number;
   /** Unique id of the video stream */
   id: string;
+  /** Video stream name */
+  name: string;
   /** Maximum instantaneous video stream bits per second */
   peakBitrate: number;
   /** Video stream size in bytes */

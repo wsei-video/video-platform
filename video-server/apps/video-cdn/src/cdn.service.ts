@@ -5,11 +5,11 @@ import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestj
 import { HttpService } from '@nestjs/axios';
 import { isAxiosError } from 'axios';
 
+import { AudioStream, MediaStreams, Video, VideoStream } from '@video/lib/services';
 import { BadGatewayError, NotFoundError, NotImplementedError } from '@video/lib/restful';
 import { Config } from '@video/lib/config';
 import { MediaAdaptiveFormat } from '@video/lib/media';
-import { AudioStream, MediaStreams, VideoStream } from '@video/lib/services';
-import { StorageService } from '@video/lib/storage';
+import { StorageConstants, StorageService } from '@video/lib/storage';
 
 @Injectable()
 export class CdnService {
@@ -27,6 +27,7 @@ export class CdnService {
     if (!videoStreams.length) throw new NotFoundError();
 
     if (format === MediaAdaptiveFormat.Hls) return this.generateHlsMasterPlaylist(videoStreams, audioStreams);
+    if (format === MediaAdaptiveFormat.Dash) return this.generateDashManifest(videoId, videoStreams, audioStreams);
 
     throw new NotImplementedError({ format: format.name });
   }
@@ -76,6 +77,107 @@ export class CdnService {
     });
 
     return lines.join('\n');
+  }
+
+  private async generateDashManifest(
+    videoId: string,
+    videoStreams: VideoStream[],
+    audioStreams: AudioStream[],
+  ): Promise<string> {
+    const video = await this.getVideo(videoId);
+
+    let audioAdaptationSet = '';
+    let videoAdaptationSet = '';
+
+    if (audioStreams.length) {
+      const audioRepresentations = audioStreams.map(
+        stream => `<Representation
+          id="${stream.name}"
+          mimeType="audio/mp4"
+          codecs="${stream.codec.id}"
+          bandwidth="256000"
+          audioSamplingRate="44100">
+          <AudioChannelConfiguration
+            schemeIdUri="urn:mpeg:dash:23003:3:audio_channel_configuration:2011"
+            value="${stream.channels}" />
+          <SegmentTemplate
+            timescale="1"
+            initialization="audio/${stream.name}/init.mp4"
+            media="audio/${stream.name}/segment_$Number%06d$.m4s"
+            startNumber="0"
+            duration="${StorageConstants.hlsSectionMaxDuration}">
+          </SegmentTemplate>
+        </Representation>`,
+      );
+
+      audioAdaptationSet = `<AdaptationSet
+        id="0"
+        contentType="audio"
+        startWithSAP="1"
+        segmentAlignment="true">
+        ${audioRepresentations.join('\n')}
+      </AdaptationSet>`;
+    }
+
+    if (videoStreams.length) {
+      const videoRepresentations = videoStreams.map(
+        stream => `<Representation
+          id="${stream.name}"
+          mimeType="video/mp4"
+          codecs="${stream.codec.id}"
+          bandwidth="${stream.averageBitrate}"
+          width="${stream.width}"
+          height="${stream.height}"
+          frameRate="${stream.framerate}">
+          <SegmentTemplate
+            timescale="1"
+            initialization="video/${stream.name}/init.mp4"
+            media="video/${stream.name}/segment_$Number%06d$.m4s"
+            startNumber="0"
+            duration="${StorageConstants.hlsSegmentDuration}">
+          </SegmentTemplate>
+        </Representation>`,
+      );
+
+      videoAdaptationSet = `<AdaptationSet
+        id="1"
+        contentType="video"
+        startWithSAP="1"
+        segmentAlignment="true"
+        bitstreamSwitching="true">
+        ${videoRepresentations.join('\n')}
+      </AdaptationSet>`;
+    }
+
+    return `<?xml version="1.0" encoding="utf-8"?>
+      <MPD
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="urn:mpeg:dash:schema:mpd:2011"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xsi:schemaLocation="urn:mpeg:DASH:schema:MPD:2011 http://standards.iso.org/ittf/PubliclyAvailableStandards/MPEG-DASH_schema_files/DASH-MPD.xsd"
+        profiles="urn:mpeg:dash:profile:isoff-on-demand:2011"
+        type="static"
+        mediaPresentationDuration="PT${video.duration}S"
+        maxSegmentDuration="PT${StorageConstants.hlsSegmentDuration}S"
+        minBufferTime="PT2S">
+        <Period id="0" start="PT0S">${audioAdaptationSet}
+        ${videoAdaptationSet}
+        </Period>
+      </MPD>`;
+  }
+
+  private async getVideo(videoId: string): Promise<Video> {
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get<Video>(`${this.config.video.apiUrlInternal}/v1/videos/${videoId}`),
+      );
+      return response.data;
+    } catch (error) {
+      if (isAxiosError(error)) {
+        throw new HttpException(error.response?.data, error.status ?? HttpStatus.BAD_GATEWAY);
+      }
+      throw new BadGatewayError(error);
+    }
   }
 
   private async getMediaStreams(videoId: string): Promise<MediaStreams> {
